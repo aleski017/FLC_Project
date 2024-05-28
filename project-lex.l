@@ -19,14 +19,17 @@ ID       {LETTER}+
 {ID}    {yylval.lexeme = yytext; return ID;}
 
 
-"/"     {return '/';}
-"*"     {return '*';}
-"+"     {return '+';}
-"-"     {return '-';}
+"CREATE TABLE"     {return CREATE;}
+"SELECT"     {return SELECT;}
+"FROM"     {return WHERE;}
+"WHERE"     {return WHERE;}
 
-"("     {return '(';}
-")"     {return ')';}
-"["     {return '[';}
+"GROUP BY"     {return GROUPBY;}
+[-]?{digit}+                { return NUMBER; }
+[-]?{digit}+\.{digit}{1,6}  { return FLOAT_NUM; }
+{alpha}({alpha}|{digit})*   { return ID; }
+"false"     {return FALSE;}
+"true"     {return TRUE;}
 "]"     {return ']';}
 "{"     {return '{';}
 "}"     {return '}';}
