@@ -140,8 +140,7 @@ enum yysymbol_kind_t
   YYSYMBOL_YYACCEPT = 28,                  /* $accept  */
   YYSYMBOL_line = 29,                      /* line  */
   YYSYMBOL_expr = 30,                      /* expr  */
-  YYSYMBOL_table_def = 31,                 /* table_def  */
-  YYSYMBOL_datatype = 32                   /* datatype  */
+  YYSYMBOL_table_def = 31                  /* table_def  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -469,16 +468,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  5
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   15
+#define YYLAST   10
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  28
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  5
+#define YYNNTS  4
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  9
+#define YYNRULES  5
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  20
+#define YYNSTATES  13
 
 /* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   278
@@ -529,7 +528,7 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    35,    35,    39,    45,    49,    53,    54,    55,    56
+       0,    35,    35,    39,    45,    49
 };
 #endif
 
@@ -549,7 +548,7 @@ static const char *const yytname[] =
   "SELECT", "FROM", "WHERE", "GROUPBY", "INSERT", "LS", "GR", "GE", "LE",
   "EQ", "IN", "false", "true", "ID", "UNARY_MINUS", "BOOLEAN", "VARCHAR",
   "INTEGER", "FLOAT", "'\\n'", "'('", "')'", "','", "$accept", "line",
-  "expr", "table_def", "datatype", YY_NULLPTR
+  "expr", "table_def", YY_NULLPTR
 };
 
 static const char *
@@ -559,7 +558,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-21)
+#define YYPACT_NINF (-22)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -573,8 +572,8 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       0,   -13,     6,   -17,   -16,   -21,   -21,   -20,   -21,   -15,
-     -21,   -21,   -18,    -7,   -14,   -21,   -12,   -21,   -20,   -21
+      -4,   -17,     2,   -21,   -20,   -22,   -22,   -14,   -19,   -16,
+     -14,   -22,   -22
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -582,20 +581,20 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     0,     0,     0,     0,     1,     2,     0,     8,     0,
-       6,     7,     0,     0,     0,     3,     4,     9,     0,     5
+       0,     0,     0,     0,     0,     1,     2,     0,     4,     0,
+       0,     3,     5
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -21,   -21,   -21,    -5,   -21
+     -22,   -22,   -22,    -3
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,     2,     3,    12,    13
+       0,     2,     3,     9
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -603,34 +602,34 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       8,     9,    10,    11,     1,     4,     5,     6,    15,     7,
-      14,    16,    17,    19,     0,    18
+       1,     4,     5,     6,     8,     7,     0,    12,    10,     0,
+      11
 };
 
 static const yytype_int8 yycheck[] =
 {
-      20,    21,    22,    23,     4,    18,     0,    24,    26,    25,
-      25,    18,    26,    18,    -1,    27
+       4,    18,     0,    24,    18,    25,    -1,    10,    27,    -1,
+      26
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     4,    29,    30,    18,     0,    24,    25,    20,    21,
-      22,    23,    31,    32,    25,    26,    18,    26,    27,    31
+       0,     4,    29,    30,    18,     0,    24,    25,    18,    31,
+      27,    26,    31
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    28,    29,    30,    31,    31,    32,    32,    32,    32
+       0,    28,    29,    30,    31,    31
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     2,     5,     2,     4,     1,     1,     1,     3
+       0,     2,     2,     5,     1,     3
 };
 
 
@@ -1096,7 +1095,7 @@ yyreduce:
   case 2: /* line: expr '\n'  */
 #line 35 "project.y"
                        {(yyval.value) = (yyvsp[-1].value); printf("Result: %f\n", (yyval.value)); exit(0);}
-#line 1100 "project.tab.c"
+#line 1099 "project.tab.c"
     break;
 
   case 3: /* expr: CREATE ID '(' table_def ')'  */
@@ -1106,53 +1105,29 @@ yyreduce:
 		(yyval.value) = 0; 
 		exit(0); 
 		}
-#line 1110 "project.tab.c"
+#line 1109 "project.tab.c"
     break;
 
-  case 4: /* table_def: datatype ID  */
+  case 4: /* table_def: ID  */
 #line 45 "project.y"
-                        {
+                            {
 				
 				(yyval.value) = 0;
 				}
-#line 1119 "project.tab.c"
+#line 1118 "project.tab.c"
     break;
 
-  case 5: /* table_def: datatype ID ',' table_def  */
+  case 5: /* table_def: ID ',' table_def  */
 #line 49 "project.y"
-                                                   {
+                                                       {
 				
 				(yyval.value) = 0;
 				}
-#line 1128 "project.tab.c"
-    break;
-
-  case 6: /* datatype: INTEGER  */
-#line 53 "project.y"
-                  {(yyval.value) = 0;}
-#line 1134 "project.tab.c"
-    break;
-
-  case 7: /* datatype: FLOAT  */
-#line 54 "project.y"
-                        {(yyval.value) = 0;}
-#line 1140 "project.tab.c"
-    break;
-
-  case 8: /* datatype: BOOLEAN  */
-#line 55 "project.y"
-                         {(yyval.value) = 0;}
-#line 1146 "project.tab.c"
-    break;
-
-  case 9: /* datatype: VARCHAR '(' ')'  */
-#line 56 "project.y"
-                               {(yyval.value) = 0;}
-#line 1152 "project.tab.c"
+#line 1127 "project.tab.c"
     break;
 
 
-#line 1156 "project.tab.c"
+#line 1131 "project.tab.c"
 
       default: break;
     }

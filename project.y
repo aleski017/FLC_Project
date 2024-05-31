@@ -42,19 +42,19 @@ expr: CREATE ID '(' table_def ')'	{
 		exit(0); 
 		};
 // Used to define the creation of attributes in a table. E.g. { attribute1, attribute2 } etc
-table_def : datatype ID {
+table_def : /*datatype*/ ID {
 				
 				$$ = 0;
 				}
-			| datatype ID ',' table_def{
+			| /*datatype*/ ID ',' table_def{
 				
 				$$ = 0;
 				};
-datatype: INTEGER {$$ = 0;}
-		| FLOAT {$$ = 0;}
-		|BOOLEAN {$$ = 0;}
-		|VARCHAR'('')' {$$ = 0;}
-		;
+// datatype: INTEGER {$$ = 0;}
+		// | FLOAT {$$ = 0;}
+		// |BOOLEAN {$$ = 0;}
+		// |VARCHAR'('')' {$$ = 0;}
+		// ;
 %%
 
 #include "lex.yy.c"

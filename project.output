@@ -1,3 +1,8 @@
+Nonterminals useless in grammar
+
+    datatype
+
+
 Terminals unused in grammar
 
     NUM
@@ -15,6 +20,10 @@ Terminals unused in grammar
     false
     true
     UNARY_MINUS
+    BOOLEAN
+    VARCHAR
+    INTEGER
+    FLOAT
 
 
 Grammar
@@ -25,21 +34,16 @@ Grammar
 
     2 expr: CREATE ID '(' table_def ')'
 
-    3 table_def: datatype ID
-    4          | datatype ID ',' table_def
-
-    5 datatype: INTEGER
-    6         | FLOAT
-    7         | BOOLEAN
-    8         | VARCHAR '(' ')'
+    3 table_def: ID
+    4          | ID ',' table_def
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
     '\n' (10) 1
-    '(' (40) 2 8
-    ')' (41) 2 8
+    '(' (40) 2
+    ')' (41) 2
     ',' (44) 4
     error (256)
     NUM <value> (258)
@@ -59,10 +63,10 @@ Terminals, with rules where they appear
     true (272)
     ID <lexeme> (273) 2 3 4
     UNARY_MINUS (274)
-    BOOLEAN (275) 7
-    VARCHAR (276) 8
-    INTEGER (277) 5
-    FLOAT (278) 6
+    BOOLEAN (275)
+    VARCHAR (276)
+    INTEGER (277)
+    FLOAT (278)
 
 
 Nonterminals, with rules where they appear
@@ -78,9 +82,6 @@ Nonterminals, with rules where they appear
     table_def <value> (31)
         on left: 3 4
         on right: 2 4
-    datatype <value> (32)
-        on left: 5 6 7 8
-        on right: 3 4
 
 
 State 0
@@ -139,104 +140,46 @@ State 7
 
     2 expr: CREATE ID '(' • table_def ')'
 
-    BOOLEAN  shift, and go to state 8
-    VARCHAR  shift, and go to state 9
-    INTEGER  shift, and go to state 10
-    FLOAT    shift, and go to state 11
+    ID  shift, and go to state 8
 
-    table_def  go to state 12
-    datatype   go to state 13
+    table_def  go to state 9
 
 
 State 8
 
-    7 datatype: BOOLEAN •
+    3 table_def: ID •
+    4          | ID • ',' table_def
 
-    $default  reduce using rule 7 (datatype)
+    ','  shift, and go to state 10
+
+    $default  reduce using rule 3 (table_def)
 
 
 State 9
 
-    8 datatype: VARCHAR • '(' ')'
+    2 expr: CREATE ID '(' table_def • ')'
 
-    '('  shift, and go to state 14
+    ')'  shift, and go to state 11
 
 
 State 10
 
-    5 datatype: INTEGER •
+    4 table_def: ID ',' • table_def
 
-    $default  reduce using rule 5 (datatype)
+    ID  shift, and go to state 8
+
+    table_def  go to state 12
 
 
 State 11
-
-    6 datatype: FLOAT •
-
-    $default  reduce using rule 6 (datatype)
-
-
-State 12
-
-    2 expr: CREATE ID '(' table_def • ')'
-
-    ')'  shift, and go to state 15
-
-
-State 13
-
-    3 table_def: datatype • ID
-    4          | datatype • ID ',' table_def
-
-    ID  shift, and go to state 16
-
-
-State 14
-
-    8 datatype: VARCHAR '(' • ')'
-
-    ')'  shift, and go to state 17
-
-
-State 15
 
     2 expr: CREATE ID '(' table_def ')' •
 
     $default  reduce using rule 2 (expr)
 
 
-State 16
+State 12
 
-    3 table_def: datatype ID •
-    4          | datatype ID • ',' table_def
-
-    ','  shift, and go to state 18
-
-    $default  reduce using rule 3 (table_def)
-
-
-State 17
-
-    8 datatype: VARCHAR '(' ')' •
-
-    $default  reduce using rule 8 (datatype)
-
-
-State 18
-
-    4 table_def: datatype ID ',' • table_def
-
-    BOOLEAN  shift, and go to state 8
-    VARCHAR  shift, and go to state 9
-    INTEGER  shift, and go to state 10
-    FLOAT    shift, and go to state 11
-
-    table_def  go to state 19
-    datatype   go to state 13
-
-
-State 19
-
-    4 table_def: datatype ID ',' table_def •
+    4 table_def: ID ',' table_def •
 
     $default  reduce using rule 4 (table_def)
