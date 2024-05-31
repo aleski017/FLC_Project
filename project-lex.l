@@ -12,35 +12,38 @@ ID       {LETTER}+
 %%
 
 [ ]     { /* skip blanks */ }
+[\t ]+      /* ignore whitespace */ ;
+[\n ]+      /* ignore newline */ ;
 
-[iI][fF] {return IF;}
 {NUM}   {yylval.value = atof(yytext);
          return NUM;}
 {ID}    {yylval.lexeme = yytext; return ID;}
-
-
 "CREATE TABLE"     {return CREATE;}
 "SELECT"     {return SELECT;}
 "FROM"     {return WHERE;}
 "WHERE"     {return WHERE;}
-
 "GROUP BY"     {return GROUPBY;}
-[-]?{digit}+                { return NUMBER; }
-[-]?{digit}+\.{digit}{1,6}  { return FLOAT_NUM; }
-{alpha}({alpha}|{digit})*   { return ID; }
-"false"     {return FALSE;}
-"true"     {return TRUE;}
-"]"     {return ']';}
-"{"     {return '{';}
+"INSERT INTO"     {return INSERT;}
+"int"     {return INTEGER;}
+"float"     {return FLOAT;}
+"boolean"     {return BOOLEAN;}
+"varchar"     {return VARCHAR;}
+[-]?{DIGIT}+                { return NUM; }
+[-]?{DIGIT}+\.{DIGIT}{1,6}  { return NUM; }
+ID   { return ID; }
+"false"     {return false;}
+"true"     {return true;}
+"("     {return '(';}
+")"     {return ')';}
 "}"     {return '}';}
-
+"{"     {return '{';}
 ">"     {return GR;}
 "<"     {return LS;}
 ">="     {return GE;}
 "<="     {return LE;}
 "!="     {return EQ;}
 "=="     {return IN;}
-
+","     {return ',';}
 
 \n      {return '\n';}
   

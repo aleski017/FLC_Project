@@ -13,61 +13,48 @@ int yylex(void);
 %}
 
 
-typedef struct Symbol {
+%union {
        char* lexeme;			//identifier
        double value;			//value of an identifier of type NUM
        }
 
 %token <value>  NUM
-%token IF
+%token CREATE SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ IN false true
 %token <lexeme> ID
 %token UNARY_MINUS
-%token GE LE IN EQ GR LS
-%right '-' '+'
-%left '*' '/'
-%nonassoc SIGN
+%token BOOLEAN VARCHAR INTEGER FLOAT
 
 %type <value> expr
 %type <value> line
-%type <value> condition
-%type <value> stmt
-%type <value> assignment
+%type <value> table_def
+%type <value> datatype
 
 %start line
 
 %%
-line  	: stmt '\n'      {$$ = $1; printf("Result: %f\n", $$); exit(0);}
+line  : expr '\n'      {$$ = $1; printf("Result: %f\n", $$); exit(0);}
+      ;
+
+// Matches CREATE TABLE statement, it represents the scope of the grammar 
+expr: CREATE ID '(' table_def ')'	{
+		printf("Recognized");
+		$$ = 0; 
+		exit(0); 
+		};
+// Used to define the creation of attributes in a table. E.g. { attribute1, attribute2 } etc
+table_def : datatype ID {
+				
+				$$ = 0;
+				}
+			| datatype ID ',' table_def{
+				
+				$$ = 0;
+				};
+datatype: INTEGER {$$ = 0;}
+		| FLOAT {$$ = 0;}
+		|BOOLEAN {$$ = 0;}
+		|VARCHAR'('')' {$$ = 0;}
 		;
-		
-stmt	: IF '(' condition ')' '{' stmt'}' {
-		if($3 == 0)
-			{$$ = $6;} 
-		else 
-			{$$ = 0; printf("ciao");}}
-		| expr;
-		| assignment;
-		;
-		
-assignment	: ID '=' NUM {$1.value = $3;}
-			;	
-			
-expr 	: expr '/' expr  {$$ = $1 / $3;}
-		| expr '*' expr  {$$ = $1 * $3;}
-		| expr '+' expr  {$$ = $1 + $3;}
-		| expr '-' expr  {$$ = $1 - $3;}
-		| '-' expr       %prec SIGN{$$ = -$2;}
-		| '+' expr       %prec SIGN{$$ = $2;}
-		| NUM            {$$ = $1;}
-		| ID             {$$= 0; printf("IDENTIFICATORE = %s\n",$1);}
-		;	
-		
-condition	: expr GR expr  {$$ = $1 < $3;}
-			| expr LS expr  {$$ = $1 > $3;}
-			| expr GE expr  {$$ = $1 >= $3;}
-			| expr LE expr  {$$ = $1 <= $3;}
-			| expr IN expr  {$$ = $1 != $3;}
-			| expr EQ expr  {$$ = $1 == $3; printf("eguaglianza");}
-			;
 %%
 
 #include "lex.yy.c"
