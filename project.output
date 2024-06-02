@@ -1,20 +1,30 @@
-Terminals which are not used
+Nonterminals useless in grammar
 
-   SELECT
-   FROM
-   WHERE
-   GROUPBY
-   INSERT
-   LS
-   GR
-   GE
-   LE
-   EQ
-   NE
-   AND
-   OR
-   FALSE
-   TRUE
+    insert_stmt
+    value_list
+    id_or_num
+
+
+Terminals unused in grammar
+
+    GROUPBY
+    INSERT
+    VALUES
+
+
+Rules useless in grammar
+
+   31 insert_stmt: INSERT ID '(' column_list ')' VALUES value_list
+
+   32 value_list: '(' id_or_num ')'
+   33           | '(' id_or_num ')' ',' value_list
+
+   34 id_or_num: expression
+   35          | expression ',' id_or_num
+
+
+State 50 conflicts: 2 shift/reduce
+State 51 conflicts: 2 shift/reduce
 
 
 Grammar
@@ -22,71 +32,126 @@ Grammar
     0 $accept: line $end
 
     1 line: expr '\n'
+    2     | expr select_stmt
 
-    2 expr: CREATETABLE ID '(' table_def ')'
+    3 expr: CREATETABLE ID '(' table_def ')'
 
-    3 table_def: column_def
-    4          | column_def ',' table_def
+    4 table_def: column_def
+    5          | column_def ',' table_def
 
-    5 column_def: ID datatype
+    6 column_def: ID datatype
 
-    6 datatype: INTEGER
-    7         | FLOAT
-    8         | BOOLEAN
-    9         | VARCHAR '(' NUM ')'
+    7 datatype: INTEGER
+    8         | FLOAT
+    9         | BOOLEAN
+   10         | VARCHAR '(' NUM ')'
+
+   11 select_stmt: SELECT select_list FROM ID where_clause
+
+   12 select_list: ','
+   13            | column_list
+
+   14 column_list: ID datatype
+   15            | ID ',' column_list
+
+   16 where_clause: ε
+   17             | WHERE condition
+
+   18 condition: expression comparison_op expression
+   19          | condition AND condition
+   20          | condition OR condition
+
+   21 expression: ID
+   22           | NUM
+   23           | TRUE
+   24           | FALSE
+
+   25 comparison_op: LS
+   26              | GR
+   27              | GE
+   28              | LE
+   29              | EQ
+   30              | NE
 
 
 Terminals, with rules where they appear
 
-$end (0) 0
-'\n' (10) 1
-'(' (40) 2 9
-')' (41) 2 9
-',' (44) 4
-error (256)
-NUM (258) 9
-CREATETABLE (259) 2
-SELECT (260)
-FROM (261)
-WHERE (262)
-GROUPBY (263)
-INSERT (264)
-LS (265)
-GR (266)
-GE (267)
-LE (268)
-EQ (269)
-NE (270)
-AND (271)
-OR (272)
-FALSE (273)
-TRUE (274)
-ID (275) 2 5
-BOOLEAN (276) 8
-VARCHAR (277) 9
-INTEGER (278) 6
-FLOAT (279) 7
+    $end (0) 0
+    '\n' (10) 1
+    '(' (40) 3 10
+    ')' (41) 3 10
+    ',' (44) 5 12 15
+    error (256)
+    CREATETABLE (258) 3
+    SELECT (259) 11
+    FROM (260) 11
+    WHERE (261) 17
+    GROUPBY (262)
+    INSERT (263)
+    LS (264) 25
+    GR (265) 26
+    GE (266) 27
+    LE (267) 28
+    EQ (268) 29
+    NE (269) 30
+    AND (270) 19
+    OR (271) 20
+    FALSE (272) 24
+    TRUE (273) 23
+    VALUES (274)
+    BOOLEAN (275) 9
+    VARCHAR (276) 10
+    INTEGER (277) 7
+    FLOAT (278) 8
+    NUM (279) 10 22
+    ID (280) 3 6 11 14 15 21
 
 
 Nonterminals, with rules where they appear
 
-$accept (29)
-    on left: 0
-line (30)
-    on left: 1, on right: 0
-expr (31)
-    on left: 2, on right: 1
-table_def (32)
-    on left: 3 4, on right: 2 4
-column_def (33)
-    on left: 5, on right: 3 4
-datatype (34)
-    on left: 6 7 8 9, on right: 5
+    $accept (30)
+        on left: 0
+    line (31)
+        on left: 1 2
+        on right: 0
+    expr (32)
+        on left: 3
+        on right: 1 2
+    table_def (33)
+        on left: 4 5
+        on right: 3 5
+    column_def (34)
+        on left: 6
+        on right: 4 5
+    datatype (35)
+        on left: 7 8 9 10
+        on right: 6 14
+    select_stmt (36)
+        on left: 11
+        on right: 2
+    select_list (37)
+        on left: 12 13
+        on right: 11
+    column_list (38)
+        on left: 14 15
+        on right: 13 15
+    where_clause (39)
+        on left: 16 17
+        on right: 11
+    condition (40)
+        on left: 18 19 20
+        on right: 17 19 20
+    expression (41)
+        on left: 21 22 23 24
+        on right: 18
+    comparison_op (42)
+        on left: 25 26 27 28 29 30
+        on right: 18
 
 
-state 0
+State 0
 
-    0 $accept: . line $end
+    0 $accept: • line $end
 
     CREATETABLE  shift, and go to state 1
 
@@ -94,162 +159,449 @@ state 0
     expr  go to state 3
 
 
-state 1
+State 1
 
-    2 expr: CREATETABLE . ID '(' table_def ')'
+    3 expr: CREATETABLE • ID '(' table_def ')'
 
     ID  shift, and go to state 4
 
 
-state 2
+State 2
 
-    0 $accept: line . $end
+    0 $accept: line • $end
 
     $end  shift, and go to state 5
 
 
-state 3
+State 3
 
-    1 line: expr . '\n'
+    1 line: expr • '\n'
+    2     | expr • select_stmt
 
-    '\n'  shift, and go to state 6
+    SELECT  shift, and go to state 6
+    '\n'    shift, and go to state 7
 
-
-state 4
-
-    2 expr: CREATETABLE ID . '(' table_def ')'
-
-    '('  shift, and go to state 7
+    select_stmt  go to state 8
 
 
-state 5
+State 4
 
-    0 $accept: line $end .
+    3 expr: CREATETABLE ID • '(' table_def ')'
+
+    '('  shift, and go to state 9
+
+
+State 5
+
+    0 $accept: line $end •
 
     $default  accept
 
 
-state 6
+State 6
 
-    1 line: expr '\n' .
+   11 select_stmt: SELECT • select_list FROM ID where_clause
+
+    ID   shift, and go to state 10
+    ','  shift, and go to state 11
+
+    select_list  go to state 12
+    column_list  go to state 13
+
+
+State 7
+
+    1 line: expr '\n' •
 
     $default  reduce using rule 1 (line)
 
 
-state 7
+State 8
 
-    2 expr: CREATETABLE ID '(' . table_def ')'
+    2 line: expr select_stmt •
 
-    ID  shift, and go to state 8
-
-    table_def   go to state 9
-    column_def  go to state 10
+    $default  reduce using rule 2 (line)
 
 
-state 8
+State 9
 
-    5 column_def: ID . datatype
+    3 expr: CREATETABLE ID '(' • table_def ')'
 
-    BOOLEAN  shift, and go to state 11
-    VARCHAR  shift, and go to state 12
-    INTEGER  shift, and go to state 13
-    FLOAT    shift, and go to state 14
+    ID  shift, and go to state 14
 
-    datatype  go to state 15
+    table_def   go to state 15
+    column_def  go to state 16
 
 
-state 9
+State 10
 
-    2 expr: CREATETABLE ID '(' table_def . ')'
+   14 column_list: ID • datatype
+   15            | ID • ',' column_list
 
-    ')'  shift, and go to state 16
+    BOOLEAN  shift, and go to state 17
+    VARCHAR  shift, and go to state 18
+    INTEGER  shift, and go to state 19
+    FLOAT    shift, and go to state 20
+    ','      shift, and go to state 21
 
-
-state 10
-
-    3 table_def: column_def .
-    4          | column_def . ',' table_def
-
-    ','  shift, and go to state 17
-
-    $default  reduce using rule 3 (table_def)
+    datatype  go to state 22
 
 
-state 11
+State 11
 
-    8 datatype: BOOLEAN .
+   12 select_list: ',' •
 
-    $default  reduce using rule 8 (datatype)
-
-
-state 12
-
-    9 datatype: VARCHAR . '(' NUM ')'
-
-    '('  shift, and go to state 18
+    $default  reduce using rule 12 (select_list)
 
 
-state 13
+State 12
 
-    6 datatype: INTEGER .
+   11 select_stmt: SELECT select_list • FROM ID where_clause
 
-    $default  reduce using rule 6 (datatype)
-
-
-state 14
-
-    7 datatype: FLOAT .
-
-    $default  reduce using rule 7 (datatype)
+    FROM  shift, and go to state 23
 
 
-state 15
+State 13
 
-    5 column_def: ID datatype .
+   13 select_list: column_list •
 
-    $default  reduce using rule 5 (column_def)
-
-
-state 16
-
-    2 expr: CREATETABLE ID '(' table_def ')' .
-
-    $default  reduce using rule 2 (expr)
+    $default  reduce using rule 13 (select_list)
 
 
-state 17
+State 14
 
-    4 table_def: column_def ',' . table_def
+    6 column_def: ID • datatype
 
-    ID  shift, and go to state 8
+    BOOLEAN  shift, and go to state 17
+    VARCHAR  shift, and go to state 18
+    INTEGER  shift, and go to state 19
+    FLOAT    shift, and go to state 20
 
-    table_def   go to state 19
-    column_def  go to state 10
-
-
-state 18
-
-    9 datatype: VARCHAR '(' . NUM ')'
-
-    NUM  shift, and go to state 20
+    datatype  go to state 24
 
 
-state 19
+State 15
 
-    4 table_def: column_def ',' table_def .
+    3 expr: CREATETABLE ID '(' table_def • ')'
+
+    ')'  shift, and go to state 25
+
+
+State 16
+
+    4 table_def: column_def •
+    5          | column_def • ',' table_def
+
+    ','  shift, and go to state 26
 
     $default  reduce using rule 4 (table_def)
 
 
-state 20
+State 17
 
-    9 datatype: VARCHAR '(' NUM . ')'
-
-    ')'  shift, and go to state 21
-
-
-state 21
-
-    9 datatype: VARCHAR '(' NUM ')' .
+    9 datatype: BOOLEAN •
 
     $default  reduce using rule 9 (datatype)
+
+
+State 18
+
+   10 datatype: VARCHAR • '(' NUM ')'
+
+    '('  shift, and go to state 27
+
+
+State 19
+
+    7 datatype: INTEGER •
+
+    $default  reduce using rule 7 (datatype)
+
+
+State 20
+
+    8 datatype: FLOAT •
+
+    $default  reduce using rule 8 (datatype)
+
+
+State 21
+
+   15 column_list: ID ',' • column_list
+
+    ID  shift, and go to state 10
+
+    column_list  go to state 28
+
+
+State 22
+
+   14 column_list: ID datatype •
+
+    $default  reduce using rule 14 (column_list)
+
+
+State 23
+
+   11 select_stmt: SELECT select_list FROM • ID where_clause
+
+    ID  shift, and go to state 29
+
+
+State 24
+
+    6 column_def: ID datatype •
+
+    $default  reduce using rule 6 (column_def)
+
+
+State 25
+
+    3 expr: CREATETABLE ID '(' table_def ')' •
+
+    $default  reduce using rule 3 (expr)
+
+
+State 26
+
+    5 table_def: column_def ',' • table_def
+
+    ID  shift, and go to state 14
+
+    table_def   go to state 30
+    column_def  go to state 16
+
+
+State 27
+
+   10 datatype: VARCHAR '(' • NUM ')'
+
+    NUM  shift, and go to state 31
+
+
+State 28
+
+   15 column_list: ID ',' column_list •
+
+    $default  reduce using rule 15 (column_list)
+
+
+State 29
+
+   11 select_stmt: SELECT select_list FROM ID • where_clause
+
+    WHERE  shift, and go to state 32
+
+    $default  reduce using rule 16 (where_clause)
+
+    where_clause  go to state 33
+
+
+State 30
+
+    5 table_def: column_def ',' table_def •
+
+    $default  reduce using rule 5 (table_def)
+
+
+State 31
+
+   10 datatype: VARCHAR '(' NUM • ')'
+
+    ')'  shift, and go to state 34
+
+
+State 32
+
+   17 where_clause: WHERE • condition
+
+    FALSE  shift, and go to state 35
+    TRUE   shift, and go to state 36
+    NUM    shift, and go to state 37
+    ID     shift, and go to state 38
+
+    condition   go to state 39
+    expression  go to state 40
+
+
+State 33
+
+   11 select_stmt: SELECT select_list FROM ID where_clause •
+
+    $default  reduce using rule 11 (select_stmt)
+
+
+State 34
+
+   10 datatype: VARCHAR '(' NUM ')' •
+
+    $default  reduce using rule 10 (datatype)
+
+
+State 35
+
+   24 expression: FALSE •
+
+    $default  reduce using rule 24 (expression)
+
+
+State 36
+
+   23 expression: TRUE •
+
+    $default  reduce using rule 23 (expression)
+
+
+State 37
+
+   22 expression: NUM •
+
+    $default  reduce using rule 22 (expression)
+
+
+State 38
+
+   21 expression: ID •
+
+    $default  reduce using rule 21 (expression)
+
+
+State 39
+
+   17 where_clause: WHERE condition •
+   19 condition: condition • AND condition
+   20          | condition • OR condition
+
+    AND  shift, and go to state 41
+    OR   shift, and go to state 42
+
+    $default  reduce using rule 17 (where_clause)
+
+
+State 40
+
+   18 condition: expression • comparison_op expression
+
+    LS  shift, and go to state 43
+    GR  shift, and go to state 44
+    GE  shift, and go to state 45
+    LE  shift, and go to state 46
+    EQ  shift, and go to state 47
+    NE  shift, and go to state 48
+
+    comparison_op  go to state 49
+
+
+State 41
+
+   19 condition: condition AND • condition
+
+    FALSE  shift, and go to state 35
+    TRUE   shift, and go to state 36
+    NUM    shift, and go to state 37
+    ID     shift, and go to state 38
+
+    condition   go to state 50
+    expression  go to state 40
+
+
+State 42
+
+   20 condition: condition OR • condition
+
+    FALSE  shift, and go to state 35
+    TRUE   shift, and go to state 36
+    NUM    shift, and go to state 37
+    ID     shift, and go to state 38
+
+    condition   go to state 51
+    expression  go to state 40
+
+
+State 43
+
+   25 comparison_op: LS •
+
+    $default  reduce using rule 25 (comparison_op)
+
+
+State 44
+
+   26 comparison_op: GR •
+
+    $default  reduce using rule 26 (comparison_op)
+
+
+State 45
+
+   27 comparison_op: GE •
+
+    $default  reduce using rule 27 (comparison_op)
+
+
+State 46
+
+   28 comparison_op: LE •
+
+    $default  reduce using rule 28 (comparison_op)
+
+
+State 47
+
+   29 comparison_op: EQ •
+
+    $default  reduce using rule 29 (comparison_op)
+
+
+State 48
+
+   30 comparison_op: NE •
+
+    $default  reduce using rule 30 (comparison_op)
+
+
+State 49
+
+   18 condition: expression comparison_op • expression
+
+    FALSE  shift, and go to state 35
+    TRUE   shift, and go to state 36
+    NUM    shift, and go to state 37
+    ID     shift, and go to state 38
+
+    expression  go to state 52
+
+
+State 50
+
+   19 condition: condition • AND condition
+   19          | condition AND condition •
+   20          | condition • OR condition
+
+    AND  shift, and go to state 41
+    OR   shift, and go to state 42
+
+    AND       [reduce using rule 19 (condition)]
+    OR        [reduce using rule 19 (condition)]
+    $default  reduce using rule 19 (condition)
+
+
+State 51
+
+   19 condition: condition • AND condition
+   20          | condition • OR condition
+   20          | condition OR condition •
+
+    AND  shift, and go to state 41
+    OR   shift, and go to state 42
+
+    AND       [reduce using rule 20 (condition)]
+    OR        [reduce using rule 20 (condition)]
+    $default  reduce using rule 20 (condition)
+
+
+State 52
+
+   18 condition: expression comparison_op expression •
+
+    $default  reduce using rule 18 (condition)

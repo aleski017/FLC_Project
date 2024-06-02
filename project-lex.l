@@ -31,13 +31,15 @@ ID       {LETTER}+
 
 %%
 
-[ ]     { /* skip blanks */ }
-[\t ]+      /* ignore whitespace */ ;
-[\n ]+      /* ignore newline */ ;
+"int"               {return INTEGER;}
+"float"             {return FLOAT;}
+"boolean"           {return BOOLEAN;}
+"varchar"           {return VARCHAR;}
 
-{NUM}   {yylval.value = atof(yytext);
+{NUM}   {/*yylval.value = atof(yytext);*/
          return NUM;}
-{ID}    {yylval.lexeme = strdup(yytext); return ID;}
+{ID}    {/*yylval.lexeme = strdup(yytext);*/ return ID;}
+end return 0;
 
 "CREATE TABLE"      {return CREATETABLE;}
 "SELECT"            {return SELECT;}
@@ -46,10 +48,6 @@ ID       {LETTER}+
 "GROUP BY"          {return GROUPBY;}
 "INSERT INTO"       {return INSERT;}
 "VALUES"            {return VALUES;}
-"int"               {return INTEGER;}
-"float"             {return FLOAT;}
-"boolean"           {return BOOLEAN;}
-"varchar"           {return VARCHAR;}
 
 "false"             {return FALSE;}
 "true"              {return TRUE;}
@@ -70,6 +68,10 @@ ID       {LETTER}+
 ","                  { return ','; }
 "("                  { return '('; }
 ")"                  { return ')'; }
+[ ]     { /* skip blanks */ };
+[\t ]+      {/* ignore whitespace */};
+[\n ]+      {/* ignore newline */} ;
+.                 { /* Ignore any other character */ }
 
 
 %%

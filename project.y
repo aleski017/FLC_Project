@@ -18,41 +18,32 @@ int yylex(void);
        double value;			//value of an identifier of type NUM
        }
 
-%token <value>  NUM
-%token CREATETABLE SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE AND OR FALSE TRUE VALUES
-%token <lexeme> ID
-%token BOOLEAN VARCHAR INTEGER FLOAT
+%token CREATETABLE SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE AND OR FALSE TRUE VALUES BOOLEAN VARCHAR INTEGER FLOAT NUM ID
 
-%type <value> expr line table_def datatype column_def select_list select_stmt column_list where_clause condition expression comparison_op insert_stmt value_list id_or_num
+//%type expr line table_def datatype column_def select_list select_stmt column_list where_clause condition expression comparison_op insert_stmt value_list id_or_num
 
 %start line
 
 %%
-line  : expr '\n'      {$$ = $1; printf("Result: %f\n", $$); exit(0);}
+line  : expr '\n'     
 	  | expr  select_stmt
       ;
 
 // Matches CREATE TABLE statement, it represents the scope of the grammar 
-expr: CREATETABLE ID '(' table_def ')'	{
-		printf("Table '%s' created with definition.\n", $2);
-		$$ = 0; 
-		exit(0);
-		};
+expr: CREATETABLE ID '(' table_def ')'	{printf("correct");exit(0);};
 
 // Used to define the creation of attributes in a table. E.g. { attribute1, attribute2 } etc
 table_def : column_def
 		  | column_def ',' table_def
           ;
 
-column_def : ID datatype {
-				printf("Column: %s of type ", $1);
-			}
+column_def : ID datatype
 			;
 
-datatype : INTEGER { printf("INTEGER\n"); }
-         | FLOAT   { printf("FLOAT\n"); }
-         | BOOLEAN { printf("BOOLEAN\n"); }
-         | VARCHAR '(' NUM ')' { printf("VARCHAR(%d)\n", (int)$3); }
+datatype : INTEGER 
+         | FLOAT   
+         | BOOLEAN 
+         | VARCHAR '(' NUM ')' 
          ;
 
 select_stmt : SELECT select_list FROM ID where_clause
@@ -62,31 +53,32 @@ select_list : ','
 			| column_list
 			;
 
-column_list : ID
+column_list : ID datatype
 			| ID ',' column_list
 			;
 
-where_clause : WHERE condition
-			 | 
+where_clause : 
+			 | WHERE condition
+
 			 ;
 
 condition : expression comparison_op expression
-		  | condition AND condition
-		  | condition OR condition
+		  |condition AND condition
+		  |condition OR condition
 		  ;
 
 expression : ID
-		   | NUM
-		   | TRUE
-		   | FALSE
+		   |NUM
+		   |TRUE
+		   |FALSE
 		   ;
 
 comparison_op : LS
-			  | GR
-			  | GE
-			  | LE
-			  | EQ
-			  | NE
+			  |GR
+			  |GE
+			  |LE
+			  |EQ
+			  |NE
 			  ;
 
 insert_stmt : INSERT ID '(' column_list ')' VALUES value_list
@@ -97,7 +89,7 @@ value_list : '(' id_or_num ')'
 		   ;
 
 id_or_num : expression
-		  | expression ',' id_or_num
+		  |expression ',' id_or_num
 		  ;
 
 %%
