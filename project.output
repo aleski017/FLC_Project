@@ -1,29 +1,20 @@
-Nonterminals useless in grammar
+Terminals which are not used
 
-    datatype
-
-
-Terminals unused in grammar
-
-    NUM
-    SELECT
-    FROM
-    WHERE
-    GROUPBY
-    INSERT
-    LS
-    GR
-    GE
-    LE
-    EQ
-    IN
-    false
-    true
-    UNARY_MINUS
-    BOOLEAN
-    VARCHAR
-    INTEGER
-    FLOAT
+   SELECT
+   FROM
+   WHERE
+   GROUPBY
+   INSERT
+   LS
+   GR
+   GE
+   LE
+   EQ
+   NE
+   AND
+   OR
+   FALSE
+   TRUE
 
 
 Grammar
@@ -32,154 +23,233 @@ Grammar
 
     1 line: expr '\n'
 
-    2 expr: CREATE ID '(' table_def ')'
+    2 expr: CREATETABLE ID '(' table_def ')'
 
-    3 table_def: ID
-    4          | ID ',' table_def
+    3 table_def: column_def
+    4          | column_def ',' table_def
+
+    5 column_def: ID datatype
+
+    6 datatype: INTEGER
+    7         | FLOAT
+    8         | BOOLEAN
+    9         | VARCHAR '(' NUM ')'
 
 
 Terminals, with rules where they appear
 
-    $end (0) 0
-    '\n' (10) 1
-    '(' (40) 2
-    ')' (41) 2
-    ',' (44) 4
-    error (256)
-    NUM <value> (258)
-    CREATE (259) 2
-    SELECT (260)
-    FROM (261)
-    WHERE (262)
-    GROUPBY (263)
-    INSERT (264)
-    LS (265)
-    GR (266)
-    GE (267)
-    LE (268)
-    EQ (269)
-    IN (270)
-    false (271)
-    true (272)
-    ID <lexeme> (273) 2 3 4
-    UNARY_MINUS (274)
-    BOOLEAN (275)
-    VARCHAR (276)
-    INTEGER (277)
-    FLOAT (278)
+$end (0) 0
+'\n' (10) 1
+'(' (40) 2 9
+')' (41) 2 9
+',' (44) 4
+error (256)
+NUM (258) 9
+CREATETABLE (259) 2
+SELECT (260)
+FROM (261)
+WHERE (262)
+GROUPBY (263)
+INSERT (264)
+LS (265)
+GR (266)
+GE (267)
+LE (268)
+EQ (269)
+NE (270)
+AND (271)
+OR (272)
+FALSE (273)
+TRUE (274)
+ID (275) 2 5
+BOOLEAN (276) 8
+VARCHAR (277) 9
+INTEGER (278) 6
+FLOAT (279) 7
 
 
 Nonterminals, with rules where they appear
 
-    $accept (28)
-        on left: 0
-    line <value> (29)
-        on left: 1
-        on right: 0
-    expr <value> (30)
-        on left: 2
-        on right: 1
-    table_def <value> (31)
-        on left: 3 4
-        on right: 2 4
+$accept (29)
+    on left: 0
+line (30)
+    on left: 1, on right: 0
+expr (31)
+    on left: 2, on right: 1
+table_def (32)
+    on left: 3 4, on right: 2 4
+column_def (33)
+    on left: 5, on right: 3 4
+datatype (34)
+    on left: 6 7 8 9, on right: 5
 
 
-State 0
+state 0
 
-    0 $accept: • line $end
+    0 $accept: . line $end
 
-    CREATE  shift, and go to state 1
+    CREATETABLE  shift, and go to state 1
 
     line  go to state 2
     expr  go to state 3
 
 
-State 1
+state 1
 
-    2 expr: CREATE • ID '(' table_def ')'
+    2 expr: CREATETABLE . ID '(' table_def ')'
 
     ID  shift, and go to state 4
 
 
-State 2
+state 2
 
-    0 $accept: line • $end
+    0 $accept: line . $end
 
     $end  shift, and go to state 5
 
 
-State 3
+state 3
 
-    1 line: expr • '\n'
+    1 line: expr . '\n'
 
     '\n'  shift, and go to state 6
 
 
-State 4
+state 4
 
-    2 expr: CREATE ID • '(' table_def ')'
+    2 expr: CREATETABLE ID . '(' table_def ')'
 
     '('  shift, and go to state 7
 
 
-State 5
+state 5
 
-    0 $accept: line $end •
+    0 $accept: line $end .
 
     $default  accept
 
 
-State 6
+state 6
 
-    1 line: expr '\n' •
+    1 line: expr '\n' .
 
     $default  reduce using rule 1 (line)
 
 
-State 7
+state 7
 
-    2 expr: CREATE ID '(' • table_def ')'
+    2 expr: CREATETABLE ID '(' . table_def ')'
 
     ID  shift, and go to state 8
 
-    table_def  go to state 9
+    table_def   go to state 9
+    column_def  go to state 10
 
 
-State 8
+state 8
 
-    3 table_def: ID •
-    4          | ID • ',' table_def
+    5 column_def: ID . datatype
 
-    ','  shift, and go to state 10
+    BOOLEAN  shift, and go to state 11
+    VARCHAR  shift, and go to state 12
+    INTEGER  shift, and go to state 13
+    FLOAT    shift, and go to state 14
+
+    datatype  go to state 15
+
+
+state 9
+
+    2 expr: CREATETABLE ID '(' table_def . ')'
+
+    ')'  shift, and go to state 16
+
+
+state 10
+
+    3 table_def: column_def .
+    4          | column_def . ',' table_def
+
+    ','  shift, and go to state 17
 
     $default  reduce using rule 3 (table_def)
 
 
-State 9
+state 11
 
-    2 expr: CREATE ID '(' table_def • ')'
+    8 datatype: BOOLEAN .
 
-    ')'  shift, and go to state 11
-
-
-State 10
-
-    4 table_def: ID ',' • table_def
-
-    ID  shift, and go to state 8
-
-    table_def  go to state 12
+    $default  reduce using rule 8 (datatype)
 
 
-State 11
+state 12
 
-    2 expr: CREATE ID '(' table_def ')' •
+    9 datatype: VARCHAR . '(' NUM ')'
+
+    '('  shift, and go to state 18
+
+
+state 13
+
+    6 datatype: INTEGER .
+
+    $default  reduce using rule 6 (datatype)
+
+
+state 14
+
+    7 datatype: FLOAT .
+
+    $default  reduce using rule 7 (datatype)
+
+
+state 15
+
+    5 column_def: ID datatype .
+
+    $default  reduce using rule 5 (column_def)
+
+
+state 16
+
+    2 expr: CREATETABLE ID '(' table_def ')' .
 
     $default  reduce using rule 2 (expr)
 
 
-State 12
+state 17
 
-    4 table_def: ID ',' table_def •
+    4 table_def: column_def ',' . table_def
+
+    ID  shift, and go to state 8
+
+    table_def   go to state 19
+    column_def  go to state 10
+
+
+state 18
+
+    9 datatype: VARCHAR '(' . NUM ')'
+
+    NUM  shift, and go to state 20
+
+
+state 19
+
+    4 table_def: column_def ',' table_def .
 
     $default  reduce using rule 4 (table_def)
+
+
+state 20
+
+    9 datatype: VARCHAR '(' NUM . ')'
+
+    ')'  shift, and go to state 21
+
+
+state 21
+
+    9 datatype: VARCHAR '(' NUM ')' .
+
+    $default  reduce using rule 9 (datatype)

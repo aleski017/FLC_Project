@@ -19,46 +19,89 @@ int yylex(void);
        }
 
 %token <value>  NUM
-%token CREATE SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ IN false true
+%token CREATETABLE SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE AND OR FALSE TRUE VALUES
 %token <lexeme> ID
-%token UNARY_MINUS
 %token BOOLEAN VARCHAR INTEGER FLOAT
 
-%type <value> expr
-%type <value> line
-%type <value> table_def
-%type <value> datatype
+%type <value> expr line table_def datatype column_def select_list select_stmt column_list where_clause condition expression comparison_op insert_stmt value_list id_or_num
 
 %start line
 
 %%
 line  : expr '\n'      {$$ = $1; printf("Result: %f\n", $$); exit(0);}
+	  | expr  select_stmt
       ;
 
 // Matches CREATE TABLE statement, it represents the scope of the grammar 
-expr: CREATE ID '(' table_def ')'	{
-		printf("Recognized");
+expr: CREATETABLE ID '(' table_def ')'	{
+		printf("Table '%s' created with definition.\n", $2);
 		$$ = 0; 
-		exit(0); 
+		exit(0);
 		};
+
 // Used to define the creation of attributes in a table. E.g. { attribute1, attribute2 } etc
-table_def : /*datatype*/ ID {
-				
-				$$ = 0;
-				}
-			| /*datatype*/ ID ',' table_def{
-				
-				$$ = 0;
-				};
-// datatype: INTEGER {$$ = 0;}
-		// | FLOAT {$$ = 0;}
-		// |BOOLEAN {$$ = 0;}
-		// |VARCHAR'('')' {$$ = 0;}
-		// ;
+table_def : column_def
+		  | column_def ',' table_def
+          ;
+
+column_def : ID datatype {
+				printf("Column: %s of type ", $1);
+			}
+			;
+
+datatype : INTEGER { printf("INTEGER\n"); }
+         | FLOAT   { printf("FLOAT\n"); }
+         | BOOLEAN { printf("BOOLEAN\n"); }
+         | VARCHAR '(' NUM ')' { printf("VARCHAR(%d)\n", (int)$3); }
+         ;
+
+select_stmt : SELECT select_list FROM ID where_clause
+			;
+		
+select_list : ','
+			| column_list
+			;
+
+column_list : ID
+			| ID ',' column_list
+			;
+
+where_clause : WHERE condition
+			 | 
+			 ;
+
+condition : expression comparison_op expression
+		  | condition AND condition
+		  | condition OR condition
+		  ;
+
+expression : ID
+		   | NUM
+		   | TRUE
+		   | FALSE
+		   ;
+
+comparison_op : LS
+			  | GR
+			  | GE
+			  | LE
+			  | EQ
+			  | NE
+			  ;
+
+insert_stmt : INSERT ID '(' column_list ')' VALUES value_list
+			;
+
+value_list : '(' id_or_num ')'
+		   |  '(' id_or_num ')' ',' value_list
+		   ;
+
+id_or_num : expression
+		  | expression ',' id_or_num
+		  ;
+
 %%
 
-#include "lex.yy.c"
-	
-int main(void)
-{
-  return yyparse();}
+int main(void){
+  return yyparse();
+  }
