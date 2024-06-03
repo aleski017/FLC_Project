@@ -26,32 +26,39 @@ enabling the parser to process and use these values appropriately in its parsing
 DIGIT    [0-9]
 NUM      {DIGIT}+(\.{DIGIT}+)?
 
-LETTER   [a-zA-Z]
-ID       {LETTER}+
+LETTER   [a-zA-Z_]
+ID       {LETTER}({LETTER}*{DIGIT}*)
 
 %%
-
-"int"               {return INTEGER;}
-"float"             {return FLOAT;}
-"boolean"           {return BOOLEAN;}
-"varchar"           {return VARCHAR;}
+[\n ]+      {/* ignore newline */} ;
+(int|INT)                       { return INTEGER; }
+(float|FLOAT)                   { return FLOAT; }
+(boolean|BOOLEAN)               { return BOOLEAN; }
+(varchar|VARCHAR)               { return VARCHAR; }
+(DATE|date)                     { return DATE; }
+("NOT NULL"|"not null")         { return NOTNULL; }
+(UNIQUE|unique)                 { return UNIQUE; }
+("PRIMARY KEY"|"primary key")   { return PRIMARYKEY; }
+("FOREIGN KEY"|"foreign key")   { return FOREIGNKEY; }
+(REFERENCES|references)         { return REFERENCES; }
+(CONSTRAINT|constraint)         { return CONSTRAINT; }
 
 {NUM}   {/*yylval.value = atof(yytext);*/
          return NUM;}
+
+
+("CREATE TABLE"|"create table")    { return CREATETABLE; }
+(SELECT|select)                    { return SELECT; }
+(FROM|from)                        { return FROM; }
+(WHERE|where)                      { return WHERE; }
+("GROUP BY"|"group by")            { return GROUPBY; }
+("INSERT INTO"|"insert into")      { return INSERT; }
+(VALUES|values)                    { return VALUES; }
+
+(false|FALSE)              { return FALSE; }
+(true|TRUE)                { return TRUE; }
+
 {ID}    {/*yylval.lexeme = strdup(yytext);*/ return ID;}
-end return 0;
-
-"CREATE TABLE"      {return CREATETABLE;}
-"SELECT"            {return SELECT;}
-"FROM"              {return FROM;}
-"WHERE"             {return WHERE;}
-"GROUP BY"          {return GROUPBY;}
-"INSERT INTO"       {return INSERT;}
-"VALUES"            {return VALUES;}
-
-"false"             {return FALSE;}
-"true"              {return TRUE;}
-
 [-]?{DIGIT}+                {yylval.value = atoi(yytext); return NUM; }
 [-]?{DIGIT}+\.{DIGIT}{1,6}  {yylval.value = atof(yytext); return NUM; }
 
@@ -62,15 +69,15 @@ end return 0;
 ">"                  { return GR; }
 "<="                 { return LE; }
 ">="                 { return GE; }
-"AND"                { return AND; }
-"OR"                 { return OR; }
+(AND|and)               { return AND; }
+(OR|or)            { return OR; }
 
 ","                  { return ','; }
 "("                  { return '('; }
 ")"                  { return ')'; }
 [ ]     { /* skip blanks */ };
 [\t ]+      {/* ignore whitespace */};
-[\n ]+      {/* ignore newline */} ;
+
 .                 { /* Ignore any other character */ }
 
 
