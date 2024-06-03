@@ -14,17 +14,17 @@ Terminals unused in grammar
 
 Rules useless in grammar
 
-   48 insert_stmt: INSERT ID '(' column_list ')' VALUES value_list
+   55 insert_stmt: INSERT ID '(' column_list ')' VALUES value_list
 
-   49 value_list: '(' id_or_num ')'
-   50           | '(' id_or_num ')' ',' value_list
+   56 value_list: '(' id_or_num ')'
+   57           | '(' id_or_num ')' ',' value_list
 
-   51 id_or_num: expression
-   52          | expression ',' id_or_num
+   58 id_or_num: values
+   59          | values ',' id_or_num
 
 
-State 86 conflicts: 2 shift/reduce
-State 87 conflicts: 2 shift/reduce
+State 100 conflicts: 2 shift/reduce
+State 101 conflicts: 2 shift/reduce
 
 
 Grammar
@@ -44,153 +44,165 @@ Grammar
     8           | ID datatype
 
     9 datatype: INTEGER
-   10         | FLOAT '(' NUM ')'
-   11         | BOOLEAN
-   12         | VARCHAR '(' NUM ')'
-   13         | DATE
+   10         | INTEGER '(' NUM ')'
+   11         | FLOAT '(' NUM ')'
+   12         | BOOLEAN
+   13         | VARCHAR '(' NUM ')'
+   14         | DATE
 
-   14 column_costraint_def: column_costraint
-   15                     | column_costraint column_costraint
+   15 column_costraint_def: column_costraint
+   16                     | column_costraint column_costraint
 
-   16 column_costraint: NOTNULL
-   17                 | PRIMARYKEY
-   18                 | UNIQUE
-   19                 | FOREIGNKEY REFERENCES ID '(' ID ')'
+   17 column_costraint: NOTNULL
+   18                 | PRIMARYKEY
+   19                 | UNIQUE
+   20                 | FOREIGNKEY REFERENCES ID '(' ID ')'
+   21                 | CHECK '(' condition ')'
 
-   20 table_constraint_def: table_constraint
-   21                     | table_constraint ',' table_constraint_def
+   22 table_constraint_def: table_constraint
+   23                     | table_constraint ',' table_constraint_def
 
-   22 table_constraint: NOTNULL '(' parameters ')'
-   23                 | UNIQUE '(' parameters ')'
-   24                 | PRIMARYKEY '(' parameters ')'
-   25                 | CONSTRAINT ID FOREIGNKEY '(' ID ')' REFERENCES ID '(' ID ')'
+   24 table_constraint: NOTNULL '(' parameters ')'
+   25                 | UNIQUE '(' parameters ')'
+   26                 | PRIMARYKEY '(' parameters ')'
+   27                 | CONSTRAINT ID FOREIGNKEY '(' ID ')' REFERENCES ID '(' ID ')'
 
-   26 parameters: ID
-   27           | ID ',' parameters
+   28 parameters: ID
+   29           | ID ',' parameters
 
-   28 select_stmt: SELECT select_list FROM ID where_clause
+   30 select_stmt: SELECT select_list FROM ID where_clause
 
-   29 select_list: ','
-   30            | column_list
+   31 select_list: ','
+   32            | column_list
 
-   31 column_list: ID datatype
-   32            | ID ',' column_list
+   33 column_list: ID datatype
+   34            | ID ',' column_list
 
-   33 where_clause: ε
-   34             | WHERE condition
+   35 where_clause: ε
+   36             | WHERE condition
 
-   35 condition: expression comparison_op expression
-   36          | condition AND condition
-   37          | condition OR condition
+   37 condition: values comparison_op values
+   38          | values numeric_comparison_op NUM
+   39          | NUM numeric_comparison_op values
+   40          | condition AND condition
+   41          | condition OR condition
 
-   38 expression: ID
-   39           | NUM
-   40           | TRUE
-   41           | FALSE
+   42 values: ID
+   43       | TRUE
+   44       | FALSE
 
-   42 comparison_op: LS
-   43              | GR
-   44              | GE
-   45              | LE
-   46              | EQ
-   47              | NE
+   45 comparison_op: LS
+   46              | GR
+   47              | GE
+   48              | LE
+   49              | EQ
+   50              | NE
+
+   51 numeric_comparison_op: LS
+   52                      | GR
+   53                      | GE
+   54                      | LE
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
     '\n' (10) 1
-    '(' (40) 3 10 12 19 22 23 24 25
-    ')' (41) 3 10 12 19 22 23 24 25
-    ',' (44) 5 6 21 27 29 32
+    '(' (40) 3 10 11 13 20 21 24 25 26 27
+    ')' (41) 3 10 11 13 20 21 24 25 26 27
+    ',' (44) 5 6 23 29 31 34
     error (256)
     CREATETABLE (258) 3
-    SELECT (259) 28
-    FROM (260) 28
-    WHERE (261) 34
+    SELECT (259) 30
+    FROM (260) 30
+    WHERE (261) 36
     GROUPBY (262)
     INSERT (263)
-    LS (264) 42
-    GR (265) 43
-    GE (266) 44
-    LE (267) 45
-    EQ (268) 46
-    NE (269) 47
-    AND (270) 36
-    OR (271) 37
-    FALSE (272) 41
-    TRUE (273) 40
+    LS (264) 45 51
+    GR (265) 46 52
+    GE (266) 47 53
+    LE (267) 48 54
+    EQ (268) 49
+    NE (269) 50
+    AND (270) 40
+    OR (271) 41
+    FALSE (272) 44
+    TRUE (273) 43
     VALUES (274)
-    BOOLEAN (275) 11
-    VARCHAR (276) 12
-    INTEGER (277) 9
-    CONSTRAINT (278) 25
-    FLOAT (279) 10
-    DATE (280) 13
-    NUM (281) 10 12 39
-    ID (282) 3 7 8 19 25 26 27 28 31 32 38
-    NOTNULL (283) 16 22
-    UNIQUE (284) 18 23
-    PRIMARYKEY (285) 17 24
-    FOREIGNKEY (286) 19 25
-    REFERENCES (287) 19 25
+    BOOLEAN (275) 12
+    VARCHAR (276) 13
+    INTEGER (277) 9 10
+    CONSTRAINT (278) 27
+    FLOAT (279) 11
+    CHECK (280) 21
+    DATE (281) 14
+    NUM (282) 10 11 13 38 39
+    ID (283) 3 7 8 20 27 28 29 30 33 34 42
+    NOTNULL (284) 17 24
+    UNIQUE (285) 19 25
+    PRIMARYKEY (286) 18 26
+    FOREIGNKEY (287) 20 27
+    REFERENCES (288) 20 27
 
 
 Nonterminals, with rules where they appear
 
-    $accept (37)
+    $accept (38)
         on left: 0
-    line (38)
+    line (39)
         on left: 1 2
         on right: 0
-    expr (39)
+    expr (40)
         on left: 3
         on right: 1 2
-    table_def (40)
+    table_def (41)
         on left: 4 5 6
         on right: 3 6
-    column_def (41)
+    column_def (42)
         on left: 7 8
         on right: 4 5 6
-    datatype (42)
-        on left: 9 10 11 12 13
-        on right: 7 8 31
-    column_costraint_def (43)
-        on left: 14 15
+    datatype (43)
+        on left: 9 10 11 12 13 14
+        on right: 7 8 33
+    column_costraint_def (44)
+        on left: 15 16
         on right: 7
-    column_costraint (44)
-        on left: 16 17 18 19
-        on right: 14 15
-    table_constraint_def (45)
-        on left: 20 21
-        on right: 5 21
-    table_constraint (46)
-        on left: 22 23 24 25
-        on right: 20 21
-    parameters (47)
-        on left: 26 27
-        on right: 22 23 24 27
-    select_stmt (48)
-        on left: 28
+    column_costraint (45)
+        on left: 17 18 19 20 21
+        on right: 15 16
+    table_constraint_def (46)
+        on left: 22 23
+        on right: 5 23
+    table_constraint (47)
+        on left: 24 25 26 27
+        on right: 22 23
+    parameters (48)
+        on left: 28 29
+        on right: 24 25 26 29
+    select_stmt (49)
+        on left: 30
         on right: 2
-    select_list (49)
-        on left: 29 30
-        on right: 28
-    column_list (50)
+    select_list (50)
         on left: 31 32
-        on right: 30 32
-    where_clause (51)
+        on right: 30
+    column_list (51)
         on left: 33 34
-        on right: 28
-    condition (52)
-        on left: 35 36 37
-        on right: 34 36 37
-    expression (53)
-        on left: 38 39 40 41
-        on right: 35
-    comparison_op (54)
-        on left: 42 43 44 45 46 47
-        on right: 35
+        on right: 32 34
+    where_clause (52)
+        on left: 35 36
+        on right: 30
+    condition (53)
+        on left: 37 38 39 40 41
+        on right: 21 36 40 41
+    values (54)
+        on left: 42 43 44
+        on right: 37 38 39
+    comparison_op (55)
+        on left: 45 46 47 48 49 50
+        on right: 37
+    numeric_comparison_op (56)
+        on left: 51 52 53 54
+        on right: 38 39
 
 
 State 0
@@ -244,7 +256,7 @@ State 5
 
 State 6
 
-   28 select_stmt: SELECT • select_list FROM ID where_clause
+   30 select_stmt: SELECT • select_list FROM ID where_clause
 
     ID   shift, and go to state 10
     ','  shift, and go to state 11
@@ -279,8 +291,8 @@ State 9
 
 State 10
 
-   31 column_list: ID • datatype
-   32            | ID • ',' column_list
+   33 column_list: ID • datatype
+   34            | ID • ',' column_list
 
     BOOLEAN  shift, and go to state 17
     VARCHAR  shift, and go to state 18
@@ -294,23 +306,23 @@ State 10
 
 State 11
 
-   29 select_list: ',' •
+   31 select_list: ',' •
 
-    $default  reduce using rule 29 (select_list)
+    $default  reduce using rule 31 (select_list)
 
 
 State 12
 
-   28 select_stmt: SELECT select_list • FROM ID where_clause
+   30 select_stmt: SELECT select_list • FROM ID where_clause
 
     FROM  shift, and go to state 24
 
 
 State 13
 
-   30 select_list: column_list •
+   32 select_list: column_list •
 
-    $default  reduce using rule 30 (select_list)
+    $default  reduce using rule 32 (select_list)
 
 
 State 14
@@ -347,14 +359,14 @@ State 16
 
 State 17
 
-   11 datatype: BOOLEAN •
+   12 datatype: BOOLEAN •
 
-    $default  reduce using rule 11 (datatype)
+    $default  reduce using rule 12 (datatype)
 
 
 State 18
 
-   12 datatype: VARCHAR • '(' NUM ')'
+   13 datatype: VARCHAR • '(' NUM ')'
 
     '('  shift, and go to state 28
 
@@ -362,45 +374,48 @@ State 18
 State 19
 
     9 datatype: INTEGER •
+   10         | INTEGER • '(' NUM ')'
+
+    '('  shift, and go to state 29
 
     $default  reduce using rule 9 (datatype)
 
 
 State 20
 
-   10 datatype: FLOAT • '(' NUM ')'
+   11 datatype: FLOAT • '(' NUM ')'
 
-    '('  shift, and go to state 29
+    '('  shift, and go to state 30
 
 
 State 21
 
-   13 datatype: DATE •
+   14 datatype: DATE •
 
-    $default  reduce using rule 13 (datatype)
+    $default  reduce using rule 14 (datatype)
 
 
 State 22
 
-   32 column_list: ID ',' • column_list
+   34 column_list: ID ',' • column_list
 
     ID  shift, and go to state 10
 
-    column_list  go to state 30
+    column_list  go to state 31
 
 
 State 23
 
-   31 column_list: ID datatype •
+   33 column_list: ID datatype •
 
-    $default  reduce using rule 31 (column_list)
+    $default  reduce using rule 33 (column_list)
 
 
 State 24
 
-   28 select_stmt: SELECT select_list FROM • ID where_clause
+   30 select_stmt: SELECT select_list FROM • ID where_clause
 
-    ID  shift, and go to state 31
+    ID  shift, and go to state 32
 
 
 State 25
@@ -408,15 +423,16 @@ State 25
     7 column_def: ID datatype • column_costraint_def
     8           | ID datatype •
 
-    NOTNULL     shift, and go to state 32
-    UNIQUE      shift, and go to state 33
-    PRIMARYKEY  shift, and go to state 34
-    FOREIGNKEY  shift, and go to state 35
+    CHECK       shift, and go to state 33
+    NOTNULL     shift, and go to state 34
+    UNIQUE      shift, and go to state 35
+    PRIMARYKEY  shift, and go to state 36
+    FOREIGNKEY  shift, and go to state 37
 
     $default  reduce using rule 8 (column_def)
 
-    column_costraint_def  go to state 36
-    column_costraint      go to state 37
+    column_costraint_def  go to state 38
+    column_costraint      go to state 39
 
 
 State 26
@@ -431,591 +447,725 @@ State 27
     5 table_def: column_def ',' • table_constraint_def
     6          | column_def ',' • table_def
 
-    CONSTRAINT  shift, and go to state 38
+    CONSTRAINT  shift, and go to state 40
     ID          shift, and go to state 14
-    NOTNULL     shift, and go to state 39
-    UNIQUE      shift, and go to state 40
-    PRIMARYKEY  shift, and go to state 41
+    NOTNULL     shift, and go to state 41
+    UNIQUE      shift, and go to state 42
+    PRIMARYKEY  shift, and go to state 43
 
-    table_def             go to state 42
+    table_def             go to state 44
     column_def            go to state 16
-    table_constraint_def  go to state 43
-    table_constraint      go to state 44
+    table_constraint_def  go to state 45
+    table_constraint      go to state 46
 
 
 State 28
 
-   12 datatype: VARCHAR '(' • NUM ')'
+   13 datatype: VARCHAR '(' • NUM ')'
 
-    NUM  shift, and go to state 45
+    NUM  shift, and go to state 47
 
 
 State 29
 
-   10 datatype: FLOAT '(' • NUM ')'
+   10 datatype: INTEGER '(' • NUM ')'
 
-    NUM  shift, and go to state 46
+    NUM  shift, and go to state 48
 
 
 State 30
 
-   32 column_list: ID ',' column_list •
+   11 datatype: FLOAT '(' • NUM ')'
 
-    $default  reduce using rule 32 (column_list)
+    NUM  shift, and go to state 49
 
 
 State 31
 
-   28 select_stmt: SELECT select_list FROM ID • where_clause
+   34 column_list: ID ',' column_list •
 
-    WHERE  shift, and go to state 47
-
-    $default  reduce using rule 33 (where_clause)
-
-    where_clause  go to state 48
+    $default  reduce using rule 34 (column_list)
 
 
 State 32
 
-   16 column_costraint: NOTNULL •
+   30 select_stmt: SELECT select_list FROM ID • where_clause
 
-    $default  reduce using rule 16 (column_costraint)
+    WHERE  shift, and go to state 50
+
+    $default  reduce using rule 35 (where_clause)
+
+    where_clause  go to state 51
 
 
 State 33
 
-   18 column_costraint: UNIQUE •
+   21 column_costraint: CHECK • '(' condition ')'
 
-    $default  reduce using rule 18 (column_costraint)
+    '('  shift, and go to state 52
 
 
 State 34
 
-   17 column_costraint: PRIMARYKEY •
+   17 column_costraint: NOTNULL •
 
     $default  reduce using rule 17 (column_costraint)
 
 
 State 35
 
-   19 column_costraint: FOREIGNKEY • REFERENCES ID '(' ID ')'
+   19 column_costraint: UNIQUE •
 
-    REFERENCES  shift, and go to state 49
+    $default  reduce using rule 19 (column_costraint)
 
 
 State 36
+
+   18 column_costraint: PRIMARYKEY •
+
+    $default  reduce using rule 18 (column_costraint)
+
+
+State 37
+
+   20 column_costraint: FOREIGNKEY • REFERENCES ID '(' ID ')'
+
+    REFERENCES  shift, and go to state 53
+
+
+State 38
 
     7 column_def: ID datatype column_costraint_def •
 
     $default  reduce using rule 7 (column_def)
 
 
-State 37
-
-   14 column_costraint_def: column_costraint •
-   15                     | column_costraint • column_costraint
-
-    NOTNULL     shift, and go to state 32
-    UNIQUE      shift, and go to state 33
-    PRIMARYKEY  shift, and go to state 34
-    FOREIGNKEY  shift, and go to state 35
-
-    $default  reduce using rule 14 (column_costraint_def)
-
-    column_costraint  go to state 50
-
-
-State 38
-
-   25 table_constraint: CONSTRAINT • ID FOREIGNKEY '(' ID ')' REFERENCES ID '(' ID ')'
-
-    ID  shift, and go to state 51
-
-
 State 39
 
-   22 table_constraint: NOTNULL • '(' parameters ')'
+   15 column_costraint_def: column_costraint •
+   16                     | column_costraint • column_costraint
 
-    '('  shift, and go to state 52
+    CHECK       shift, and go to state 33
+    NOTNULL     shift, and go to state 34
+    UNIQUE      shift, and go to state 35
+    PRIMARYKEY  shift, and go to state 36
+    FOREIGNKEY  shift, and go to state 37
+
+    $default  reduce using rule 15 (column_costraint_def)
+
+    column_costraint  go to state 54
 
 
 State 40
 
-   23 table_constraint: UNIQUE • '(' parameters ')'
+   27 table_constraint: CONSTRAINT • ID FOREIGNKEY '(' ID ')' REFERENCES ID '(' ID ')'
 
-    '('  shift, and go to state 53
+    ID  shift, and go to state 55
 
 
 State 41
 
-   24 table_constraint: PRIMARYKEY • '(' parameters ')'
+   24 table_constraint: NOTNULL • '(' parameters ')'
 
-    '('  shift, and go to state 54
+    '('  shift, and go to state 56
 
 
 State 42
+
+   25 table_constraint: UNIQUE • '(' parameters ')'
+
+    '('  shift, and go to state 57
+
+
+State 43
+
+   26 table_constraint: PRIMARYKEY • '(' parameters ')'
+
+    '('  shift, and go to state 58
+
+
+State 44
 
     6 table_def: column_def ',' table_def •
 
     $default  reduce using rule 6 (table_def)
 
 
-State 43
+State 45
 
     5 table_def: column_def ',' table_constraint_def •
 
     $default  reduce using rule 5 (table_def)
 
 
-State 44
-
-   20 table_constraint_def: table_constraint •
-   21                     | table_constraint • ',' table_constraint_def
-
-    ','  shift, and go to state 55
-
-    $default  reduce using rule 20 (table_constraint_def)
-
-
-State 45
-
-   12 datatype: VARCHAR '(' NUM • ')'
-
-    ')'  shift, and go to state 56
-
-
 State 46
 
-   10 datatype: FLOAT '(' NUM • ')'
+   22 table_constraint_def: table_constraint •
+   23                     | table_constraint • ',' table_constraint_def
 
-    ')'  shift, and go to state 57
+    ','  shift, and go to state 59
+
+    $default  reduce using rule 22 (table_constraint_def)
 
 
 State 47
 
-   34 where_clause: WHERE • condition
+   13 datatype: VARCHAR '(' NUM • ')'
 
-    FALSE  shift, and go to state 58
-    TRUE   shift, and go to state 59
-    NUM    shift, and go to state 60
-    ID     shift, and go to state 61
-
-    condition   go to state 62
-    expression  go to state 63
+    ')'  shift, and go to state 60
 
 
 State 48
 
-   28 select_stmt: SELECT select_list FROM ID where_clause •
+   10 datatype: INTEGER '(' NUM • ')'
 
-    $default  reduce using rule 28 (select_stmt)
+    ')'  shift, and go to state 61
 
 
 State 49
 
-   19 column_costraint: FOREIGNKEY REFERENCES • ID '(' ID ')'
+   11 datatype: FLOAT '(' NUM • ')'
 
-    ID  shift, and go to state 64
+    ')'  shift, and go to state 62
 
 
 State 50
 
-   15 column_costraint_def: column_costraint column_costraint •
+   36 where_clause: WHERE • condition
 
-    $default  reduce using rule 15 (column_costraint_def)
+    FALSE  shift, and go to state 63
+    TRUE   shift, and go to state 64
+    NUM    shift, and go to state 65
+    ID     shift, and go to state 66
+
+    condition  go to state 67
+    values     go to state 68
 
 
 State 51
 
-   25 table_constraint: CONSTRAINT ID • FOREIGNKEY '(' ID ')' REFERENCES ID '(' ID ')'
+   30 select_stmt: SELECT select_list FROM ID where_clause •
 
-    FOREIGNKEY  shift, and go to state 65
+    $default  reduce using rule 30 (select_stmt)
 
 
 State 52
 
-   22 table_constraint: NOTNULL '(' • parameters ')'
+   21 column_costraint: CHECK '(' • condition ')'
 
-    ID  shift, and go to state 66
+    FALSE  shift, and go to state 63
+    TRUE   shift, and go to state 64
+    NUM    shift, and go to state 65
+    ID     shift, and go to state 66
 
-    parameters  go to state 67
+    condition  go to state 69
+    values     go to state 68
 
 
 State 53
 
-   23 table_constraint: UNIQUE '(' • parameters ')'
+   20 column_costraint: FOREIGNKEY REFERENCES • ID '(' ID ')'
 
-    ID  shift, and go to state 66
-
-    parameters  go to state 68
+    ID  shift, and go to state 70
 
 
 State 54
 
-   24 table_constraint: PRIMARYKEY '(' • parameters ')'
+   16 column_costraint_def: column_costraint column_costraint •
 
-    ID  shift, and go to state 66
-
-    parameters  go to state 69
+    $default  reduce using rule 16 (column_costraint_def)
 
 
 State 55
 
-   21 table_constraint_def: table_constraint ',' • table_constraint_def
+   27 table_constraint: CONSTRAINT ID • FOREIGNKEY '(' ID ')' REFERENCES ID '(' ID ')'
 
-    CONSTRAINT  shift, and go to state 38
-    NOTNULL     shift, and go to state 39
-    UNIQUE      shift, and go to state 40
-    PRIMARYKEY  shift, and go to state 41
-
-    table_constraint_def  go to state 70
-    table_constraint      go to state 44
+    FOREIGNKEY  shift, and go to state 71
 
 
 State 56
 
-   12 datatype: VARCHAR '(' NUM ')' •
+   24 table_constraint: NOTNULL '(' • parameters ')'
 
-    $default  reduce using rule 12 (datatype)
+    ID  shift, and go to state 72
+
+    parameters  go to state 73
 
 
 State 57
 
-   10 datatype: FLOAT '(' NUM ')' •
+   25 table_constraint: UNIQUE '(' • parameters ')'
 
-    $default  reduce using rule 10 (datatype)
+    ID  shift, and go to state 72
+
+    parameters  go to state 74
 
 
 State 58
 
-   41 expression: FALSE •
+   26 table_constraint: PRIMARYKEY '(' • parameters ')'
 
-    $default  reduce using rule 41 (expression)
+    ID  shift, and go to state 72
+
+    parameters  go to state 75
 
 
 State 59
 
-   40 expression: TRUE •
+   23 table_constraint_def: table_constraint ',' • table_constraint_def
 
-    $default  reduce using rule 40 (expression)
+    CONSTRAINT  shift, and go to state 40
+    NOTNULL     shift, and go to state 41
+    UNIQUE      shift, and go to state 42
+    PRIMARYKEY  shift, and go to state 43
+
+    table_constraint_def  go to state 76
+    table_constraint      go to state 46
 
 
 State 60
 
-   39 expression: NUM •
+   13 datatype: VARCHAR '(' NUM ')' •
 
-    $default  reduce using rule 39 (expression)
+    $default  reduce using rule 13 (datatype)
 
 
 State 61
 
-   38 expression: ID •
+   10 datatype: INTEGER '(' NUM ')' •
 
-    $default  reduce using rule 38 (expression)
+    $default  reduce using rule 10 (datatype)
 
 
 State 62
 
-   34 where_clause: WHERE condition •
-   36 condition: condition • AND condition
-   37          | condition • OR condition
+   11 datatype: FLOAT '(' NUM ')' •
 
-    AND  shift, and go to state 71
-    OR   shift, and go to state 72
-
-    $default  reduce using rule 34 (where_clause)
+    $default  reduce using rule 11 (datatype)
 
 
 State 63
 
-   35 condition: expression • comparison_op expression
+   44 values: FALSE •
 
-    LS  shift, and go to state 73
-    GR  shift, and go to state 74
-    GE  shift, and go to state 75
-    LE  shift, and go to state 76
-    EQ  shift, and go to state 77
-    NE  shift, and go to state 78
-
-    comparison_op  go to state 79
+    $default  reduce using rule 44 (values)
 
 
 State 64
 
-   19 column_costraint: FOREIGNKEY REFERENCES ID • '(' ID ')'
+   43 values: TRUE •
 
-    '('  shift, and go to state 80
+    $default  reduce using rule 43 (values)
 
 
 State 65
 
-   25 table_constraint: CONSTRAINT ID FOREIGNKEY • '(' ID ')' REFERENCES ID '(' ID ')'
+   39 condition: NUM • numeric_comparison_op values
 
-    '('  shift, and go to state 81
+    LS  shift, and go to state 77
+    GR  shift, and go to state 78
+    GE  shift, and go to state 79
+    LE  shift, and go to state 80
+
+    numeric_comparison_op  go to state 81
 
 
 State 66
 
-   26 parameters: ID •
-   27           | ID • ',' parameters
+   42 values: ID •
 
-    ','  shift, and go to state 82
-
-    $default  reduce using rule 26 (parameters)
+    $default  reduce using rule 42 (values)
 
 
 State 67
 
-   22 table_constraint: NOTNULL '(' parameters • ')'
+   36 where_clause: WHERE condition •
+   40 condition: condition • AND condition
+   41          | condition • OR condition
 
-    ')'  shift, and go to state 83
+    AND  shift, and go to state 82
+    OR   shift, and go to state 83
+
+    $default  reduce using rule 36 (where_clause)
 
 
 State 68
 
-   23 table_constraint: UNIQUE '(' parameters • ')'
+   37 condition: values • comparison_op values
+   38          | values • numeric_comparison_op NUM
 
-    ')'  shift, and go to state 84
+    LS  shift, and go to state 84
+    GR  shift, and go to state 85
+    GE  shift, and go to state 86
+    LE  shift, and go to state 87
+    EQ  shift, and go to state 88
+    NE  shift, and go to state 89
+
+    comparison_op          go to state 90
+    numeric_comparison_op  go to state 91
 
 
 State 69
 
-   24 table_constraint: PRIMARYKEY '(' parameters • ')'
+   21 column_costraint: CHECK '(' condition • ')'
+   40 condition: condition • AND condition
+   41          | condition • OR condition
 
-    ')'  shift, and go to state 85
+    AND  shift, and go to state 82
+    OR   shift, and go to state 83
+    ')'  shift, and go to state 92
 
 
 State 70
 
-   21 table_constraint_def: table_constraint ',' table_constraint_def •
+   20 column_costraint: FOREIGNKEY REFERENCES ID • '(' ID ')'
 
-    $default  reduce using rule 21 (table_constraint_def)
+    '('  shift, and go to state 93
 
 
 State 71
 
-   36 condition: condition AND • condition
+   27 table_constraint: CONSTRAINT ID FOREIGNKEY • '(' ID ')' REFERENCES ID '(' ID ')'
 
-    FALSE  shift, and go to state 58
-    TRUE   shift, and go to state 59
-    NUM    shift, and go to state 60
-    ID     shift, and go to state 61
-
-    condition   go to state 86
-    expression  go to state 63
+    '('  shift, and go to state 94
 
 
 State 72
 
-   37 condition: condition OR • condition
+   28 parameters: ID •
+   29           | ID • ',' parameters
 
-    FALSE  shift, and go to state 58
-    TRUE   shift, and go to state 59
-    NUM    shift, and go to state 60
-    ID     shift, and go to state 61
+    ','  shift, and go to state 95
 
-    condition   go to state 87
-    expression  go to state 63
+    $default  reduce using rule 28 (parameters)
 
 
 State 73
 
-   42 comparison_op: LS •
+   24 table_constraint: NOTNULL '(' parameters • ')'
 
-    $default  reduce using rule 42 (comparison_op)
+    ')'  shift, and go to state 96
 
 
 State 74
 
-   43 comparison_op: GR •
+   25 table_constraint: UNIQUE '(' parameters • ')'
 
-    $default  reduce using rule 43 (comparison_op)
+    ')'  shift, and go to state 97
 
 
 State 75
 
-   44 comparison_op: GE •
-
-    $default  reduce using rule 44 (comparison_op)
-
-
-State 76
-
-   45 comparison_op: LE •
-
-    $default  reduce using rule 45 (comparison_op)
-
-
-State 77
-
-   46 comparison_op: EQ •
-
-    $default  reduce using rule 46 (comparison_op)
-
-
-State 78
-
-   47 comparison_op: NE •
-
-    $default  reduce using rule 47 (comparison_op)
-
-
-State 79
-
-   35 condition: expression comparison_op • expression
-
-    FALSE  shift, and go to state 58
-    TRUE   shift, and go to state 59
-    NUM    shift, and go to state 60
-    ID     shift, and go to state 61
-
-    expression  go to state 88
-
-
-State 80
-
-   19 column_costraint: FOREIGNKEY REFERENCES ID '(' • ID ')'
-
-    ID  shift, and go to state 89
-
-
-State 81
-
-   25 table_constraint: CONSTRAINT ID FOREIGNKEY '(' • ID ')' REFERENCES ID '(' ID ')'
-
-    ID  shift, and go to state 90
-
-
-State 82
-
-   27 parameters: ID ',' • parameters
-
-    ID  shift, and go to state 66
-
-    parameters  go to state 91
-
-
-State 83
-
-   22 table_constraint: NOTNULL '(' parameters ')' •
-
-    $default  reduce using rule 22 (table_constraint)
-
-
-State 84
-
-   23 table_constraint: UNIQUE '(' parameters ')' •
-
-    $default  reduce using rule 23 (table_constraint)
-
-
-State 85
-
-   24 table_constraint: PRIMARYKEY '(' parameters ')' •
-
-    $default  reduce using rule 24 (table_constraint)
-
-
-State 86
-
-   36 condition: condition • AND condition
-   36          | condition AND condition •
-   37          | condition • OR condition
-
-    AND  shift, and go to state 71
-    OR   shift, and go to state 72
-
-    AND       [reduce using rule 36 (condition)]
-    OR        [reduce using rule 36 (condition)]
-    $default  reduce using rule 36 (condition)
-
-
-State 87
-
-   36 condition: condition • AND condition
-   37          | condition • OR condition
-   37          | condition OR condition •
-
-    AND  shift, and go to state 71
-    OR   shift, and go to state 72
-
-    AND       [reduce using rule 37 (condition)]
-    OR        [reduce using rule 37 (condition)]
-    $default  reduce using rule 37 (condition)
-
-
-State 88
-
-   35 condition: expression comparison_op expression •
-
-    $default  reduce using rule 35 (condition)
-
-
-State 89
-
-   19 column_costraint: FOREIGNKEY REFERENCES ID '(' ID • ')'
-
-    ')'  shift, and go to state 92
-
-
-State 90
-
-   25 table_constraint: CONSTRAINT ID FOREIGNKEY '(' ID • ')' REFERENCES ID '(' ID ')'
-
-    ')'  shift, and go to state 93
-
-
-State 91
-
-   27 parameters: ID ',' parameters •
-
-    $default  reduce using rule 27 (parameters)
-
-
-State 92
-
-   19 column_costraint: FOREIGNKEY REFERENCES ID '(' ID ')' •
-
-    $default  reduce using rule 19 (column_costraint)
-
-
-State 93
-
-   25 table_constraint: CONSTRAINT ID FOREIGNKEY '(' ID ')' • REFERENCES ID '(' ID ')'
-
-    REFERENCES  shift, and go to state 94
-
-
-State 94
-
-   25 table_constraint: CONSTRAINT ID FOREIGNKEY '(' ID ')' REFERENCES • ID '(' ID ')'
-
-    ID  shift, and go to state 95
-
-
-State 95
-
-   25 table_constraint: CONSTRAINT ID FOREIGNKEY '(' ID ')' REFERENCES ID • '(' ID ')'
-
-    '('  shift, and go to state 96
-
-
-State 96
-
-   25 table_constraint: CONSTRAINT ID FOREIGNKEY '(' ID ')' REFERENCES ID '(' • ID ')'
-
-    ID  shift, and go to state 97
-
-
-State 97
-
-   25 table_constraint: CONSTRAINT ID FOREIGNKEY '(' ID ')' REFERENCES ID '(' ID • ')'
+   26 table_constraint: PRIMARYKEY '(' parameters • ')'
 
     ')'  shift, and go to state 98
 
 
-State 98
+State 76
 
-   25 table_constraint: CONSTRAINT ID FOREIGNKEY '(' ID ')' REFERENCES ID '(' ID ')' •
+   23 table_constraint_def: table_constraint ',' table_constraint_def •
+
+    $default  reduce using rule 23 (table_constraint_def)
+
+
+State 77
+
+   51 numeric_comparison_op: LS •
+
+    $default  reduce using rule 51 (numeric_comparison_op)
+
+
+State 78
+
+   52 numeric_comparison_op: GR •
+
+    $default  reduce using rule 52 (numeric_comparison_op)
+
+
+State 79
+
+   53 numeric_comparison_op: GE •
+
+    $default  reduce using rule 53 (numeric_comparison_op)
+
+
+State 80
+
+   54 numeric_comparison_op: LE •
+
+    $default  reduce using rule 54 (numeric_comparison_op)
+
+
+State 81
+
+   39 condition: NUM numeric_comparison_op • values
+
+    FALSE  shift, and go to state 63
+    TRUE   shift, and go to state 64
+    ID     shift, and go to state 66
+
+    values  go to state 99
+
+
+State 82
+
+   40 condition: condition AND • condition
+
+    FALSE  shift, and go to state 63
+    TRUE   shift, and go to state 64
+    NUM    shift, and go to state 65
+    ID     shift, and go to state 66
+
+    condition  go to state 100
+    values     go to state 68
+
+
+State 83
+
+   41 condition: condition OR • condition
+
+    FALSE  shift, and go to state 63
+    TRUE   shift, and go to state 64
+    NUM    shift, and go to state 65
+    ID     shift, and go to state 66
+
+    condition  go to state 101
+    values     go to state 68
+
+
+State 84
+
+   45 comparison_op: LS •
+   51 numeric_comparison_op: LS •
+
+    NUM       reduce using rule 51 (numeric_comparison_op)
+    $default  reduce using rule 45 (comparison_op)
+
+
+State 85
+
+   46 comparison_op: GR •
+   52 numeric_comparison_op: GR •
+
+    NUM       reduce using rule 52 (numeric_comparison_op)
+    $default  reduce using rule 46 (comparison_op)
+
+
+State 86
+
+   47 comparison_op: GE •
+   53 numeric_comparison_op: GE •
+
+    NUM       reduce using rule 53 (numeric_comparison_op)
+    $default  reduce using rule 47 (comparison_op)
+
+
+State 87
+
+   48 comparison_op: LE •
+   54 numeric_comparison_op: LE •
+
+    NUM       reduce using rule 54 (numeric_comparison_op)
+    $default  reduce using rule 48 (comparison_op)
+
+
+State 88
+
+   49 comparison_op: EQ •
+
+    $default  reduce using rule 49 (comparison_op)
+
+
+State 89
+
+   50 comparison_op: NE •
+
+    $default  reduce using rule 50 (comparison_op)
+
+
+State 90
+
+   37 condition: values comparison_op • values
+
+    FALSE  shift, and go to state 63
+    TRUE   shift, and go to state 64
+    ID     shift, and go to state 66
+
+    values  go to state 102
+
+
+State 91
+
+   38 condition: values numeric_comparison_op • NUM
+
+    NUM  shift, and go to state 103
+
+
+State 92
+
+   21 column_costraint: CHECK '(' condition ')' •
+
+    $default  reduce using rule 21 (column_costraint)
+
+
+State 93
+
+   20 column_costraint: FOREIGNKEY REFERENCES ID '(' • ID ')'
+
+    ID  shift, and go to state 104
+
+
+State 94
+
+   27 table_constraint: CONSTRAINT ID FOREIGNKEY '(' • ID ')' REFERENCES ID '(' ID ')'
+
+    ID  shift, and go to state 105
+
+
+State 95
+
+   29 parameters: ID ',' • parameters
+
+    ID  shift, and go to state 72
+
+    parameters  go to state 106
+
+
+State 96
+
+   24 table_constraint: NOTNULL '(' parameters ')' •
+
+    $default  reduce using rule 24 (table_constraint)
+
+
+State 97
+
+   25 table_constraint: UNIQUE '(' parameters ')' •
 
     $default  reduce using rule 25 (table_constraint)
+
+
+State 98
+
+   26 table_constraint: PRIMARYKEY '(' parameters ')' •
+
+    $default  reduce using rule 26 (table_constraint)
+
+
+State 99
+
+   39 condition: NUM numeric_comparison_op values •
+
+    $default  reduce using rule 39 (condition)
+
+
+State 100
+
+   40 condition: condition • AND condition
+   40          | condition AND condition •
+   41          | condition • OR condition
+
+    AND  shift, and go to state 82
+    OR   shift, and go to state 83
+
+    AND       [reduce using rule 40 (condition)]
+    OR        [reduce using rule 40 (condition)]
+    $default  reduce using rule 40 (condition)
+
+
+State 101
+
+   40 condition: condition • AND condition
+   41          | condition • OR condition
+   41          | condition OR condition •
+
+    AND  shift, and go to state 82
+    OR   shift, and go to state 83
+
+    AND       [reduce using rule 41 (condition)]
+    OR        [reduce using rule 41 (condition)]
+    $default  reduce using rule 41 (condition)
+
+
+State 102
+
+   37 condition: values comparison_op values •
+
+    $default  reduce using rule 37 (condition)
+
+
+State 103
+
+   38 condition: values numeric_comparison_op NUM •
+
+    $default  reduce using rule 38 (condition)
+
+
+State 104
+
+   20 column_costraint: FOREIGNKEY REFERENCES ID '(' ID • ')'
+
+    ')'  shift, and go to state 107
+
+
+State 105
+
+   27 table_constraint: CONSTRAINT ID FOREIGNKEY '(' ID • ')' REFERENCES ID '(' ID ')'
+
+    ')'  shift, and go to state 108
+
+
+State 106
+
+   29 parameters: ID ',' parameters •
+
+    $default  reduce using rule 29 (parameters)
+
+
+State 107
+
+   20 column_costraint: FOREIGNKEY REFERENCES ID '(' ID ')' •
+
+    $default  reduce using rule 20 (column_costraint)
+
+
+State 108
+
+   27 table_constraint: CONSTRAINT ID FOREIGNKEY '(' ID ')' • REFERENCES ID '(' ID ')'
+
+    REFERENCES  shift, and go to state 109
+
+
+State 109
+
+   27 table_constraint: CONSTRAINT ID FOREIGNKEY '(' ID ')' REFERENCES • ID '(' ID ')'
+
+    ID  shift, and go to state 110
+
+
+State 110
+
+   27 table_constraint: CONSTRAINT ID FOREIGNKEY '(' ID ')' REFERENCES ID • '(' ID ')'
+
+    '('  shift, and go to state 111
+
+
+State 111
+
+   27 table_constraint: CONSTRAINT ID FOREIGNKEY '(' ID ')' REFERENCES ID '(' • ID ')'
+
+    ID  shift, and go to state 112
+
+
+State 112
+
+   27 table_constraint: CONSTRAINT ID FOREIGNKEY '(' ID ')' REFERENCES ID '(' ID • ')'
+
+    ')'  shift, and go to state 113
+
+
+State 113
+
+   27 table_constraint: CONSTRAINT ID FOREIGNKEY '(' ID ')' REFERENCES ID '(' ID ')' •
+
+    $default  reduce using rule 27 (table_constraint)

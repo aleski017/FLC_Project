@@ -18,7 +18,7 @@ int yylex(void);
        double value;			//value of an identifier of type NUM
        }
 
-%token CREATETABLE SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE AND OR FALSE TRUE VALUES BOOLEAN VARCHAR INTEGER CONSTRAINT FLOAT DATE NUM ID NOTNULL UNIQUE PRIMARYKEY FOREIGNKEY REFERENCES
+%token CREATETABLE SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE AND OR FALSE TRUE VALUES BOOLEAN VARCHAR INTEGER CONSTRAINT FLOAT CHECK DATE NUM ID NOTNULL UNIQUE PRIMARYKEY FOREIGNKEY REFERENCES
 
 //%type expr line table_def datatype column_def select_list select_stmt column_list where_clause condition expression comparison_op insert_stmt value_list id_or_num
 
@@ -43,6 +43,7 @@ column_def : ID datatype column_costraint_def
 			;
 
 datatype : INTEGER 
+         | INTEGER '(' NUM ')'
          | FLOAT '(' NUM ')'
          | BOOLEAN 
          | VARCHAR '(' NUM ')' 
@@ -58,6 +59,7 @@ column_costraint: NOTNULL
 				|PRIMARYKEY
 				|UNIQUE
 				|FOREIGNKEY REFERENCES ID '(' ID ')'
+				|CHECK '(' condition ')'
 				;
 				
 table_constraint_def: table_constraint
@@ -69,6 +71,7 @@ table_constraint: NOTNULL '(' parameters ')'
 				| UNIQUE '(' parameters ')'
 				| PRIMARYKEY '(' parameters ')'
 				| CONSTRAINT ID FOREIGNKEY '(' ID ')' REFERENCES ID '(' ID ')'
+				| CHECK '(' condition ')'
 				;
 				
 parameters: ID
@@ -93,25 +96,33 @@ where_clause :
 
 			 ;
 
-condition : expression comparison_op expression
+condition : values comparison_op values
+		  | values numeric_comparison_op NUM
+		  | NUM numeric_comparison_op values
 		  |condition AND condition
 		  |condition OR condition
 		  ;
 
-expression : ID
-		   |NUM
+values : ID
 		   |TRUE
 		   |FALSE
 		   ;
+		   
 
-comparison_op : LS
-			  |GR
-			  |GE
-			  |LE
-			  |EQ
-			  |NE
+comparison_op : LS 
+			  |GR 
+			  |GE 
+			  |LE 
+			  |EQ 
+			  |NE 
 			  ;
-
+			  
+numeric_comparison_op : LS 
+			  |GR 
+			  |GE 
+			  |LE 
+			  ;
+			  
 insert_stmt : INSERT ID '(' column_list ')' VALUES value_list
 			;
 
@@ -119,8 +130,8 @@ value_list : '(' id_or_num ')'
 		   |  '(' id_or_num ')' ',' value_list
 		   ;
 
-id_or_num : expression
-		  |expression ',' id_or_num
+id_or_num : values
+		  |values ',' id_or_num
 		  ;
 
 %%

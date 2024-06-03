@@ -76,14 +76,15 @@ extern int yydebug;
     INTEGER = 277,                 /* INTEGER  */
     CONSTRAINT = 278,              /* CONSTRAINT  */
     FLOAT = 279,                   /* FLOAT  */
-    DATE = 280,                    /* DATE  */
-    NUM = 281,                     /* NUM  */
-    ID = 282,                      /* ID  */
-    NOTNULL = 283,                 /* NOTNULL  */
-    UNIQUE = 284,                  /* UNIQUE  */
-    PRIMARYKEY = 285,              /* PRIMARYKEY  */
-    FOREIGNKEY = 286,              /* FOREIGNKEY  */
-    REFERENCES = 287               /* REFERENCES  */
+    CHECK = 280,                   /* CHECK  */
+    DATE = 281,                    /* DATE  */
+    NUM = 282,                     /* NUM  */
+    ID = 283,                      /* ID  */
+    NOTNULL = 284,                 /* NOTNULL  */
+    UNIQUE = 285,                  /* UNIQUE  */
+    PRIMARYKEY = 286,              /* PRIMARYKEY  */
+    FOREIGNKEY = 287,              /* FOREIGNKEY  */
+    REFERENCES = 288               /* REFERENCES  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -98,7 +99,7 @@ union YYSTYPE
        double value;			//value of an identifier of type NUM
        
 
-#line 102 "project.tab.h"
+#line 103 "project.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

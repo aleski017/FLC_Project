@@ -54,6 +54,9 @@ ID       {LETTER}({LETTER}*{DIGIT}*)
 ("GROUP BY"|"group by")            { return GROUPBY; }
 ("INSERT INTO"|"insert into")      { return INSERT; }
 (VALUES|values)                    { return VALUES; }
+(CHECK|check)                    { return CHECK; }
+(AND|and)               { return AND; }
+(OR|or)            { return OR; }
 
 (false|FALSE)              { return FALSE; }
 (true|TRUE)                { return TRUE; }
@@ -69,8 +72,6 @@ ID       {LETTER}({LETTER}*{DIGIT}*)
 ">"                  { return GR; }
 "<="                 { return LE; }
 ">="                 { return GE; }
-(AND|and)               { return AND; }
-(OR|or)            { return OR; }
 
 ","                  { return ','; }
 "("                  { return '('; }
