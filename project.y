@@ -18,15 +18,19 @@ int yylex(void);
        double value;			//value of an identifier of type NUM
        }
 
-%token CREATETABLE SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE AND OR FALSE TRUE VALUES BOOLEAN VARCHAR INTEGER CONSTRAINT FLOAT CHECK DATE NUM ID NOTNULL UNIQUE PRIMARYKEY FOREIGNKEY REFERENCES
+%token CREATETABLE SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE AND OR FALSE TRUE VALUES BOOLEAN VARCHAR INTEGER CONSTRAINT FLOAT CHECK DATE NUM ID NOTNULL UNIQUE PRIMARYKEY FOREIGNKEY REFERENCES DROP_DATABASE DELETE_FROM
 
-//%type expr line table_def datatype column_def select_list select_stmt column_list where_clause condition expression comparison_op insert_stmt value_list id_or_num
+//%type expr line table_def datatype column_def select_list select_stmt where_clause condition expression comparison_op insert_stmt value_list id_or_num drop_stmt insert_column_list delete_stmt
 
 %start line
 
 %%
 line  : expr '\n'     
 	  | expr  select_stmt
+	  | select_stmt
+	  | insert_stmt
+	  | drop_stmt
+	  | delete_stmt
       ;
 
 // Matches CREATE TABLE statement, it represents the scope of the grammar 
@@ -40,7 +44,7 @@ table_def : column_def
 
 column_def : ID datatype column_costraint_def
 			|ID datatype
-			;
+			; 
 
 datatype : INTEGER 
          | INTEGER '(' NUM ')'
@@ -78,22 +82,20 @@ parameters: ID
 			| ID ',' parameters
 			;
 			
-select_stmt : SELECT select_list FROM ID where_clause
+select_stmt : SELECT select_all_or_list FROM ID where_clause {printf("correct"); exit(0);};
 			;
-		
-		
+				
 
-select_list : ','
-			| column_list
+select_all_or_list : '*'
+				   | select_list
+				   ;
+
+select_list : ID
+			| ID ',' select_list
 			;
 
-column_list : ID datatype
-			| ID ',' column_list
-			;
-
-where_clause : 
-			 | WHERE condition
-
+where_clause : WHERE condition
+			 |
 			 ;
 
 condition : values comparison_op values
@@ -106,6 +108,7 @@ condition : values comparison_op values
 values : ID
 		   |TRUE
 		   |FALSE
+		   | NUM
 		   ;
 		   
 
@@ -123,16 +126,28 @@ numeric_comparison_op : LS
 			  |LE 
 			  ;
 			  
-insert_stmt : INSERT ID '(' column_list ')' VALUES value_list
+insert_stmt : INSERT ID '(' insert_column_list ')' VALUES value_list {printf("correct"); exit(0);}
+		    | INSERT ID VALUES value_list {printf("correct"); exit(0);}
 			;
 
+insert_column_list : ID ',' insert_column_list
+				   | ID
+				   |
+				   ;
+
 value_list : '(' id_or_num ')'
-		   |  '(' id_or_num ')' ',' value_list
+		   | '(' id_or_num ')' ',' value_list
 		   ;
 
 id_or_num : values
-		  |values ',' id_or_num
+		  | values ',' id_or_num
 		  ;
+
+drop_stmt : DROP_DATABASE ID {printf("correct"); exit(0);}
+		  ;
+
+delete_stmt : DELETE_FROM ID WHERE condition {printf("correct"); exit(0);}
+			;
 
 %%
 
