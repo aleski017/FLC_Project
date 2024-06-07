@@ -101,18 +101,19 @@ where_clause : WHERE condition
 			 ;
 
 condition : values comparison_op values
-		  | values numeric_comparison_op NUM
-		  | NUM numeric_comparison_op values
+		  | values boolean_comparison_op boolean_values
+		  | boolean_values boolean_comparison_op values
 		  | condition AND condition
 		  | condition OR condition
 		  ;
 
 values : STRINGVALUE
-		   | TRUE
-		   | FALSE
 		   | NUM
+		   | ID
 		   ;
-		   
+boolean_values: TRUE
+			  | FALSE
+			  ;
 
 comparison_op : LS 
 			  |GR 
@@ -122,10 +123,8 @@ comparison_op : LS
 			  |NE 
 			  ;
 			  
-numeric_comparison_op : LS 
-			  |GR 
-			  |GE 
-			  |LE 
+boolean_comparison_op : EQ
+			  |NE 
 			  ;
 			  
 insert_stmt : INSERT ID VALUES insertion {printf("correct"); exit(0);}
