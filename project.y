@@ -18,7 +18,7 @@ int yylex(void);
        double value;			//value of an identifier of type NUM
        }
 
-%token CREATETABLE SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE AND OR FALSE TRUE VALUES BOOLEAN VARCHAR INTEGER CONSTRAINT FLOAT CHECK DATE NUM ID NOTNULL UNIQUE PRIMARYKEY FOREIGNKEY REFERENCES DROP_DATABASE DELETE_FROM
+%token CREATETABLE SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE AND OR FALSE ALTER TRUE RENAME TO VALUES BOOLEAN VARCHAR STRINGVALUE INTEGER CONSTRAINT ALTERTABLE COLUMN FLOAT CHECK DATE NUM ID NOTNULL UNIQUE PRIMARYKEY FOREIGNKEY REFERENCES DROP DATABASE DELETE_FROM
 
 //%type expr line table_def datatype column_def select_list select_stmt where_clause condition expression comparison_op insert_stmt value_list id_or_num drop_stmt insert_column_list delete_stmt
 
@@ -31,6 +31,7 @@ line  : expr '\n'
 	  | insert_stmt
 	  | drop_stmt
 	  | delete_stmt
+	  | alter_table_stmt
       ;
 
 // Matches CREATE TABLE statement, it represents the scope of the grammar 
@@ -105,7 +106,7 @@ condition : values comparison_op values
 		  |condition OR condition
 		  ;
 
-values : ID
+values : STRINGVALUE
 		   |TRUE
 		   |FALSE
 		   | NUM
@@ -126,24 +127,26 @@ numeric_comparison_op : LS
 			  |LE 
 			  ;
 			  
-insert_stmt : INSERT ID '(' insert_column_list ')' VALUES value_list {printf("correct"); exit(0);}
-		    | INSERT ID VALUES value_list {printf("correct"); exit(0);}
+insert_stmt : INSERT ID VALUES insertion {printf("correct"); exit(0);}
+			| INSERT ID '(' column_list ')' VALUES insertion {printf("correct"); exit(0);}
+			;
+insertion	: '(' value_list ')' 
+			| '(' value_list ')' ',' insertion
+			;
+			
+column_list : ID 
+			| ID ',' column_list
 			;
 
-insert_column_list : ID ',' insert_column_list
-				   | ID
-				   |
-				   ;
-
-value_list : '(' id_or_num ')'
-		   | '(' id_or_num ')' ',' value_list
+value_list : values 
+		   | values ',' value_list
 		   ;
 
-id_or_num : values
-		  | values ',' id_or_num
-		  ;
-
-drop_stmt : DROP_DATABASE ID {printf("correct"); exit(0);}
+alter_table_stmt: ALTERTABLE ID DROP COLUMN ID {printf("correct"); exit(0);}
+				| ALTERTABLE ID RENAME COLUMN ID TO ID {printf("correct"); exit(0);}
+				| ALTERTABLE ID ALTER COLUMN ID datatype {printf("correct"); exit(0);}
+				;
+drop_stmt : DROP DATABASE ID {printf("correct"); exit(0);}
 		  ;
 
 delete_stmt : DELETE_FROM ID WHERE condition {printf("correct"); exit(0);}

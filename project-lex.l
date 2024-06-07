@@ -28,6 +28,9 @@ NUM      {DIGIT}+(\.{DIGIT}+)?
 
 LETTER   [a-zA-Z_]
 ID       {LETTER}({LETTER}*{DIGIT}*)
+STRING   \"({LETTER}|{DIGIT}|[_])*\"
+BSTRING   \'({LETTER}|{DIGIT}|[_])*\'
+ 
 
 %%
 [\n ]+      {/* ignore newline */} ;
@@ -45,19 +48,27 @@ ID       {LETTER}({LETTER}*{DIGIT}*)
 
 {NUM}   {/*yylval.value = atof(yytext);*/
          return NUM;}
+{STRING}                     		{ return STRINGVALUE; }
+{BSTRING}                     		{ return STRINGVALUE; }
 
 
 ("CREATE TABLE"|"create table")    { return CREATETABLE; }
+("ALTER TABLE"|"alter table")      { return ALTERTABLE; }
+(ALTER|alter)      				   { return ALTER; }
 (SELECT|select)                    { return SELECT; }
+(COLUMN|column)                    { return COLUMN; }
+(RENAME|rename)                    { return RENAME; }
+(TO|to)                   		   { return TO; }
 (FROM|from)                        { return FROM; }
 (WHERE|where)                      { return WHERE; }
 ("GROUP BY"|"group by")            { return GROUPBY; }
 ("INSERT INTO"|"insert into")      { return INSERT; }
 (VALUES|values)                    { return VALUES; }
-(CHECK|check)                    { return CHECK; }
-(AND|and)               { return AND; }
-(OR|or)            { return OR; }
-("DROP DATABASE"|"drop database")  { return DROP_DATABASE; }
+(CHECK|check)                      { return CHECK; }
+(AND|and)               		   { return AND; }
+(OR|or)            				   { return OR; }
+(DROP|drop)  					   { return DROP; }
+(DATABASE|database)  { return DATABASE; }
 ("DELETE FROM"|"delete from")      { return DELETE_FROM; }
 
 (false|FALSE)              { return FALSE; }
