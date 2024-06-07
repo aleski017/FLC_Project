@@ -68,8 +68,10 @@ BSTRING   \'({LETTER}|{DIGIT}|[_])*\'
 (AND|and)               		   { return AND; }
 (OR|or)            				   { return OR; }
 (DROP|drop)  					   { return DROP; }
-(DATABASE|database)  { return DATABASE; }
+(DATABASE|database)                { return DATABASE; }
 ("DELETE FROM"|"delete from")      { return DELETE_FROM; }
+(UPDATE|update)                    { return UPDATE; }
+(SET|set)                          { return SET; }
 
 (false|FALSE)              { return FALSE; }
 (true|TRUE)                { return TRUE; }

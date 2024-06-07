@@ -18,9 +18,9 @@ int yylex(void);
        double value;			//value of an identifier of type NUM
        }
 
-%token CREATETABLE SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE AND OR FALSE ALTER TRUE RENAME TO VALUES BOOLEAN VARCHAR STRINGVALUE INTEGER CONSTRAINT ALTERTABLE COLUMN FLOAT CHECK DATE NUM ID NOTNULL UNIQUE PRIMARYKEY FOREIGNKEY REFERENCES DROP DATABASE DELETE_FROM
+%token CREATETABLE SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE AND OR FALSE ALTER TRUE RENAME TO VALUES BOOLEAN VARCHAR STRINGVALUE INTEGER CONSTRAINT ALTERTABLE COLUMN FLOAT CHECK DATE NUM ID NOTNULL UNIQUE PRIMARYKEY FOREIGNKEY REFERENCES DROP DATABASE DELETE_FROM UPDATE SET
 
-//%type expr line table_def datatype column_def select_list select_stmt where_clause condition expression comparison_op insert_stmt value_list id_or_num drop_stmt insert_column_list delete_stmt
+//%type expr line table_def datatype column_def select_list select_stmt where_clause condition expression comparison_op insert_stmt value_list id_or_num drop_stmt insert_column_list delete_stmt update_stmt
 
 %start line
 
@@ -32,6 +32,7 @@ line  : expr '\n'
 	  | drop_stmt
 	  | delete_stmt
 	  | alter_table_stmt
+	  | update_stmt
       ;
 
 // Matches CREATE TABLE statement, it represents the scope of the grammar 
@@ -61,10 +62,10 @@ column_costraint_def: column_costraint
 
 
 column_costraint: NOTNULL
-				|PRIMARYKEY
-				|UNIQUE
-				|FOREIGNKEY REFERENCES ID '(' ID ')'
-				|CHECK '(' condition ')'
+				| PRIMARYKEY
+				| UNIQUE
+				| FOREIGNKEY REFERENCES ID '(' ID ')'
+				| CHECK '(' condition ')'
 				;
 				
 table_constraint_def: table_constraint
@@ -102,13 +103,13 @@ where_clause : WHERE condition
 condition : values comparison_op values
 		  | values numeric_comparison_op NUM
 		  | NUM numeric_comparison_op values
-		  |condition AND condition
-		  |condition OR condition
+		  | condition AND condition
+		  | condition OR condition
 		  ;
 
 values : STRINGVALUE
-		   |TRUE
-		   |FALSE
+		   | TRUE
+		   | FALSE
 		   | NUM
 		   ;
 		   
@@ -146,11 +147,15 @@ alter_table_stmt: ALTERTABLE ID DROP COLUMN ID {printf("correct"); exit(0);}
 				| ALTERTABLE ID RENAME COLUMN ID TO ID {printf("correct"); exit(0);}
 				| ALTERTABLE ID ALTER COLUMN ID datatype {printf("correct"); exit(0);}
 				;
+
 drop_stmt : DROP DATABASE ID {printf("correct"); exit(0);}
 		  ;
 
 delete_stmt : DELETE_FROM ID WHERE condition {printf("correct"); exit(0);}
 			;
+
+update_stmt : UPDATE ID SET condition WHERE condition {printf("correct"); exit(0);}
+            ;
 
 %%
 
