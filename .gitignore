@@ -1,0 +1,5 @@
+run
+lex.yy.c
+project.output
+project.tab.c
+project.tab.h

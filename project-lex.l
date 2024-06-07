@@ -57,6 +57,8 @@ ID       {LETTER}({LETTER}*{DIGIT}*)
 (CHECK|check)                    { return CHECK; }
 (AND|and)               { return AND; }
 (OR|or)            { return OR; }
+("DROP DATABASE"|"drop database")  { return DROP_DATABASE; }
+("DELETE FROM"|"delete from")      { return DELETE_FROM; }
 
 (false|FALSE)              { return FALSE; }
 (true|TRUE)                { return TRUE; }
