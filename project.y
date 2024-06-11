@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdio.h>
+
 void yyerror(const char *s)
 {
     fprintf(stderr, "%s\n", s);
@@ -12,18 +13,19 @@ struct dataType {
         char * id_name;
         char * data_type;
 		char * type;
-        int line_no;
 } symbol_table[40];
-
-int yylex(void);
+//int yywrap();
+int yylex();
 int count=0;
 int q;
 char type[10];
 int countn=1;
-void add(char);
+void add(char, char*);
 void insert_type();
 int search(char *);
-void insert_type();
+void insert_type(char *);
+void display_symbol_table();
+char * attribute_name;
 extern char* yytext;
 %}
 
@@ -33,7 +35,9 @@ extern char* yytext;
        double value;			//value of an identifier of type NUM
        }
 
-%token CREATETABLE SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE AND OR FALSE ALTER TRUE RENAME TO VALUES BOOLEAN VARCHAR STRINGVALUE INTEGER CONSTRAINT ALTERTABLE COLUMN FLOAT CHECK DATE NUM ID NOTNULL UNIQUE PRIMARYKEY FOREIGNKEY REFERENCES DROP DATABASE DELETE_FROM UPDATE SET
+%token <lexeme> SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE AND OR FALSE ALTER TRUE RENAME TO VALUES BOOLEAN VARCHAR STRINGVALUE INTEGER CONSTRAINT ALTERTABLE COLUMN FLOAT CHECK DATE NUM NOTNULL UNIQUE PRIMARYKEY FOREIGNKEY REFERENCES DROP DATABASE DELETE_FROM UPDATE SET
+%token <lexeme> CREATETABLE ID
+//Conflicts fixed
 %left OR 
 %left AND
 
@@ -53,7 +57,7 @@ line  : expr '\n'
       ;
 
 // Matches CREATE TABLE statement, it represents the scope of the grammar 
-expr: CREATETABLE ID  '(' table_def ')'	{printf("correct"); exit(0);};
+expr: CREATETABLE {add('K', $1);} ID {add('R', $3);}  '(' table_def ')'	{printf("correct");   display_symbol_table(); exit(0);};
 
 // Used to define the creation of attributes in a table. E.g. { attribute1, attribute2 } etc
 table_def : column_def 
@@ -61,28 +65,27 @@ table_def : column_def
 		  | column_def ',' table_def
           ;
 
-column_def : ID datatype column_costraint_def
-			|ID datatype
+column_def : ID {attribute_name = $1;} datatype column_costraint_def
 			; 
 
-datatype : INTEGER 
-         | INTEGER '(' NUM ')'
-         | FLOAT '(' NUM ')'
-         | BOOLEAN 
-         | VARCHAR '(' NUM ')' 
-		 | DATE
+datatype : INTEGER {insert_type($1); add('A', attribute_name);}
+         | INTEGER {insert_type($1); add('A', attribute_name);}'(' NUM ')'
+         | FLOAT {insert_type($1); add('A', attribute_name);}'(' NUM ')'
+         | BOOLEAN {insert_type($1); add('A', attribute_name);}
+         | VARCHAR {insert_type($1); add('A', attribute_name);}'(' NUM ')' 
+		 | DATE{insert_type($1); add('A', attribute_name);}
          ;
  
-column_costraint_def: column_costraint
-					| column_costraint column_costraint
+column_costraint_def: column_costraint 
+					|/* empty */
 					;
 
 
-column_costraint: NOTNULL
-				| PRIMARYKEY
-				| UNIQUE
-				| FOREIGNKEY REFERENCES ID '(' ID ')'
-				| CHECK '(' condition ')'
+column_costraint: NOTNULL {add('K', $1);}
+				| PRIMARYKEY {add('K', $1);}
+				| UNIQUE {add('K', $1);}
+				| FOREIGNKEY {add('K', $1);} REFERENCES ID '(' ID ')'
+				| CHECK {add('K', $1);} '(' condition ')'
 				;
 				
 table_constraint_def: table_constraint
@@ -101,7 +104,7 @@ parameters: ID
 			| ID ',' parameters
 			;
 			
-select_stmt : SELECT select_all_or_list FROM ID where_clause {printf("correct"); exit(0);};
+select_stmt : SELECT select_all_or_list FROM ID where_clause {printf("correct"); display_symbol_table(); exit(0);};
 			;
 				
 
@@ -176,68 +179,67 @@ update_stmt : UPDATE ID SET condition WHERE condition {printf("correct"); exit(0
 %%
 
 int main(void){
+	yyparse();
 	
-	printf("\n\n");
-	printf("\t\t\t\t\t\t\t\t PHASE 1: LEXICAL ANALYSIS \n\n");
-	printf("\nSYMBOL   DATATYPE   TYPE   LINE NUMBER \n");
-	printf("_______________________________________\n\n");
-	int i=0;
-	for(i=0; i<count; i++) {
-		printf("%s\t%s\t%s\t%d\t\n", symbol_table[i].id_name, symbol_table[i].data_type, symbol_table[i].type, symbol_table[i].line_no);
-	}
-	for(i=0;i<count;i++) {
-		free(symbol_table[i].id_name);
-		free(symbol_table[i].type);
-	}
-	printf("\n\n");
-	return yyparse();
+	
 }
 
-int search(char *type) {
+int search(char *token) {
 	int i;
 	for(i=count-1; i>=0; i--) {
-		if(strcmp(symbol_table[i].id_name, type)==0) {
+		if(strcmp(symbol_table[i].id_name, token)) {
 			return -1;
 			break;
 		}
 	}
-	return 0;
+	return 1;
 }
+void display_symbol_table(){
+	printf("\n\n");
+	printf("\nSYMBOL        DATATYPE          TYPE \n");
+	printf("_______________________________________\n\n");
+	int i=0;
+	for(i = 0; i < count; i++) {
+		printf("%-15s %-15s %-15s\n", symbol_table[i].id_name, symbol_table[i].data_type, symbol_table[i].type);
+	}
 
-void add(char c) {
-  q=search(yytext);
-  if(!q) {
+	for(i=0;i<count;i++) {
+		/*free(symbol_table[i].id_name);
+		free(symbol_table[i].type);*/
+	}
+	printf("\n\n");
+}
+void add(char c, char * token) {
+  q=search(token);
+  if(search(token)){
     if(c == 'K') {
-			symbol_table[count].id_name=strdup(yytext);
-			symbol_table[count].data_type=strdup(type);
-			symbol_table[count].line_no=countn;
-			symbol_table[count].type=strdup("Keyword\t");
-			count++;
-		}
-		else if(c == 'A') {
-			symbol_table[count].id_name=strdup(yytext);
+			symbol_table[count].id_name= strdup(token);
 			symbol_table[count].data_type=strdup("N/A");
-			symbol_table[count].line_no=countn;
-			symbol_table[count].type=strdup("Attribute");
+			symbol_table[count].type=("Keyword\t");
 			count++;
 		}
 		else if(c == 'R') {
-			symbol_table[count].id_name=strdup(yytext);
+			symbol_table[count].id_name= strdup(token);
 			symbol_table[count].data_type=strdup(type);
-			symbol_table[count].line_no=countn;
 			symbol_table[count].type=strdup("Relation");
 			count++;
 		}
+		else if(c == 'A') {
+			symbol_table[count].id_name= strdup(token);
+			symbol_table[count].data_type=strdup(type);
+			symbol_table[count].type=strdup("Attribute");
+			count++;
+		}
 		else if(c == 'C') {
-			symbol_table[count].id_name=strdup(yytext);
+			symbol_table[count].id_name= strdup(token);
 			symbol_table[count].data_type=strdup("CONST");
-			symbol_table[count].line_no=countn;
 			symbol_table[count].type=strdup("Constant");
 			count++;
 		}
-	}
+  }
+  printf("%d", count);
 }
 
-void insert_type() {
-	strcpy(type, yytext);
+void insert_type(char * value_type) {
+	strcpy(type, value_type);
 }

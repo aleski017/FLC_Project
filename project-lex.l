@@ -33,18 +33,18 @@ BSTRING   \'({LETTER}|{DIGIT}|[_])*\'
  
 
 %%
-[\n ]+      {/* ignore newline */} ;
-(int|INT)                       { return INTEGER; }
-(float|FLOAT)                   { return FLOAT; }
-(boolean|BOOLEAN)               { return BOOLEAN; }
-(varchar|VARCHAR)               { return VARCHAR; }
-(DATE|date)                     { return DATE; }
-("NOT NULL"|"not null")         { return NOTNULL; }
-(UNIQUE|unique)                 { return UNIQUE; }
-("PRIMARY KEY"|"primary key")   { return PRIMARYKEY; }
-("FOREIGN KEY"|"foreign key")   { return FOREIGNKEY; }
-(REFERENCES|references)         { return REFERENCES; }
-(CONSTRAINT|constraint)         { return CONSTRAINT; }
+[\n ]+      {} ;
+(int|INT)                       {yylval.lexeme = strdup(yytext); return INTEGER; }
+(float|FLOAT)                   { yylval.lexeme = strdup(yytext);return FLOAT; }
+(boolean|BOOLEAN)               { yylval.lexeme = strdup(yytext);return BOOLEAN; }
+(varchar|VARCHAR)               { yylval.lexeme = strdup(yytext);return VARCHAR; }
+(DATE|date)                     { yylval.lexeme = strdup(yytext);return DATE; }
+("NOT NULL"|"not null")         { yylval.lexeme = strdup(yytext);return NOTNULL; }
+(UNIQUE|unique)                 { yylval.lexeme = strdup(yytext);return UNIQUE; }
+("PRIMARY KEY"|"primary key")   { yylval.lexeme = strdup(yytext);return PRIMARYKEY; }
+("FOREIGN KEY"|"foreign key")   { yylval.lexeme = strdup(yytext);return FOREIGNKEY; }
+(REFERENCES|references)         { yylval.lexeme = strdup(yytext);return REFERENCES; }
+(CONSTRAINT|constraint)         { yylval.lexeme = strdup(yytext);return CONSTRAINT; }
 
 {NUM}   {/*yylval.value = atof(yytext);*/
          return NUM;}
@@ -52,31 +52,31 @@ BSTRING   \'({LETTER}|{DIGIT}|[_])*\'
 {BSTRING}                     		{ return STRINGVALUE; }
 
 
-("CREATE TABLE"|"create table")    { return CREATETABLE; }
-("ALTER TABLE"|"alter table")      { return ALTERTABLE; }
-(ALTER|alter)      				   { return ALTER; }
-(SELECT|select)                    { return SELECT; }
-(COLUMN|column)                    { return COLUMN; }
-(RENAME|rename)                    { return RENAME; }
-(TO|to)                   		   { return TO; }
-(FROM|from)                        { return FROM; }
-(WHERE|where)                      { return WHERE; }
-("GROUP BY"|"group by")            { return GROUPBY; }
-("INSERT INTO"|"insert into")      { return INSERT; }
-(VALUES|values)                    { return VALUES; }
-(CHECK|check)                      { return CHECK; }
-(AND|and)               		   { return AND; }
-(OR|or)            				   { return OR; }
-(DROP|drop)  					   { return DROP; }
-(DATABASE|database)                { return DATABASE; }
-("DELETE FROM"|"delete from")      { return DELETE_FROM; }
-(UPDATE|update)                    { return UPDATE; }
-(SET|set)                          { return SET; }
+("CREATE TABLE"|"create table")    { yylval.lexeme = strdup(yytext); return CREATETABLE; }
+("ALTER TABLE"|"alter table")      { yylval.lexeme = strdup(yytext);return ALTERTABLE; }
+(ALTER|alter)      				   { yylval.lexeme = strdup(yytext);return ALTER; }
+(SELECT|select)                    { yylval.lexeme = strdup(yytext);return SELECT; }
+(COLUMN|column)                    { yylval.lexeme = strdup(yytext);return COLUMN; }
+(RENAME|rename)                    { yylval.lexeme = strdup(yytext);return RENAME; }
+(TO|to)                   		   { yylval.lexeme = strdup(yytext);return TO; }
+(FROM|from)                        { yylval.lexeme = strdup(yytext);return FROM; }
+(WHERE|where)                      { yylval.lexeme = strdup(yytext);return WHERE; }
+("GROUP BY"|"group by")            { yylval.lexeme = strdup(yytext);return GROUPBY; }
+("INSERT INTO"|"insert into")      { yylval.lexeme = strdup(yytext);return INSERT; }
+(VALUES|values)                    { yylval.lexeme = strdup(yytext);return VALUES; }
+(CHECK|check)                      { yylval.lexeme = strdup(yytext);return CHECK; }
+(AND|and)               		   { yylval.lexeme = strdup(yytext);return AND; }
+(OR|or)            				   { yylval.lexeme = strdup(yytext);return OR; }
+(DROP|drop)  					   { yylval.lexeme = strdup(yytext);return DROP; }
+(DATABASE|database)                { yylval.lexeme = strdup(yytext);return DATABASE; }
+("DELETE FROM"|"delete from")      { yylval.lexeme = strdup(yytext);return DELETE_FROM; }
+(UPDATE|update)                    { yylval.lexeme = strdup(yytext);return UPDATE; }
+(SET|set)                          { yylval.lexeme = strdup(yytext);return SET; }
 
 (false|FALSE)              { return FALSE; }
 (true|TRUE)                { return TRUE; }
 
-{ID}    {/*yylval.lexeme = strdup(yytext);*/ return ID;}
+{ID}    {yylval.lexeme = strdup(yytext); return ID;}
 [-]?{DIGIT}+                {yylval.value = atoi(yytext); return NUM; }
 [-]?{DIGIT}+\.{DIGIT}{1,6}  {yylval.value = atof(yytext); return NUM; }
 
@@ -91,9 +91,7 @@ BSTRING   \'({LETTER}|{DIGIT}|[_])*\'
 ","                  { return ','; }
 "("                  { return '('; }
 ")"                  { return ')'; }
-[\t ]+      {/* ignore whitespace */};
 
-.                 { /* Ignore any other character */ }
 
 
 %%
