@@ -78,10 +78,25 @@ void yyerror(const char *s)
     fprintf(stderr, "%s\n", s);
     exit(1);
 }
+struct dataType {
+        char * id_name;
+        char * data_type;
+		char * type;
+        int line_no;
+} symbol_table[40];
 
 int yylex(void);
+int count=0;
+int q;
+char type[10];
+int countn=1;
+void add(char);
+void insert_type();
+int search(char *);
+void insert_type();
+extern char* yytext;
 
-#line 85 "project.tab.c"
+#line 100 "project.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -576,14 +591,14 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    28,    28,    29,    30,    31,    32,    33,    34,    35,
-      39,    42,    43,    44,    47,    48,    51,    52,    53,    54,
-      55,    56,    59,    60,    64,    65,    66,    67,    68,    71,
-      72,    76,    77,    78,    79,    80,    83,    84,    87,    91,
-      92,    95,    96,    99,   100,   103,   104,   105,   106,   107,
-     110,   111,   112,   114,   115,   118,   119,   120,   121,   122,
-     123,   126,   127,   130,   131,   133,   134,   137,   138,   141,
-     142,   145,   146,   147,   150,   153,   156
+       0,    45,    45,    46,    47,    48,    49,    50,    51,    52,
+      56,    59,    60,    61,    64,    65,    68,    69,    70,    71,
+      72,    73,    76,    77,    81,    82,    83,    84,    85,    88,
+      89,    93,    94,    95,    96,    97,   100,   101,   104,   108,
+     109,   112,   113,   116,   117,   120,   121,   122,   123,   124,
+     127,   128,   129,   131,   132,   135,   136,   137,   138,   139,
+     140,   143,   144,   147,   148,   150,   151,   154,   155,   158,
+     159,   162,   163,   164,   167,   170,   173
 };
 #endif
 
@@ -647,12 +662,12 @@ static const yytype_int8 yypact[] =
     -123,  -123,  -123,  -123,     4,    36,    -5,    52,  -123,  -123,
       -5,    32,    87,    89,    91,    81,  -123,  -123,  -123,    86,
     -123,    58,    92,    82,    83,    84,    85,  -123,  -123,    90,
-       2,    -5,    93,  -123,    44,  -123,    98,     2,     2,  -123,
+       2,    -5,    93,  -123,    44,  -123,    98,  -123,   118,  -123,
     -123,  -123,     2,    95,    97,    99,    32,   100,  -123,   101,
       32,   103,   103,   103,    41,  -123,    44,  -123,  -123,  -123,
     -123,  -123,   -12,   104,   105,   -10,   106,   108,   109,   110,
     -123,  -123,  -123,   111,   113,  -123,   103,  -123,  -123,  -123,
-     112,   114,  -123,  -123,   119,   115,   107,   118,   116,  -123
+     112,   114,  -123,  -123,   119,   115,   107,   126,   116,  -123
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -682,9 +697,9 @@ static const yytype_int8 yydefact[] =
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-    -123,  -123,  -123,    68,  -123,   117,  -123,    34,    -1,  -123,
-    -122,   131,  -123,   130,  -123,   -39,   -44,   120,  -123,   121,
-    -123,   -95,   122,    37,  -123,  -123,  -123,  -123
+    -123,  -123,  -123,    68,  -123,   117,  -123,    34,     6,  -123,
+    -122,   134,  -123,   122,  -123,   -39,   -44,   120,  -123,   121,
+    -123,   -95,   123,    37,  -123,  -123,  -123,  -123
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
@@ -713,13 +728,13 @@ static const yytype_int16 yytable[] =
       83,    84,    85,    50,    44,    47,    51,    67,    69,    68,
       73,    74,    75,    76,    77,   111,   114,   116,    92,    93,
      123,    94,   124,   112,   125,   127,   129,   126,   130,   131,
-     132,   133,   138,   150,   143,   128,   107,   146,   134,   144,
-      28,   136,   139,     0,   140,   160,   141,   161,   135,   166,
-     153,   154,   168,   167,   156,   157,   158,   159,   165,   163,
-      43,   164,     0,   169,     0,     0,     0,     0,     0,     0,
+     132,   133,   138,    78,   143,   128,   107,   146,   134,   144,
+     150,   136,   139,    28,   140,   160,   141,   161,   135,   166,
+     153,   154,    43,   167,   156,   157,   158,   159,   165,   163,
+     168,   164,     0,   169,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
       90,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,   115,     0,     0,   113,     0,     0,     0,     0,
+       0,     0,   115,     0,     0,     0,   113,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,   120
 };
 
@@ -738,13 +753,13 @@ static const yytype_int16 yycheck[] =
       12,    13,    14,    29,    34,    34,    29,    47,     6,    48,
       48,    47,    34,    34,    34,    48,    22,    21,    46,    46,
       33,    46,    33,    47,    33,    39,    34,    46,    46,    46,
-      46,    46,    34,   134,    34,   101,    68,    34,    48,    38,
-       9,    48,    47,    -1,    47,    34,    47,    34,   111,    34,
-      46,    46,    34,    46,    48,    47,    47,    47,    39,    47,
-      30,    47,    -1,    47,    -1,    -1,    -1,    -1,    -1,    -1,
+      46,    46,    34,    15,    34,   101,    68,    34,    48,    38,
+     134,    48,    47,     9,    47,    34,    47,    34,   111,    34,
+      46,    46,    30,    46,    48,    47,    47,    47,    39,    47,
+      34,    47,    -1,    47,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       59,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    75,    -1,    -1,    73,    -1,    -1,    -1,    -1,
+      -1,    -1,    75,    -1,    -1,    -1,    73,    -1,    -1,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    87
 };
 
@@ -1258,67 +1273,67 @@ yyreduce:
   switch (yyn)
     {
   case 10: /* expr: CREATETABLE ID '(' table_def ')'  */
-#line 39 "project.y"
+#line 56 "project.y"
                                         {printf("correct"); exit(0);}
-#line 1264 "project.tab.c"
+#line 1279 "project.tab.c"
     break;
 
   case 38: /* select_stmt: SELECT select_all_or_list FROM ID where_clause  */
-#line 87 "project.y"
+#line 104 "project.y"
                                                              {printf("correct"); exit(0);}
-#line 1270 "project.tab.c"
+#line 1285 "project.tab.c"
     break;
 
   case 63: /* insert_stmt: INSERT ID VALUES insertion  */
-#line 130 "project.y"
+#line 147 "project.y"
                                          {printf("correct"); exit(0);}
-#line 1276 "project.tab.c"
+#line 1291 "project.tab.c"
     break;
 
   case 64: /* insert_stmt: INSERT ID '(' column_list ')' VALUES insertion  */
-#line 131 "project.y"
+#line 148 "project.y"
                                                                          {printf("correct"); exit(0);}
-#line 1282 "project.tab.c"
+#line 1297 "project.tab.c"
     break;
 
   case 71: /* alter_table_stmt: ALTERTABLE ID DROP COLUMN ID  */
-#line 145 "project.y"
+#line 162 "project.y"
                                                {printf("correct"); exit(0);}
-#line 1288 "project.tab.c"
+#line 1303 "project.tab.c"
     break;
 
   case 72: /* alter_table_stmt: ALTERTABLE ID RENAME COLUMN ID TO ID  */
-#line 146 "project.y"
+#line 163 "project.y"
                                                                        {printf("correct"); exit(0);}
-#line 1294 "project.tab.c"
+#line 1309 "project.tab.c"
     break;
 
   case 73: /* alter_table_stmt: ALTERTABLE ID ALTER COLUMN ID datatype  */
-#line 147 "project.y"
+#line 164 "project.y"
                                                                          {printf("correct"); exit(0);}
-#line 1300 "project.tab.c"
+#line 1315 "project.tab.c"
     break;
 
   case 74: /* drop_stmt: DROP DATABASE ID  */
-#line 150 "project.y"
+#line 167 "project.y"
                              {printf("correct"); exit(0);}
-#line 1306 "project.tab.c"
+#line 1321 "project.tab.c"
     break;
 
   case 75: /* delete_stmt: DELETE_FROM ID WHERE condition  */
-#line 153 "project.y"
+#line 170 "project.y"
                                              {printf("correct"); exit(0);}
-#line 1312 "project.tab.c"
+#line 1327 "project.tab.c"
     break;
 
   case 76: /* update_stmt: UPDATE ID SET condition WHERE condition  */
-#line 156 "project.y"
+#line 173 "project.y"
                                                       {printf("correct"); exit(0);}
-#line 1318 "project.tab.c"
+#line 1333 "project.tab.c"
     break;
 
 
-#line 1322 "project.tab.c"
+#line 1337 "project.tab.c"
 
       default: break;
     }
@@ -1511,9 +1526,72 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 159 "project.y"
+#line 176 "project.y"
 
 
 int main(void){
-  return yyparse();
-  }
+	
+	printf("\n\n");
+	printf("\t\t\t\t\t\t\t\t PHASE 1: LEXICAL ANALYSIS \n\n");
+	printf("\nSYMBOL   DATATYPE   TYPE   LINE NUMBER \n");
+	printf("_______________________________________\n\n");
+	int i=0;
+	for(i=0; i<count; i++) {
+		printf("%s\t%s\t%s\t%d\t\n", symbol_table[i].id_name, symbol_table[i].data_type, symbol_table[i].type, symbol_table[i].line_no);
+	}
+	for(i=0;i<count;i++) {
+		free(symbol_table[i].id_name);
+		free(symbol_table[i].type);
+	}
+	printf("\n\n");
+	return yyparse();
+}
+
+int search(char *type) {
+	int i;
+	for(i=count-1; i>=0; i--) {
+		if(strcmp(symbol_table[i].id_name, type)==0) {
+			return -1;
+			break;
+		}
+	}
+	return 0;
+}
+
+void add(char c) {
+  q=search(yytext);
+  if(!q) {
+    if(c == 'K') {
+			symbol_table[count].id_name=strdup(yytext);
+			symbol_table[count].data_type=strdup(type);
+			symbol_table[count].line_no=countn;
+			symbol_table[count].type=strdup("Keyword\t");
+			count++;
+		}
+		else if(c == 'A') {
+			symbol_table[count].id_name=strdup(yytext);
+			symbol_table[count].data_type=strdup("N/A");
+			symbol_table[count].line_no=countn;
+			symbol_table[count].type=strdup("Attribute");
+			count++;
+		}
+		else if(c == 'R') {
+			symbol_table[count].id_name=strdup(yytext);
+			symbol_table[count].data_type=strdup(type);
+			symbol_table[count].line_no=countn;
+			symbol_table[count].type=strdup("Relation");
+			count++;
+		}
+		else if(c == 'C') {
+			symbol_table[count].id_name=strdup(yytext);
+			symbol_table[count].data_type=strdup("CONST");
+			symbol_table[count].line_no=countn;
+			symbol_table[count].type=strdup("Constant");
+			count++;
+		}
+	}
+}
+
+void insert_type() {
+	strcpy(type, yytext);
+}

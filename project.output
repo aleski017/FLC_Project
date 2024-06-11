@@ -3,10 +3,6 @@ Terminals unused in grammar
     GROUPBY
 
 
-State 117 conflicts: 2 shift/reduce
-State 118 conflicts: 2 shift/reduce
-
-
 Grammar
 
     0 $accept: line $end
@@ -1296,11 +1292,6 @@ State 117
    47          | condition AND condition •
    48          | condition • OR condition
 
-    AND  shift, and go to state 78
-    OR   shift, and go to state 79
-
-    AND       [reduce using rule 47 (condition)]
-    OR        [reduce using rule 47 (condition)]
     $default  reduce using rule 47 (condition)
 
 
@@ -1311,10 +1302,7 @@ State 118
    48          | condition OR condition •
 
     AND  shift, and go to state 78
-    OR   shift, and go to state 79
 
-    AND       [reduce using rule 48 (condition)]
-    OR        [reduce using rule 48 (condition)]
     $default  reduce using rule 48 (condition)
 
 

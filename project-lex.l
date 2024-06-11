@@ -91,7 +91,6 @@ BSTRING   \'({LETTER}|{DIGIT}|[_])*\'
 ","                  { return ','; }
 "("                  { return '('; }
 ")"                  { return ')'; }
-[ ]     { /* skip blanks */ };
 [\t ]+      {/* ignore whitespace */};
 
 .                 { /* Ignore any other character */ }

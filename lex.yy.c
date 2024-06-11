@@ -373,8 +373,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 		YY_FATAL_ERROR( "token too large, exceeds YYLMAX" ); \
 	yy_flex_strncpy( yytext, (yytext_ptr), yyleng + 1 ); \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 53
-#define YY_END_OF_BUFFER 54
+#define YY_NUM_RULES 52
+#define YY_END_OF_BUFFER 53
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -384,12 +384,12 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[405] =
     {   0,
-        0,    0,   54,   52,   51,    1,    1,   52,   52,   52,
-       48,   49,   47,   52,   13,   43,   52,   44,   38,   38,
+        0,    0,   53,   51,   50,    1,    1,   51,   51,   51,
+       48,   49,   47,   51,   13,   43,   51,   44,   38,   38,
        38,   38,   38,   38,   38,   38,   38,   38,   38,   38,
        38,   38,   38,   38,   38,   38,   38,   38,   38,   38,
        38,   38,   38,   38,   38,   38,   38,   38,   38,   38,
-       38,   51,    1,    1,   42,   14,    0,    0,   15,    0,
+       38,   50,    1,    1,   42,   14,    0,    0,   15,    0,
         0,   39,    0,   13,   45,   41,   46,   38,   38,   38,
        38,   38,   38,   38,   38,   38,   38,   38,   38,   38,
        38,   38,   38,   38,   38,   30,   38,   38,   38,   22,
@@ -763,11 +763,11 @@ static const flex_int16_t yy_chk[828] =
     } ;
 
 /* Table of booleans, true if rule could match eol. */
-static const flex_int32_t yy_rule_can_match_eol[54] =
+static const flex_int32_t yy_rule_can_match_eol[53] =
     {   0,
 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     };
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,     };
 
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
@@ -1347,24 +1347,19 @@ YY_RULE_SETUP
 case 50:
 YY_RULE_SETUP
 #line 94 "project-lex.l"
-{ /* skip blanks */ };
+{/* ignore whitespace */};
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 95 "project-lex.l"
-{/* ignore whitespace */};
+#line 96 "project-lex.l"
+{ /* Ignore any other character */ }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 97 "project-lex.l"
-{ /* Ignore any other character */ }
-	YY_BREAK
-case 53:
-YY_RULE_SETUP
-#line 100 "project-lex.l"
+#line 99 "project-lex.l"
 ECHO;
 	YY_BREAK
-#line 1368 "lex.yy.c"
+#line 1363 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2381,6 +2376,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 100 "project-lex.l"
+#line 99 "project-lex.l"
 
 

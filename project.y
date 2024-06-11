@@ -8,8 +8,23 @@ void yyerror(const char *s)
     fprintf(stderr, "%s\n", s);
     exit(1);
 }
+struct dataType {
+        char * id_name;
+        char * data_type;
+		char * type;
+        int line_no;
+} symbol_table[40];
 
 int yylex(void);
+int count=0;
+int q;
+char type[10];
+int countn=1;
+void add(char);
+void insert_type();
+int search(char *);
+void insert_type();
+extern char* yytext;
 %}
 
 
@@ -19,6 +34,8 @@ int yylex(void);
        }
 
 %token CREATETABLE SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE AND OR FALSE ALTER TRUE RENAME TO VALUES BOOLEAN VARCHAR STRINGVALUE INTEGER CONSTRAINT ALTERTABLE COLUMN FLOAT CHECK DATE NUM ID NOTNULL UNIQUE PRIMARYKEY FOREIGNKEY REFERENCES DROP DATABASE DELETE_FROM UPDATE SET
+%left OR 
+%left AND
 
 //%type expr line table_def datatype column_def select_list select_stmt where_clause condition expression comparison_op insert_stmt value_list id_or_num drop_stmt insert_column_list delete_stmt update_stmt
 
@@ -36,7 +53,7 @@ line  : expr '\n'
       ;
 
 // Matches CREATE TABLE statement, it represents the scope of the grammar 
-expr: CREATETABLE ID '(' table_def ')'	{printf("correct"); exit(0);};
+expr: CREATETABLE ID  '(' table_def ')'	{printf("correct"); exit(0);};
 
 // Used to define the creation of attributes in a table. E.g. { attribute1, attribute2 } etc
 table_def : column_def 
@@ -159,5 +176,68 @@ update_stmt : UPDATE ID SET condition WHERE condition {printf("correct"); exit(0
 %%
 
 int main(void){
-  return yyparse();
-  }
+	
+	printf("\n\n");
+	printf("\t\t\t\t\t\t\t\t PHASE 1: LEXICAL ANALYSIS \n\n");
+	printf("\nSYMBOL   DATATYPE   TYPE   LINE NUMBER \n");
+	printf("_______________________________________\n\n");
+	int i=0;
+	for(i=0; i<count; i++) {
+		printf("%s\t%s\t%s\t%d\t\n", symbol_table[i].id_name, symbol_table[i].data_type, symbol_table[i].type, symbol_table[i].line_no);
+	}
+	for(i=0;i<count;i++) {
+		free(symbol_table[i].id_name);
+		free(symbol_table[i].type);
+	}
+	printf("\n\n");
+	return yyparse();
+}
+
+int search(char *type) {
+	int i;
+	for(i=count-1; i>=0; i--) {
+		if(strcmp(symbol_table[i].id_name, type)==0) {
+			return -1;
+			break;
+		}
+	}
+	return 0;
+}
+
+void add(char c) {
+  q=search(yytext);
+  if(!q) {
+    if(c == 'K') {
+			symbol_table[count].id_name=strdup(yytext);
+			symbol_table[count].data_type=strdup(type);
+			symbol_table[count].line_no=countn;
+			symbol_table[count].type=strdup("Keyword\t");
+			count++;
+		}
+		else if(c == 'A') {
+			symbol_table[count].id_name=strdup(yytext);
+			symbol_table[count].data_type=strdup("N/A");
+			symbol_table[count].line_no=countn;
+			symbol_table[count].type=strdup("Attribute");
+			count++;
+		}
+		else if(c == 'R') {
+			symbol_table[count].id_name=strdup(yytext);
+			symbol_table[count].data_type=strdup(type);
+			symbol_table[count].line_no=countn;
+			symbol_table[count].type=strdup("Relation");
+			count++;
+		}
+		else if(c == 'C') {
+			symbol_table[count].id_name=strdup(yytext);
+			symbol_table[count].data_type=strdup("CONST");
+			symbol_table[count].line_no=countn;
+			symbol_table[count].type=strdup("Constant");
+			count++;
+		}
+	}
+}
+
+void insert_type() {
+	strcpy(type, yytext);
+}
