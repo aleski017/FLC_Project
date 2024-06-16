@@ -1299,32 +1299,32 @@ YY_RULE_SETUP
 case 41:
 YY_RULE_SETUP
 #line 84 "project-lex.l"
-{ return EQ; }
+{ yylval.lexeme = strdup(yytext);return EQ; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 85 "project-lex.l"
-{ return NE; }
+{ yylval.lexeme = strdup(yytext);return NE; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 86 "project-lex.l"
-{ return LS; }
+{ yylval.lexeme = strdup(yytext);return LS; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
 #line 87 "project-lex.l"
-{ return GR; }
+{ yylval.lexeme = strdup(yytext);return GR; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 88 "project-lex.l"
-{ return LE; }
+{ yylval.lexeme = strdup(yytext);return LE; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 89 "project-lex.l"
-{ return GE; }
+{ yylval.lexeme = strdup(yytext);return GE; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP

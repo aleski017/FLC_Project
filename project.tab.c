@@ -89,16 +89,18 @@ int yylex();
 int count=0;
 int q;
 char type[10];
+char parameters[10];
 int countn=1;
 void add(char, char*);
-void insert_type();
+
 int search(char *);
 void insert_type(char *);
+void insert_parameter(char *);
 void display_symbol_table();
 char * attribute_name;
 extern char* yytext;
 
-#line 102 "project.tab.c"
+#line 104 "project.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -177,41 +179,75 @@ enum yysymbol_kind_t
   YYSYMBOL_48_ = 48,                       /* ','  */
   YYSYMBOL_49_ = 49,                       /* '*'  */
   YYSYMBOL_YYACCEPT = 50,                  /* $accept  */
-  YYSYMBOL_line = 51,                      /* line  */
-  YYSYMBOL_expr = 52,                      /* expr  */
-  YYSYMBOL_53_1 = 53,                      /* $@1  */
-  YYSYMBOL_54_2 = 54,                      /* $@2  */
-  YYSYMBOL_table_def = 55,                 /* table_def  */
-  YYSYMBOL_column_def = 56,                /* column_def  */
-  YYSYMBOL_57_3 = 57,                      /* $@3  */
-  YYSYMBOL_datatype = 58,                  /* datatype  */
-  YYSYMBOL_59_4 = 59,                      /* $@4  */
-  YYSYMBOL_60_5 = 60,                      /* $@5  */
-  YYSYMBOL_61_6 = 61,                      /* $@6  */
-  YYSYMBOL_column_costraint_def = 62,      /* column_costraint_def  */
-  YYSYMBOL_column_costraint = 63,          /* column_costraint  */
-  YYSYMBOL_64_7 = 64,                      /* $@7  */
-  YYSYMBOL_65_8 = 65,                      /* $@8  */
-  YYSYMBOL_table_constraint_def = 66,      /* table_constraint_def  */
-  YYSYMBOL_table_constraint = 67,          /* table_constraint  */
-  YYSYMBOL_parameters = 68,                /* parameters  */
-  YYSYMBOL_select_stmt = 69,               /* select_stmt  */
-  YYSYMBOL_select_all_or_list = 70,        /* select_all_or_list  */
-  YYSYMBOL_select_list = 71,               /* select_list  */
-  YYSYMBOL_where_clause = 72,              /* where_clause  */
-  YYSYMBOL_condition = 73,                 /* condition  */
-  YYSYMBOL_values = 74,                    /* values  */
-  YYSYMBOL_boolean_values = 75,            /* boolean_values  */
-  YYSYMBOL_comparison_op = 76,             /* comparison_op  */
-  YYSYMBOL_boolean_comparison_op = 77,     /* boolean_comparison_op  */
-  YYSYMBOL_insert_stmt = 78,               /* insert_stmt  */
-  YYSYMBOL_insertion = 79,                 /* insertion  */
-  YYSYMBOL_column_list = 80,               /* column_list  */
-  YYSYMBOL_value_list = 81,                /* value_list  */
-  YYSYMBOL_alter_table_stmt = 82,          /* alter_table_stmt  */
-  YYSYMBOL_drop_stmt = 83,                 /* drop_stmt  */
-  YYSYMBOL_delete_stmt = 84,               /* delete_stmt  */
-  YYSYMBOL_update_stmt = 85                /* update_stmt  */
+  YYSYMBOL_scope = 51,                     /* scope  */
+  YYSYMBOL_line = 52,                      /* line  */
+  YYSYMBOL_expr = 53,                      /* expr  */
+  YYSYMBOL_54_1 = 54,                      /* $@1  */
+  YYSYMBOL_55_2 = 55,                      /* $@2  */
+  YYSYMBOL_table_def = 56,                 /* table_def  */
+  YYSYMBOL_column_def = 57,                /* column_def  */
+  YYSYMBOL_58_3 = 58,                      /* $@3  */
+  YYSYMBOL_datatype = 59,                  /* datatype  */
+  YYSYMBOL_60_4 = 60,                      /* $@4  */
+  YYSYMBOL_61_5 = 61,                      /* $@5  */
+  YYSYMBOL_62_6 = 62,                      /* $@6  */
+  YYSYMBOL_63_7 = 63,                      /* $@7  */
+  YYSYMBOL_column_costraint_def = 64,      /* column_costraint_def  */
+  YYSYMBOL_column_costraint = 65,          /* column_costraint  */
+  YYSYMBOL_66_8 = 66,                      /* $@8  */
+  YYSYMBOL_67_9 = 67,                      /* $@9  */
+  YYSYMBOL_68_10 = 68,                     /* $@10  */
+  YYSYMBOL_table_constraint_def = 69,      /* table_constraint_def  */
+  YYSYMBOL_table_constraint = 70,          /* table_constraint  */
+  YYSYMBOL_71_11 = 71,                     /* $@11  */
+  YYSYMBOL_72_12 = 72,                     /* $@12  */
+  YYSYMBOL_73_13 = 73,                     /* $@13  */
+  YYSYMBOL_74_14 = 74,                     /* $@14  */
+  YYSYMBOL_75_15 = 75,                     /* $@15  */
+  YYSYMBOL_76_16 = 76,                     /* $@16  */
+  YYSYMBOL_77_17 = 77,                     /* $@17  */
+  YYSYMBOL_parameters = 78,                /* parameters  */
+  YYSYMBOL_select_stmt = 79,               /* select_stmt  */
+  YYSYMBOL_80_18 = 80,                     /* $@18  */
+  YYSYMBOL_81_19 = 81,                     /* $@19  */
+  YYSYMBOL_select_all_or_list = 82,        /* select_all_or_list  */
+  YYSYMBOL_select_list = 83,               /* select_list  */
+  YYSYMBOL_where_clause = 84,              /* where_clause  */
+  YYSYMBOL_85_20 = 85,                     /* $@20  */
+  YYSYMBOL_condition = 86,                 /* condition  */
+  YYSYMBOL_87_21 = 87,                     /* $@21  */
+  YYSYMBOL_88_22 = 88,                     /* $@22  */
+  YYSYMBOL_condition_step2 = 89,           /* condition_step2  */
+  YYSYMBOL_values = 90,                    /* values  */
+  YYSYMBOL_boolean_values = 91,            /* boolean_values  */
+  YYSYMBOL_comparison_op = 92,             /* comparison_op  */
+  YYSYMBOL_boolean_comparison_op = 93,     /* boolean_comparison_op  */
+  YYSYMBOL_insert_stmt = 94,               /* insert_stmt  */
+  YYSYMBOL_95_23 = 95,                     /* $@23  */
+  YYSYMBOL_96_24 = 96,                     /* $@24  */
+  YYSYMBOL_insertion = 97,                 /* insertion  */
+  YYSYMBOL_column_list = 98,               /* column_list  */
+  YYSYMBOL_value_list = 99,                /* value_list  */
+  YYSYMBOL_alter_table_stmt = 100,         /* alter_table_stmt  */
+  YYSYMBOL_101_25 = 101,                   /* $@25  */
+  YYSYMBOL_alter_table_spec = 102,         /* alter_table_spec  */
+  YYSYMBOL_103_26 = 103,                   /* $@26  */
+  YYSYMBOL_104_27 = 104,                   /* $@27  */
+  YYSYMBOL_105_28 = 105,                   /* $@28  */
+  YYSYMBOL_106_29 = 106,                   /* $@29  */
+  YYSYMBOL_107_30 = 107,                   /* $@30  */
+  YYSYMBOL_108_31 = 108,                   /* $@31  */
+  YYSYMBOL_109_32 = 109,                   /* $@32  */
+  YYSYMBOL_drop_stmt = 110,                /* drop_stmt  */
+  YYSYMBOL_111_33 = 111,                   /* $@33  */
+  YYSYMBOL_112_34 = 112,                   /* $@34  */
+  YYSYMBOL_delete_stmt = 113,              /* delete_stmt  */
+  YYSYMBOL_114_35 = 114,                   /* $@35  */
+  YYSYMBOL_115_36 = 115,                   /* $@36  */
+  YYSYMBOL_update_stmt = 116,              /* update_stmt  */
+  YYSYMBOL_117_37 = 117,                   /* $@37  */
+  YYSYMBOL_118_38 = 118,                   /* $@38  */
+  YYSYMBOL_119_39 = 119                    /* $@39  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -537,18 +573,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  26
+#define YYFINAL  24
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   187
+#define YYLAST   180
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  50
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  36
+#define YYNNTS  70
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  83
+#define YYNRULES  116
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  177
+#define YYNSTATES  209
 
 /* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   299
@@ -601,15 +637,18 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    49,    49,    50,    51,    52,    53,    54,    55,    56,
-      60,    60,    60,    63,    64,    65,    68,    68,    71,    72,
-      72,    73,    73,    74,    75,    75,    76,    79,    80,    84,
-      85,    86,    87,    87,    88,    88,    91,    92,    96,    97,
-      98,    99,   100,   103,   104,   107,   111,   112,   115,   116,
-     119,   120,   123,   124,   125,   126,   127,   130,   131,   132,
-     134,   135,   138,   139,   140,   141,   142,   143,   146,   147,
-     150,   151,   153,   154,   157,   158,   161,   162,   165,   166,
-     167,   170,   173,   176
+       0,    51,    51,    53,    54,    55,    56,    57,    58,    59,
+      60,    64,    64,    64,    67,    68,    69,    72,    72,    75,
+      76,    76,    77,    77,    78,    79,    79,    79,    80,    83,
+      84,    88,    89,    90,    91,    91,    91,    92,    92,    95,
+      96,   100,   100,   101,   101,   102,   102,   103,   103,   103,
+     103,   104,   104,   107,   108,   111,   111,   111,   115,   116,
+     119,   120,   123,   123,   124,   127,   127,   128,   128,   129,
+     132,   133,   134,   137,   138,   139,   141,   142,   145,   146,
+     147,   148,   149,   150,   153,   154,   157,   157,   157,   159,
+     160,   163,   164,   167,   168,   170,   170,   172,   172,   172,
+     173,   173,   173,   173,   174,   174,   174,   177,   177,   177,
+     180,   180,   180,   183,   183,   183,   183
 };
 #endif
 
@@ -632,14 +671,18 @@ static const char *const yytname[] =
   "COLUMN", "FLOAT", "CHECK", "DATE", "NUM", "NOTNULL", "UNIQUE",
   "PRIMARYKEY", "FOREIGNKEY", "REFERENCES", "DROP", "DATABASE",
   "DELETE_FROM", "UPDATE", "SET", "CREATETABLE", "ID", "'\\n'", "'('",
-  "')'", "','", "'*'", "$accept", "line", "expr", "$@1", "$@2",
-  "table_def", "column_def", "$@3", "datatype", "$@4", "$@5", "$@6",
-  "column_costraint_def", "column_costraint", "$@7", "$@8",
-  "table_constraint_def", "table_constraint", "parameters", "select_stmt",
-  "select_all_or_list", "select_list", "where_clause", "condition",
-  "values", "boolean_values", "comparison_op", "boolean_comparison_op",
-  "insert_stmt", "insertion", "column_list", "value_list",
-  "alter_table_stmt", "drop_stmt", "delete_stmt", "update_stmt", YY_NULLPTR
+  "')'", "','", "'*'", "$accept", "scope", "line", "expr", "$@1", "$@2",
+  "table_def", "column_def", "$@3", "datatype", "$@4", "$@5", "$@6", "$@7",
+  "column_costraint_def", "column_costraint", "$@8", "$@9", "$@10",
+  "table_constraint_def", "table_constraint", "$@11", "$@12", "$@13",
+  "$@14", "$@15", "$@16", "$@17", "parameters", "select_stmt", "$@18",
+  "$@19", "select_all_or_list", "select_list", "where_clause", "$@20",
+  "condition", "$@21", "$@22", "condition_step2", "values",
+  "boolean_values", "comparison_op", "boolean_comparison_op",
+  "insert_stmt", "$@23", "$@24", "insertion", "column_list", "value_list",
+  "alter_table_stmt", "$@25", "alter_table_spec", "$@26", "$@27", "$@28",
+  "$@29", "$@30", "$@31", "$@32", "drop_stmt", "$@33", "$@34",
+  "delete_stmt", "$@35", "$@36", "update_stmt", "$@37", "$@38", "$@39", YY_NULLPTR
 };
 
 static const char *
@@ -649,12 +692,12 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-128)
+#define YYPACT_NINF (-155)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-70)
+#define YYTABLE_NINF (-86)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -663,24 +706,27 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-       8,   -21,   -28,   -20,    -5,    -2,    12,  -128,    65,     0,
-    -128,  -128,  -128,  -128,  -128,  -128,    -1,  -128,    56,  -128,
-     -13,     3,    23,    66,    51,    52,  -128,  -128,  -128,    53,
-      54,    55,    58,    67,    71,    75,  -128,    -6,    -6,  -128,
-    -128,    99,   -15,  -128,    57,    59,    63,    64,    69,  -128,
-    -128,  -128,  -128,  -128,    60,    78,    68,    47,    70,    -6,
-    -128,    61,    72,    58,    89,    41,    91,  -128,    -6,    -6,
-    -128,  -128,  -128,  -128,     9,    37,   -15,    76,  -128,  -128,
-     -15,    -6,    74,    60,   -15,    73,  -128,    55,  -128,  -128,
-      77,  -128,  -128,  -128,    80,  -128,    98,  -128,  -128,  -128,
-      60,  -128,    79,    81,  -128,    55,  -128,    82,    84,    85,
-    -128,    41,  -128,    24,  -128,    83,    88,    90,    49,    92,
-      86,    87,    93,    94,  -128,  -128,    95,    97,   100,   101,
-    -128,  -128,  -128,  -128,  -128,  -128,  -128,   102,    -6,   105,
-     105,   105,    43,  -128,  -128,  -128,    96,   104,   106,   -10,
-     103,   107,   108,   109,  -128,    -6,   113,   114,  -128,   105,
-    -128,  -128,  -128,    -8,   115,   112,  -128,  -128,   116,   125,
-     117,   119,  -128,   120,   121,   122,  -128
+       0,  -155,  -155,  -155,  -155,  -155,  -155,  -155,    17,  -155,
+      -1,  -155,  -155,  -155,  -155,  -155,  -155,   -23,   -19,   -16,
+       3,     8,    14,    20,  -155,  -155,  -155,     9,  -155,    57,
+    -155,    19,    -3,  -155,    64,    28,  -155,    40,  -155,    42,
+    -155,  -155,  -155,  -155,    43,  -155,  -155,    26,  -155,    44,
+      37,    45,    61,    62,    63,  -155,   -12,   -12,    49,    89,
+      42,    74,  -155,  -155,  -155,  -155,  -155,  -155,  -155,  -155,
+    -155,    32,    70,    36,    91,  -155,    50,    51,  -155,  -155,
+    -155,  -155,    54,    56,    58,  -155,  -155,  -155,  -155,  -155,
+    -155,    -5,    13,   -14,    21,  -155,  -155,   -14,  -155,    31,
+    -155,   -11,   -12,    55,    31,    84,  -155,   -12,   -12,  -155,
+    -155,  -155,   -12,  -155,  -155,    59,  -155,  -155,    41,  -155,
+    -155,  -155,  -155,  -155,  -155,  -155,    60,  -155,   -14,  -155,
+    -155,  -155,  -155,  -155,  -155,    65,    66,    67,  -155,  -155,
+    -155,  -155,  -155,  -155,  -155,    71,    72,    73,    75,    76,
+      33,    68,    77,    79,    78,    85,    88,    80,    69,    92,
+     -12,    81,    81,    81,  -155,   -14,    82,  -155,  -155,    86,
+      87,   -12,  -155,  -155,    90,    83,    93,    94,    95,  -155,
+      55,    96,  -155,  -155,    97,   101,   100,  -155,    81,  -155,
+    -155,  -155,  -155,  -155,  -155,   102,   103,  -155,   105,   104,
+     106,    98,  -155,  -155,   108,   109,   110,   111,  -155
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -688,42 +734,51 @@ static const yytype_int16 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     0,     0,     0,     0,     0,     0,    10,     0,     0,
-       4,     5,     8,     6,     7,     9,    48,    46,     0,    47,
-       0,     0,     0,     0,     0,     0,     1,     2,     3,     0,
-       0,     0,     0,     0,     0,     0,    81,     0,     0,    11,
-      49,    51,     0,    70,    74,     0,     0,     0,     0,    61,
-      60,    57,    58,    59,    82,     0,     0,     0,     0,     0,
-      45,    76,     0,     0,     0,     0,     0,    78,     0,     0,
-      62,    63,    64,    65,    66,    67,     0,     0,    68,    69,
-       0,     0,     0,    50,     0,    72,    75,     0,    23,    24,
-      18,    21,    26,    80,     0,    55,    56,    52,    53,    54,
-      83,    16,     0,    13,    77,     0,    71,     0,     0,     0,
-      79,     0,    12,     0,    73,     0,     0,     0,    28,     0,
-       0,     0,     0,     0,    15,    14,    36,     0,     0,     0,
-      34,    29,    31,    30,    32,    17,    27,     0,     0,     0,
-       0,     0,     0,    25,    20,    22,     0,     0,     0,     0,
-      43,     0,     0,     0,    37,     0,     0,     0,    42,     0,
-      38,    39,    40,     0,     0,     0,    44,    35,     0,     0,
-       0,     0,    33,     0,     0,     0,    41
+       0,    55,    86,    95,   107,   110,   113,    11,     0,     2,
+       0,     5,     6,     9,     7,     8,    10,     0,     0,     0,
+       0,     0,     0,     0,     1,     3,     4,    60,    58,     0,
+      59,     0,     0,   108,     0,     0,    12,     0,    56,     0,
+     104,   100,    97,    96,     0,   111,   114,     0,    61,     0,
+      91,     0,     0,     0,     0,   109,     0,     0,     0,    64,
+       0,     0,   105,   101,    98,    77,    76,    73,    74,    75,
+     112,    69,     0,     0,     0,    17,     0,    14,    62,    57,
+      92,    87,     0,     0,     0,    65,    67,    78,    79,    80,
+      81,    82,    83,     0,     0,    84,    85,     0,   115,     0,
+      13,     0,     0,     0,     0,     0,    99,     0,     0,    70,
+      71,    72,     0,    24,    25,    19,    22,    28,    30,    47,
+      51,    41,    43,    45,    16,    15,    39,    63,     0,    88,
+     106,   102,    66,    68,   116,     0,     0,     0,    37,    31,
+      33,    32,    34,    18,    29,     0,     0,     0,     0,     0,
+       0,    93,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,    40,     0,    89,   103,    26,     0,
+       0,     0,    35,    48,     0,    53,     0,     0,     0,    94,
+       0,     0,    21,    23,     0,     0,     0,    52,     0,    42,
+      44,    46,    90,    27,    38,     0,     0,    54,     0,     0,
+       0,     0,    36,    49,     0,     0,     0,     0,    50
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-    -128,  -128,  -128,  -128,  -128,     1,  -128,  -128,    14,  -128,
-    -128,  -128,  -128,  -128,  -128,  -128,    -7,  -128,  -127,   118,
-    -128,   124,  -128,   -38,   -40,   110,  -128,   111,  -128,   -86,
-     123,    50,  -128,  -128,  -128,  -128
+    -155,  -155,  -155,  -155,  -155,  -155,     6,  -155,  -155,     5,
+    -155,  -155,  -155,  -155,  -155,  -155,  -155,  -155,  -155,   -21,
+    -155,  -155,  -155,  -155,  -155,  -155,  -155,  -155,  -154,   117,
+    -155,  -155,  -155,    99,  -155,  -155,   -57,  -155,  -155,  -155,
+     -92,    38,  -155,   107,  -155,  -155,  -155,   -42,   112,   -26,
+    -155,  -155,  -155,  -155,  -155,  -155,  -155,  -155,  -155,  -155,
+    -155,  -155,  -155,  -155,  -155,  -155,  -155,  -155,  -155,  -155
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_uint8 yydefgoto[] =
 {
-       0,     8,     9,    25,    58,   102,   103,   111,    93,   108,
-     109,   107,   135,   136,   147,   146,   125,   126,   151,    10,
-      18,    19,    60,    54,    55,    56,    76,    77,    11,    43,
-      45,    62,    12,    13,    14,    15
+       0,     8,     9,    10,    23,    47,    76,    77,    99,   118,
+     136,   137,   135,   181,   143,   144,   158,   185,   157,   125,
+     126,   147,   148,   149,   145,   186,   204,   146,   176,    11,
+      17,    49,    29,    30,    79,   102,    70,   107,   108,    71,
+      72,    73,    93,    94,    12,    18,   103,   129,    51,   152,
+      13,    19,    43,    54,    84,    53,    83,   153,    52,    82,
+      14,    20,    44,    15,    21,    56,    16,    22,    57,   112
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -731,48 +786,48 @@ static const yytype_uint8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int16 yytable[] =
 {
-      57,   106,    61,     1,    68,    69,    68,    69,    31,    51,
-      49,     1,    50,   152,   153,     2,    20,    52,    51,   114,
-      33,    83,    34,    16,    21,   -68,    52,   -68,    17,    53,
-      95,    96,   166,    32,    22,     3,    97,   158,    53,   167,
-      99,    35,    23,   100,    61,    27,     4,    29,     5,     6,
-     119,     7,    81,   -69,   120,   -69,    24,   121,   122,   123,
-      30,    68,    69,    88,    89,    26,    90,    36,   101,   119,
-      91,    37,    92,   120,    68,    69,   121,   122,   123,   130,
-      78,    79,   131,   132,   133,   134,    70,    71,    72,    73,
-      74,    75,    49,    38,    50,    46,    39,    16,    41,    47,
-     149,    42,    44,    48,    59,    63,    64,    65,    66,    84,
-      87,    94,    68,    67,   124,   127,    82,   163,   101,    85,
-     128,   105,   129,   -19,   110,   118,   112,    28,   115,   113,
-     116,   117,   138,   139,   104,   154,   137,     0,   148,   140,
-     141,   156,   155,   142,   143,     0,     0,   144,   145,   150,
-       0,   159,   157,    40,   160,   161,   162,   164,   165,   169,
-     170,   168,   171,   173,   172,   175,   174,    80,     0,   176,
+      74,   109,     1,     1,    65,   111,    66,     2,   177,   178,
+      67,   -84,    67,   -84,    40,   119,    41,    24,    68,   120,
+      68,    27,   121,   122,   123,    31,    28,     3,    32,   -85,
+      69,   -85,    69,    75,   197,    42,   151,    65,     4,    66,
+       5,     6,    33,     7,    25,   127,    85,    86,    95,    96,
+     132,   133,    34,   113,   114,   134,   115,    37,    35,   119,
+     116,    38,   117,   120,    36,    39,   121,   122,   123,    45,
+      46,   138,    58,   151,   139,   140,   141,   142,    87,    88,
+      89,    90,    91,    92,    27,    60,    50,    55,    59,    62,
+      63,    64,    61,    75,    78,    81,    98,   100,   104,   101,
+     105,   128,   106,   174,   131,   -20,   172,   124,   150,   130,
+     168,   154,   155,   156,   184,   159,   165,   169,   160,   161,
+     170,   162,   163,   167,   166,   175,   171,    26,   173,   164,
+     180,   188,   110,   182,   183,   203,    48,   187,   192,   179,
+     189,   190,   191,   193,   194,   195,   196,   199,   198,   200,
+       0,   201,   205,   202,   207,   206,     0,     0,   208,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,    86,    98
+       0,     0,    80,     0,     0,     0,     0,     0,     0,     0,
+      97
 };
 
 static const yytype_int16 yycheck[] =
 {
-      38,    87,    42,     3,    14,    15,    14,    15,    21,    24,
-      16,     3,    18,   140,   141,     7,    44,    32,    24,   105,
-      17,    59,    19,    44,    44,    16,    32,    18,    49,    44,
-      68,    69,   159,    46,    39,    27,    76,    47,    44,    47,
-      80,    38,    44,    81,    84,    45,    38,    48,    40,    41,
-      26,    43,     5,    16,    30,    18,    44,    33,    34,    35,
-       4,    14,    15,    22,    23,     0,    25,    44,    44,    26,
-      29,     5,    31,    30,    14,    15,    33,    34,    35,    30,
-      12,    13,    33,    34,    35,    36,     8,     9,    10,    11,
-      12,    13,    16,    42,    18,    28,    44,    44,    44,    28,
-     138,    46,    44,    28,     5,    48,    47,    44,    44,    48,
-      21,    20,    14,    44,   113,    32,    46,   155,    44,    47,
-      32,    48,    32,    46,    44,   111,    47,     9,    46,    48,
-      46,    46,    46,    46,    84,   142,    44,    -1,    36,    46,
-      46,    37,    46,    48,    47,    -1,    -1,    47,    47,    44,
-      -1,    48,    46,    29,    47,    47,    47,    44,    44,    47,
-      44,    46,    37,    44,    47,    44,    46,    56,    -1,    47,
+      57,    93,     3,     3,    16,    97,    18,     7,   162,   163,
+      24,    16,    24,    18,    17,    26,    19,     0,    32,    30,
+      32,    44,    33,    34,    35,    44,    49,    27,    44,    16,
+      44,    18,    44,    44,   188,    38,   128,    16,    38,    18,
+      40,    41,    39,    43,    45,   102,    14,    15,    12,    13,
+     107,   108,    44,    22,    23,   112,    25,    48,    44,    26,
+      29,     4,    31,    30,    44,    46,    33,    34,    35,     5,
+      42,    30,    46,   165,    33,    34,    35,    36,     8,     9,
+      10,    11,    12,    13,    44,    48,    44,    44,    44,    28,
+      28,    28,    47,    44,     5,    21,     5,    47,    44,    48,
+      44,    46,    44,   160,    20,    46,    37,   101,    48,   104,
+      32,    46,    46,    46,   171,    44,    48,    32,    46,    46,
+      32,    46,    46,    44,    47,    44,    46,    10,    36,   150,
+      48,    48,    94,    47,    47,    37,    37,    47,   180,   165,
+      47,    47,    47,    47,    47,    44,    46,    44,    46,    44,
+      -1,    47,    44,    47,    44,    46,    -1,    -1,    47,    -1,
       -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    63,    77
+      -1,    -1,    60,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      73
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
@@ -780,51 +835,60 @@ static const yytype_int16 yycheck[] =
 static const yytype_int8 yystos[] =
 {
        0,     3,     7,    27,    38,    40,    41,    43,    51,    52,
-      69,    78,    82,    83,    84,    85,    44,    49,    70,    71,
-      44,    44,    39,    44,    44,    53,     0,    45,    69,    48,
-       4,    21,    46,    17,    19,    38,    44,     5,    42,    44,
-      71,    44,    46,    79,    44,    80,    28,    28,    28,    16,
-      18,    24,    32,    44,    73,    74,    75,    73,    54,     5,
-      72,    74,    81,    48,    47,    44,    44,    44,    14,    15,
-       8,     9,    10,    11,    12,    13,    76,    77,    12,    13,
-      77,     5,    46,    73,    48,    47,    80,    21,    22,    23,
-      25,    29,    31,    58,    20,    73,    73,    74,    75,    74,
-      73,    44,    55,    56,    81,    48,    79,    61,    59,    60,
-      44,    57,    47,    48,    79,    46,    46,    46,    58,    26,
-      30,    33,    34,    35,    55,    66,    67,    32,    32,    32,
-      30,    33,    34,    35,    36,    62,    63,    44,    46,    46,
-      46,    46,    48,    47,    47,    47,    65,    64,    36,    73,
-      44,    68,    68,    68,    66,    46,    37,    46,    47,    48,
-      47,    47,    47,    73,    44,    44,    68,    47,    46,    47,
-      44,    37,    47,    44,    46,    44,    47
+      53,    79,    94,   100,   110,   113,   116,    80,    95,   101,
+     111,   114,   117,    54,     0,    45,    79,    44,    49,    82,
+      83,    44,    44,    39,    44,    44,    44,    48,     4,    46,
+      17,    19,    38,   102,   112,     5,    42,    55,    83,    81,
+      44,    98,   108,   105,   103,    44,   115,   118,    46,    44,
+      48,    47,    28,    28,    28,    16,    18,    24,    32,    44,
+      86,    89,    90,    91,    86,    44,    56,    57,     5,    84,
+      98,    21,   109,   106,   104,    14,    15,     8,     9,    10,
+      11,    12,    13,    92,    93,    12,    13,    93,     5,    58,
+      47,    48,    85,    96,    44,    44,    44,    87,    88,    90,
+      91,    90,   119,    22,    23,    25,    29,    31,    59,    26,
+      30,    33,    34,    35,    56,    69,    70,    86,    46,    97,
+      59,    20,    86,    86,    86,    62,    60,    61,    30,    33,
+      34,    35,    36,    64,    65,    74,    77,    71,    72,    73,
+      48,    90,    99,   107,    46,    46,    46,    68,    66,    44,
+      46,    46,    46,    46,    69,    48,    47,    44,    32,    32,
+      32,    46,    37,    36,    86,    44,    78,    78,    78,    99,
+      48,    63,    47,    47,    86,    67,    75,    47,    48,    47,
+      47,    47,    97,    47,    47,    44,    46,    78,    46,    44,
+      44,    47,    47,    37,    76,    44,    46,    44,    47
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    50,    51,    51,    51,    51,    51,    51,    51,    51,
-      53,    54,    52,    55,    55,    55,    57,    56,    58,    59,
-      58,    60,    58,    58,    61,    58,    58,    62,    62,    63,
-      63,    63,    64,    63,    65,    63,    66,    66,    67,    67,
-      67,    67,    67,    68,    68,    69,    70,    70,    71,    71,
-      72,    72,    73,    73,    73,    73,    73,    74,    74,    74,
-      75,    75,    76,    76,    76,    76,    76,    76,    77,    77,
-      78,    78,    79,    79,    80,    80,    81,    81,    82,    82,
-      82,    83,    84,    85
+       0,    50,    51,    52,    52,    52,    52,    52,    52,    52,
+      52,    54,    55,    53,    56,    56,    56,    58,    57,    59,
+      60,    59,    61,    59,    59,    62,    63,    59,    59,    64,
+      64,    65,    65,    65,    66,    67,    65,    68,    65,    69,
+      69,    71,    70,    72,    70,    73,    70,    74,    75,    76,
+      70,    77,    70,    78,    78,    80,    81,    79,    82,    82,
+      83,    83,    85,    84,    84,    87,    86,    88,    86,    86,
+      89,    89,    89,    90,    90,    90,    91,    91,    92,    92,
+      92,    92,    92,    92,    93,    93,    95,    96,    94,    97,
+      97,    98,    98,    99,    99,   101,   100,   103,   104,   102,
+     105,   106,   107,   102,   108,   109,   102,   111,   112,   110,
+     114,   115,   113,   117,   118,   119,   116
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     2,     2,     1,     1,     1,     1,     1,     1,
-       0,     0,     7,     1,     3,     3,     0,     4,     1,     0,
-       5,     0,     5,     1,     0,     5,     1,     1,     0,     1,
-       1,     1,     0,     7,     0,     5,     1,     3,     4,     4,
-       4,    11,     4,     1,     3,     5,     1,     1,     1,     3,
-       2,     0,     3,     3,     3,     3,     3,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       4,     7,     3,     5,     1,     3,     1,     3,     5,     7,
-       6,     3,     4,     6
+       0,     2,     1,     2,     2,     1,     1,     1,     1,     1,
+       1,     0,     0,     7,     1,     3,     3,     0,     4,     1,
+       0,     5,     0,     5,     1,     0,     0,     6,     1,     1,
+       0,     1,     1,     1,     0,     0,     8,     0,     5,     1,
+       3,     0,     5,     0,     5,     0,     5,     0,     0,     0,
+      14,     0,     5,     1,     3,     0,     0,     7,     1,     1,
+       1,     3,     0,     3,     0,     0,     4,     0,     4,     1,
+       3,     3,     3,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     0,     0,     9,     3,
+       5,     1,     3,     1,     3,     0,     4,     0,     0,     5,
+       0,     0,     0,     8,     0,     0,     6,     0,     0,     5,
+       0,     0,     6,     0,     0,     0,     9
 };
 
 
@@ -1287,152 +1351,374 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-  case 10: /* $@1: %empty  */
-#line 60 "project.y"
+  case 2: /* scope: line  */
+#line 51 "project.y"
+            {display_symbol_table(); exit(1);}
+#line 1358 "project.tab.c"
+    break;
+
+  case 11: /* $@1: %empty  */
+#line 64 "project.y"
                   {add('K', (yyvsp[0].lexeme));}
-#line 1294 "project.tab.c"
+#line 1364 "project.tab.c"
     break;
 
-  case 11: /* $@2: %empty  */
-#line 60 "project.y"
+  case 12: /* $@2: %empty  */
+#line 64 "project.y"
                                      {add('R', (yyvsp[0].lexeme));}
-#line 1300 "project.tab.c"
+#line 1370 "project.tab.c"
     break;
 
-  case 12: /* expr: CREATETABLE $@1 ID $@2 '(' table_def ')'  */
-#line 60 "project.y"
-                                                                        {printf("correct");   display_symbol_table(); exit(0);}
-#line 1306 "project.tab.c"
+  case 13: /* expr: CREATETABLE $@1 ID $@2 '(' table_def ')'  */
+#line 64 "project.y"
+                                                                        {printf("correct");}
+#line 1376 "project.tab.c"
     break;
 
-  case 16: /* $@3: %empty  */
-#line 68 "project.y"
-                {attribute_name = (yyvsp[0].lexeme);}
-#line 1312 "project.tab.c"
-    break;
-
-  case 18: /* datatype: INTEGER  */
-#line 71 "project.y"
-                   {insert_type((yyvsp[0].lexeme)); add('A', attribute_name);}
-#line 1318 "project.tab.c"
-    break;
-
-  case 19: /* $@4: %empty  */
+  case 17: /* $@3: %empty  */
 #line 72 "project.y"
-                   {insert_type((yyvsp[0].lexeme)); add('A', attribute_name);}
-#line 1324 "project.tab.c"
+                {attribute_name = (yyvsp[0].lexeme);}
+#line 1382 "project.tab.c"
     break;
 
-  case 21: /* $@5: %empty  */
-#line 73 "project.y"
-                 {insert_type((yyvsp[0].lexeme)); add('A', attribute_name);}
-#line 1330 "project.tab.c"
-    break;
-
-  case 23: /* datatype: BOOLEAN  */
-#line 74 "project.y"
-                   {insert_type((yyvsp[0].lexeme)); add('A', attribute_name);}
-#line 1336 "project.tab.c"
-    break;
-
-  case 24: /* $@6: %empty  */
+  case 19: /* datatype: INTEGER  */
 #line 75 "project.y"
                    {insert_type((yyvsp[0].lexeme)); add('A', attribute_name);}
-#line 1342 "project.tab.c"
+#line 1388 "project.tab.c"
     break;
 
-  case 26: /* datatype: DATE  */
+  case 20: /* $@4: %empty  */
 #line 76 "project.y"
+                   {insert_type((yyvsp[0].lexeme)); add('A', attribute_name);}
+#line 1394 "project.tab.c"
+    break;
+
+  case 22: /* $@5: %empty  */
+#line 77 "project.y"
+                 {insert_type((yyvsp[0].lexeme)); add('A', attribute_name);}
+#line 1400 "project.tab.c"
+    break;
+
+  case 24: /* datatype: BOOLEAN  */
+#line 78 "project.y"
+                   {insert_type((yyvsp[0].lexeme)); add('A', attribute_name);}
+#line 1406 "project.tab.c"
+    break;
+
+  case 25: /* $@6: %empty  */
+#line 79 "project.y"
+                   {insert_type((yyvsp[0].lexeme)); add('A', attribute_name);}
+#line 1412 "project.tab.c"
+    break;
+
+  case 26: /* $@7: %empty  */
+#line 79 "project.y"
+                                                                       {insert_parameter((yyvsp[0].lexeme));}
+#line 1418 "project.tab.c"
+    break;
+
+  case 28: /* datatype: DATE  */
+#line 80 "project.y"
                        {insert_type((yyvsp[0].lexeme)); add('A', attribute_name);}
-#line 1348 "project.tab.c"
+#line 1424 "project.tab.c"
     break;
 
-  case 29: /* column_costraint: NOTNULL  */
-#line 84 "project.y"
+  case 31: /* column_costraint: NOTNULL  */
+#line 88 "project.y"
                           {add('K', (yyvsp[0].lexeme));}
-#line 1354 "project.tab.c"
+#line 1430 "project.tab.c"
     break;
 
-  case 30: /* column_costraint: PRIMARYKEY  */
-#line 85 "project.y"
+  case 32: /* column_costraint: PRIMARYKEY  */
+#line 89 "project.y"
                                              {add('K', (yyvsp[0].lexeme));}
-#line 1360 "project.tab.c"
+#line 1436 "project.tab.c"
     break;
 
-  case 31: /* column_costraint: UNIQUE  */
-#line 86 "project.y"
+  case 33: /* column_costraint: UNIQUE  */
+#line 90 "project.y"
                                          {add('K', (yyvsp[0].lexeme));}
-#line 1366 "project.tab.c"
-    break;
-
-  case 32: /* $@7: %empty  */
-#line 87 "project.y"
-                                             {add('K', (yyvsp[0].lexeme));}
-#line 1372 "project.tab.c"
+#line 1442 "project.tab.c"
     break;
 
   case 34: /* $@8: %empty  */
-#line 88 "project.y"
+#line 91 "project.y"
+                                             {add('K', (yyvsp[0].lexeme));}
+#line 1448 "project.tab.c"
+    break;
+
+  case 35: /* $@9: %empty  */
+#line 91 "project.y"
+                                                                        {add('K', (yyvsp[0].lexeme));}
+#line 1454 "project.tab.c"
+    break;
+
+  case 37: /* $@10: %empty  */
+#line 92 "project.y"
                                         {add('K', (yyvsp[0].lexeme));}
-#line 1378 "project.tab.c"
+#line 1460 "project.tab.c"
     break;
 
-  case 45: /* select_stmt: SELECT select_all_or_list FROM ID where_clause  */
-#line 107 "project.y"
-                                                             {printf("correct"); display_symbol_table(); exit(0);}
-#line 1384 "project.tab.c"
+  case 41: /* $@11: %empty  */
+#line 100 "project.y"
+                          {add('K', (yyvsp[0].lexeme));}
+#line 1466 "project.tab.c"
     break;
 
-  case 70: /* insert_stmt: INSERT ID VALUES insertion  */
+  case 43: /* $@12: %empty  */
+#line 101 "project.y"
+                                         {add('K', (yyvsp[0].lexeme));}
+#line 1472 "project.tab.c"
+    break;
+
+  case 45: /* $@13: %empty  */
+#line 102 "project.y"
+                                             {add('K', (yyvsp[0].lexeme));}
+#line 1478 "project.tab.c"
+    break;
+
+  case 47: /* $@14: %empty  */
+#line 103 "project.y"
+                                             {add('K', (yyvsp[0].lexeme));}
+#line 1484 "project.tab.c"
+    break;
+
+  case 48: /* $@15: %empty  */
+#line 103 "project.y"
+                                                                           {add('K', (yyvsp[0].lexeme));}
+#line 1490 "project.tab.c"
+    break;
+
+  case 49: /* $@16: %empty  */
+#line 103 "project.y"
+                                                                                                                {add('K', (yyvsp[0].lexeme));}
+#line 1496 "project.tab.c"
+    break;
+
+  case 51: /* $@17: %empty  */
+#line 104 "project.y"
+                                        {add('K', (yyvsp[0].lexeme));}
+#line 1502 "project.tab.c"
+    break;
+
+  case 55: /* $@18: %empty  */
+#line 111 "project.y"
+                     {add('K', (yyvsp[0].lexeme));}
+#line 1508 "project.tab.c"
+    break;
+
+  case 56: /* $@19: %empty  */
+#line 111 "project.y"
+                                                             {add('K', (yyvsp[0].lexeme));}
+#line 1514 "project.tab.c"
+    break;
+
+  case 62: /* $@20: %empty  */
+#line 123 "project.y"
+                     {add('K', (yyvsp[0].lexeme));}
+#line 1520 "project.tab.c"
+    break;
+
+  case 65: /* $@21: %empty  */
+#line 127 "project.y"
+                               {add('K', (yyvsp[0].lexeme));}
+#line 1526 "project.tab.c"
+    break;
+
+  case 67: /* $@22: %empty  */
+#line 128 "project.y"
+                                       {add('K', (yyvsp[0].lexeme));}
+#line 1532 "project.tab.c"
+    break;
+
+  case 76: /* boolean_values: TRUE  */
+#line 141 "project.y"
+                     {add('C', (yyvsp[0].lexeme));}
+#line 1538 "project.tab.c"
+    break;
+
+  case 77: /* boolean_values: FALSE  */
+#line 142 "project.y"
+                                  {add('C', (yyvsp[0].lexeme));}
+#line 1544 "project.tab.c"
+    break;
+
+  case 78: /* comparison_op: LS  */
+#line 145 "project.y"
+                   {add('K', (yyvsp[0].lexeme));}
+#line 1550 "project.tab.c"
+    break;
+
+  case 79: /* comparison_op: GR  */
+#line 146 "project.y"
+                              {add('K', (yyvsp[0].lexeme));}
+#line 1556 "project.tab.c"
+    break;
+
+  case 80: /* comparison_op: GE  */
+#line 147 "project.y"
+                              {add('K', (yyvsp[0].lexeme));}
+#line 1562 "project.tab.c"
+    break;
+
+  case 81: /* comparison_op: LE  */
+#line 148 "project.y"
+                              {add('K', (yyvsp[0].lexeme));}
+#line 1568 "project.tab.c"
+    break;
+
+  case 82: /* comparison_op: EQ  */
+#line 149 "project.y"
+                              {add('K', (yyvsp[0].lexeme));}
+#line 1574 "project.tab.c"
+    break;
+
+  case 83: /* comparison_op: NE  */
 #line 150 "project.y"
-                                         {printf("correct"); exit(0);}
-#line 1390 "project.tab.c"
+                              {add('K', (yyvsp[0].lexeme));}
+#line 1580 "project.tab.c"
     break;
 
-  case 71: /* insert_stmt: INSERT ID '(' column_list ')' VALUES insertion  */
-#line 151 "project.y"
-                                                                         {printf("correct"); exit(0);}
-#line 1396 "project.tab.c"
+  case 86: /* $@23: %empty  */
+#line 157 "project.y"
+                     {add('K', (yyvsp[0].lexeme));}
+#line 1586 "project.tab.c"
     break;
 
-  case 78: /* alter_table_stmt: ALTERTABLE ID DROP COLUMN ID  */
-#line 165 "project.y"
-                                               {printf("correct"); exit(0);}
-#line 1402 "project.tab.c"
+  case 87: /* $@24: %empty  */
+#line 157 "project.y"
+                                                                   {add('K', (yyvsp[0].lexeme));}
+#line 1592 "project.tab.c"
     break;
 
-  case 79: /* alter_table_stmt: ALTERTABLE ID RENAME COLUMN ID TO ID  */
-#line 166 "project.y"
-                                                                       {printf("correct"); exit(0);}
-#line 1408 "project.tab.c"
-    break;
-
-  case 80: /* alter_table_stmt: ALTERTABLE ID ALTER COLUMN ID datatype  */
-#line 167 "project.y"
-                                                                         {printf("correct"); exit(0);}
-#line 1414 "project.tab.c"
-    break;
-
-  case 81: /* drop_stmt: DROP DATABASE ID  */
+  case 95: /* $@25: %empty  */
 #line 170 "project.y"
-                             {printf("correct"); exit(0);}
-#line 1420 "project.tab.c"
+                             {add('K', (yyvsp[0].lexeme));}
+#line 1598 "project.tab.c"
     break;
 
-  case 82: /* delete_stmt: DELETE_FROM ID WHERE condition  */
+  case 97: /* $@26: %empty  */
+#line 172 "project.y"
+                       {add('K', (yyvsp[0].lexeme));}
+#line 1604 "project.tab.c"
+    break;
+
+  case 98: /* $@27: %empty  */
+#line 172 "project.y"
+                                              {add('K', (yyvsp[0].lexeme));}
+#line 1610 "project.tab.c"
+    break;
+
+  case 99: /* alter_table_spec: DROP $@26 COLUMN $@27 ID  */
+#line 172 "project.y"
+                                                                 {printf("correct"); exit(0);}
+#line 1616 "project.tab.c"
+    break;
+
+  case 100: /* $@28: %empty  */
 #line 173 "project.y"
-                                             {printf("correct"); exit(0);}
-#line 1426 "project.tab.c"
+                                         {add('K', (yyvsp[0].lexeme));}
+#line 1622 "project.tab.c"
     break;
 
-  case 83: /* update_stmt: UPDATE ID SET condition WHERE condition  */
-#line 176 "project.y"
-                                                      {printf("correct"); exit(0);}
-#line 1432 "project.tab.c"
+  case 101: /* $@29: %empty  */
+#line 173 "project.y"
+                                                                {add('K', (yyvsp[0].lexeme));}
+#line 1628 "project.tab.c"
+    break;
+
+  case 102: /* $@30: %empty  */
+#line 173 "project.y"
+                                                                                      {add('K', (yyvsp[0].lexeme));}
+#line 1634 "project.tab.c"
+    break;
+
+  case 103: /* alter_table_spec: RENAME $@28 COLUMN $@29 ID TO $@30 ID  */
+#line 173 "project.y"
+                                                                                                        {printf("correct"); exit(0);}
+#line 1640 "project.tab.c"
+    break;
+
+  case 104: /* $@31: %empty  */
+#line 174 "project.y"
+                                        {add('K', (yyvsp[0].lexeme));}
+#line 1646 "project.tab.c"
+    break;
+
+  case 105: /* $@32: %empty  */
+#line 174 "project.y"
+                                                               {add('K', (yyvsp[0].lexeme));}
+#line 1652 "project.tab.c"
+    break;
+
+  case 106: /* alter_table_spec: ALTER $@31 COLUMN $@32 ID datatype  */
+#line 174 "project.y"
+                                                                                           {printf("correct"); exit(0);}
+#line 1658 "project.tab.c"
+    break;
+
+  case 107: /* $@33: %empty  */
+#line 177 "project.y"
+                 {add('K', (yyvsp[0].lexeme));}
+#line 1664 "project.tab.c"
+    break;
+
+  case 108: /* $@34: %empty  */
+#line 177 "project.y"
+                                          {add('K', (yyvsp[0].lexeme));}
+#line 1670 "project.tab.c"
+    break;
+
+  case 109: /* drop_stmt: DROP $@33 DATABASE $@34 ID  */
+#line 177 "project.y"
+                                                            {printf("correct"); exit(0);}
+#line 1676 "project.tab.c"
+    break;
+
+  case 110: /* $@35: %empty  */
+#line 180 "project.y"
+                          {add('K', (yyvsp[0].lexeme));}
+#line 1682 "project.tab.c"
+    break;
+
+  case 111: /* $@36: %empty  */
+#line 180 "project.y"
+                                                   {add('K', (yyvsp[0].lexeme));}
+#line 1688 "project.tab.c"
+    break;
+
+  case 112: /* delete_stmt: DELETE_FROM $@35 ID WHERE $@36 condition  */
+#line 180 "project.y"
+                                                                             {printf("correct"); exit(0);}
+#line 1694 "project.tab.c"
+    break;
+
+  case 113: /* $@37: %empty  */
+#line 183 "project.y"
+                     {add('K', (yyvsp[0].lexeme));}
+#line 1700 "project.tab.c"
+    break;
+
+  case 114: /* $@38: %empty  */
+#line 183 "project.y"
+                                            {add('K', (yyvsp[0].lexeme));}
+#line 1706 "project.tab.c"
+    break;
+
+  case 115: /* $@39: %empty  */
+#line 183 "project.y"
+                                                                            {add('K', (yyvsp[0].lexeme));}
+#line 1712 "project.tab.c"
+    break;
+
+  case 116: /* update_stmt: UPDATE $@37 ID SET $@38 condition WHERE $@39 condition  */
+#line 183 "project.y"
+                                                                                                     {printf("correct"); exit(0);}
+#line 1718 "project.tab.c"
     break;
 
 
-#line 1436 "project.tab.c"
+#line 1722 "project.tab.c"
 
       default: break;
     }
@@ -1625,7 +1911,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 179 "project.y"
+#line 186 "project.y"
 
 
 int main(void){
@@ -1653,10 +1939,6 @@ void display_symbol_table(){
 		printf("%-15s %-15s %-15s\n", symbol_table[i].id_name, symbol_table[i].data_type, symbol_table[i].type);
 	}
 
-	for(i=0;i<count;i++) {
-		/*free(symbol_table[i].id_name);
-		free(symbol_table[i].type);*/
-	}
 	printf("\n\n");
 }
 void add(char c, char * token) {
@@ -1665,24 +1947,28 @@ void add(char c, char * token) {
     if(c == 'K') {
 			symbol_table[count].id_name= strdup(token);
 			symbol_table[count].data_type=strdup("N/A");
+	
 			symbol_table[count].type=("Keyword\t");
 			count++;
 		}
 		else if(c == 'R') {
 			symbol_table[count].id_name= strdup(token);
 			symbol_table[count].data_type=strdup(type);
+	
 			symbol_table[count].type=strdup("Relation");
 			count++;
 		}
 		else if(c == 'A') {
 			symbol_table[count].id_name= strdup(token);
 			symbol_table[count].data_type=strdup(type);
+		
 			symbol_table[count].type=strdup("Attribute");
 			count++;
 		}
 		else if(c == 'C') {
 			symbol_table[count].id_name= strdup(token);
 			symbol_table[count].data_type=strdup("CONST");
+		
 			symbol_table[count].type=strdup("Constant");
 			count++;
 		}
@@ -1692,4 +1978,9 @@ void add(char c, char * token) {
 
 void insert_type(char * value_type) {
 	strcpy(type, value_type);
+}
+
+//To be implemented, not working
+void insert_parameter(char * param) {
+	strcpy(parameters, param);
 }

@@ -104,7 +104,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 33 "project.y"
+#line 35 "project.y"
 
        char* lexeme;			//identifier
        double value;			//value of an identifier of type NUM

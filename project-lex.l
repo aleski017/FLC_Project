@@ -81,12 +81,12 @@ BSTRING   \'({LETTER}|{DIGIT}|[_])*\'
 [-]?{DIGIT}+\.{DIGIT}{1,6}  {yylval.value = atof(yytext); return NUM; }
 
 
-"=="                 { return EQ; }
-"!="                 { return NE; }
-"<"                  { return LS; }
-">"                  { return GR; }
-"<="                 { return LE; }
-">="                 { return GE; }
+"=="                 { yylval.lexeme = strdup(yytext);return EQ; }
+"!="                 { yylval.lexeme = strdup(yytext);return NE; }
+"<"                  { yylval.lexeme = strdup(yytext);return LS; }
+">"                  { yylval.lexeme = strdup(yytext);return GR; }
+"<="                 { yylval.lexeme = strdup(yytext);return LE; }
+">="                 { yylval.lexeme = strdup(yytext);return GE; }
 
 ","                  { return ','; }
 "("                  { return '('; }

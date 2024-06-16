@@ -19,11 +19,13 @@ int yylex();
 int count=0;
 int q;
 char type[10];
+char parameters[10];
 int countn=1;
 void add(char, char*);
-void insert_type();
+
 int search(char *);
 void insert_type(char *);
+void insert_parameter(char *);
 void display_symbol_table();
 char * attribute_name;
 extern char* yytext;
@@ -43,11 +45,13 @@ extern char* yytext;
 
 //%type expr line table_def datatype column_def select_list select_stmt where_clause condition expression comparison_op insert_stmt value_list id_or_num drop_stmt insert_column_list delete_stmt update_stmt
 
-%start line
+%start scope
 
 %%
+scope: line {display_symbol_table(); exit(1);}
+	  ;
 line  : expr '\n'     
-	  | expr  select_stmt
+	  | expr  select_stmt 
 	  | select_stmt
 	  | insert_stmt
 	  | drop_stmt
@@ -57,7 +61,7 @@ line  : expr '\n'
       ;
 
 // Matches CREATE TABLE statement, it represents the scope of the grammar 
-expr: CREATETABLE {add('K', $1);} ID {add('R', $3);}  '(' table_def ')'	{printf("correct");   display_symbol_table(); exit(0);};
+expr: CREATETABLE {add('K', $1);} ID {add('R', $3);}  '(' table_def ')'	{printf("correct");};
 
 // Used to define the creation of attributes in a table. E.g. { attribute1, attribute2 } etc
 table_def : column_def 
@@ -72,7 +76,7 @@ datatype : INTEGER {insert_type($1); add('A', attribute_name);}
          | INTEGER {insert_type($1); add('A', attribute_name);}'(' NUM ')'
          | FLOAT {insert_type($1); add('A', attribute_name);}'(' NUM ')'
          | BOOLEAN {insert_type($1); add('A', attribute_name);}
-         | VARCHAR {insert_type($1); add('A', attribute_name);}'(' NUM ')' 
+         | VARCHAR {insert_type($1); add('A', attribute_name);}'(' NUM {insert_parameter($4);} ')' 
 		 | DATE{insert_type($1); add('A', attribute_name);}
          ;
  
@@ -84,7 +88,7 @@ column_costraint_def: column_costraint
 column_costraint: NOTNULL {add('K', $1);}
 				| PRIMARYKEY {add('K', $1);}
 				| UNIQUE {add('K', $1);}
-				| FOREIGNKEY {add('K', $1);} REFERENCES ID '(' ID ')'
+				| FOREIGNKEY {add('K', $1);} REFERENCES {add('K', $3);} ID '(' ID ')'
 				| CHECK {add('K', $1);} '(' condition ')'
 				;
 				
@@ -93,18 +97,18 @@ table_constraint_def: table_constraint
 					;
 
 
-table_constraint: NOTNULL '(' parameters ')'
-				| UNIQUE '(' parameters ')'
-				| PRIMARYKEY '(' parameters ')'
-				| CONSTRAINT ID FOREIGNKEY '(' ID ')' REFERENCES ID '(' ID ')'
-				| CHECK '(' condition ')'
+table_constraint: NOTNULL {add('K', $1);} '(' parameters ')'
+				| UNIQUE {add('K', $1);}'(' parameters ')'
+				| PRIMARYKEY {add('K', $1);} '(' parameters ')'
+				| CONSTRAINT {add('K', $1);} ID FOREIGNKEY {add('K', $4);}'(' ID ')' REFERENCES {add('K', $9);} ID '(' ID ')'
+				| CHECK {add('K', $1);} '(' condition ')'
 				;
 				
 parameters: ID
 			| ID ',' parameters
 			;
 			
-select_stmt : SELECT select_all_or_list FROM ID where_clause {printf("correct"); display_symbol_table(); exit(0);};
+select_stmt : SELECT {add('K', $1);} select_all_or_list FROM {add('K', $4);} ID where_clause
 			;
 				
 
@@ -116,39 +120,41 @@ select_list : ID
 			| ID ',' select_list
 			;
 
-where_clause : WHERE condition
-			 |
+where_clause : WHERE {add('K', $1);} condition
+			 | /* empty */
 			 ;
 
-condition : values comparison_op values
-		  | values boolean_comparison_op boolean_values
-		  | boolean_values boolean_comparison_op values
-		  | condition AND condition
-		  | condition OR condition
+condition: condition_step2 AND {add('K', $2);} condition
+		  | condition_step2 OR {add('K', $2);} condition
+		  | condition_step2
 		  ;
+		  
+condition_step2 : values comparison_op values
+				| values boolean_comparison_op boolean_values
+				| boolean_values boolean_comparison_op values
+				;
 
 values : STRINGVALUE
 		   | NUM
-		   | ID
+		   | ID 
 		   ;
-boolean_values: TRUE
-			  | FALSE
+boolean_values: TRUE {add('C', $1);}
+			  | FALSE {add('C', $1);}
 			  ;
 
-comparison_op : LS 
-			  |GR 
-			  |GE 
-			  |LE 
-			  |EQ 
-			  |NE 
+comparison_op : LS {add('K', $1);}
+			  |GR {add('K', $1);}
+			  |GE {add('K', $1);}
+			  |LE {add('K', $1);}
+			  |EQ {add('K', $1);}
+			  |NE {add('K', $1);}
 			  ;
 			  
 boolean_comparison_op : EQ
 			  |NE 
 			  ;
 			  
-insert_stmt : INSERT ID VALUES insertion {printf("correct"); exit(0);}
-			| INSERT ID '(' column_list ')' VALUES insertion {printf("correct"); exit(0);}
+insert_stmt : INSERT {add('K', $1);} ID '(' column_list ')' VALUES {add('K', $7);} insertion
 			;
 insertion	: '(' value_list ')' 
 			| '(' value_list ')' ',' insertion
@@ -161,19 +167,20 @@ column_list : ID
 value_list : values 
 		   | values ',' value_list
 		   ;
-
-alter_table_stmt: ALTERTABLE ID DROP COLUMN ID {printf("correct"); exit(0);}
-				| ALTERTABLE ID RENAME COLUMN ID TO ID {printf("correct"); exit(0);}
-				| ALTERTABLE ID ALTER COLUMN ID datatype {printf("correct"); exit(0);}
+alter_table_stmt: ALTERTABLE {add('K', $1);} ID alter_table_spec
+				;
+alter_table_spec: DROP {add('K', $1);} COLUMN {add('K', $3);} ID {printf("correct"); exit(0);}
+				| RENAME {add('K', $1);} COLUMN {add('K', $3);} ID TO {add('K', $6);}ID {printf("correct"); exit(0);}
+				| ALTER {add('K', $1);} COLUMN {add('K', $3);} ID datatype {printf("correct"); exit(0);}
 				;
 
-drop_stmt : DROP DATABASE ID {printf("correct"); exit(0);}
+drop_stmt : DROP {add('K', $1);} DATABASE {add('K', $3);}ID {printf("correct"); exit(0);}
 		  ;
 
-delete_stmt : DELETE_FROM ID WHERE condition {printf("correct"); exit(0);}
+delete_stmt : DELETE_FROM {add('K', $1);} ID WHERE {add('K', $4);} condition {printf("correct"); exit(0);}
 			;
 
-update_stmt : UPDATE ID SET condition WHERE condition {printf("correct"); exit(0);}
+update_stmt : UPDATE {add('K', $1);} ID SET {add('K', $4);} condition WHERE {add('K', $7);}condition {printf("correct"); exit(0);}
             ;
 
 %%
@@ -203,10 +210,6 @@ void display_symbol_table(){
 		printf("%-15s %-15s %-15s\n", symbol_table[i].id_name, symbol_table[i].data_type, symbol_table[i].type);
 	}
 
-	for(i=0;i<count;i++) {
-		/*free(symbol_table[i].id_name);
-		free(symbol_table[i].type);*/
-	}
 	printf("\n\n");
 }
 void add(char c, char * token) {
@@ -215,24 +218,28 @@ void add(char c, char * token) {
     if(c == 'K') {
 			symbol_table[count].id_name= strdup(token);
 			symbol_table[count].data_type=strdup("N/A");
+	
 			symbol_table[count].type=("Keyword\t");
 			count++;
 		}
 		else if(c == 'R') {
 			symbol_table[count].id_name= strdup(token);
 			symbol_table[count].data_type=strdup(type);
+	
 			symbol_table[count].type=strdup("Relation");
 			count++;
 		}
 		else if(c == 'A') {
 			symbol_table[count].id_name= strdup(token);
 			symbol_table[count].data_type=strdup(type);
+		
 			symbol_table[count].type=strdup("Attribute");
 			count++;
 		}
 		else if(c == 'C') {
 			symbol_table[count].id_name= strdup(token);
 			symbol_table[count].data_type=strdup("CONST");
+		
 			symbol_table[count].type=strdup("Constant");
 			count++;
 		}
@@ -242,4 +249,9 @@ void add(char c, char * token) {
 
 void insert_type(char * value_type) {
 	strcpy(type, value_type);
+}
+
+//To be implemented, not working
+void insert_parameter(char * param) {
+	strcpy(parameters, param);
 }
