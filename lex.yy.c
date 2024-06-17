@@ -1274,12 +1274,12 @@ YY_RULE_SETUP
 case 36:
 YY_RULE_SETUP
 #line 76 "project-lex.l"
-{ return FALSE; }
+{ yylval.lexeme = strdup(yytext);return FALSE; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 77 "project-lex.l"
-{ return TRUE; }
+{ yylval.lexeme = strdup(yytext);return TRUE; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP

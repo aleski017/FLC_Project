@@ -20,7 +20,7 @@ int count=0;
 int q;
 char type[10];
 char* column_attributes[15];
-int countn=1;
+int countn=0;
 void add(char, char*);
 
 char* get_type(char *);
@@ -50,7 +50,7 @@ extern char* yytext;
 %%
 scope: line {display_symbol_table(); exit(1);}
 	  ;
-line  : expr '\n'     
+line  : expr     
 	  | expr  select_stmt 
 	  | expr  insert_stmt 
 	  | select_stmt
@@ -157,33 +157,64 @@ insertion	: '(' value_list ')'
 			;
 			
 column_list : ID {
-				column_attributes[0] = $1;
+				
+				column_attributes[countn] = $1;
 				/*for(int i =0; i<=15; i++){
 					if(column_attributes[i] == 0)
 						column_attributes[i] = $1;
 						break;
 				}*/
 			}
-			| ID ',' column_list
+			| ID {
+				printf("COUNTN -----> %d<------", countn);
+				countn++;
+				column_attributes[countn] = $1;
+			}',' column_list
 			;
 
-value_list : values 
+value_list : values {
+			   countn=0;
+			   for(int i =0; i<=15; i++){
+						column_attributes[i] = 0;
+				}
+		   }
 		   | values ',' value_list
 		   | /* empty rule */ {
+			   countn=0;
 			   for(int i =0; i<=15; i++){
 						column_attributes[i] = 0;
 				}
 		   }
 		   ;
 
-values : INTEGER {
-				char* type_id = get_type(column_attributes[0]);
-				printf("--------> %s", type_id);
-			    if(type_id != $1)
-					printf("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"); exit(0);;
+values : NUM {
+				char* type_id = get_type(column_attributes[countn]);
+			    if((strcmp(type_id, "INT") != 0) && (strcmp(type_id, "FLOAT") != 0)
+					&& (strcmp(type_id, "int") != 0) && (strcmp(type_id, "float") != 0)){
+					printf("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
+				}
+				else{
+					printf("CORREEEEEEECT");
+				}
 		   }
-		   | INTEGER
-		   | FLOAT 
+		   | STRINGVALUE {
+				char* type_id = get_type(column_attributes[countn]);
+				printf("TYPE_ID %s, $1 %s", type_id, "VARCHAR");
+			    if((strcmp(type_id, "VARCHAR") != 0)  && (strcmp(type_id, "varchar") != 0))
+					printf("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
+				else{
+					printf("CORREEEEEEECT");
+				}
+		   }
+		   | boolean_values {
+				char* type_id = get_type(column_attributes[countn]);
+				printf("TYPE_ID %s, $1 %s", type_id, "BOOLEAN");
+			    if((strcmp(type_id, "BOOLEAN") != 0)  && (strcmp(type_id, "boolean") != 0))
+					printf("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
+				else{
+					printf("CORREEEEEEECT");
+				} 
+		   }
 		   ;
 
 
@@ -274,8 +305,9 @@ void insert_type(char * value_type) {
 char* get_type(char *id) { 
     char* type_id = "none";
 	int i; 
-    for(i=count-1; i>=0; i--) {
-        if(strcmp(symbol_table[i].id_name, id)) {   
+    for(i=0; i<=count-1; i++) {
+        if(strcmp(symbol_table[i].id_name, id) == 0) { 
+
             type_id = symbol_table[i].data_type;
             break;  
         }

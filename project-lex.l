@@ -73,8 +73,8 @@ BSTRING   \'({LETTER}|{DIGIT}|[_])*\'
 (UPDATE|update)                    { yylval.lexeme = strdup(yytext);return UPDATE; }
 (SET|set)                          { yylval.lexeme = strdup(yytext);return SET; }
 
-(false|FALSE)              { return FALSE; }
-(true|TRUE)                { return TRUE; }
+(false|FALSE)              { yylval.lexeme = strdup(yytext);return FALSE; }
+(true|TRUE)                { yylval.lexeme = strdup(yytext);return TRUE; }
 
 {ID}    {yylval.lexeme = strdup(yytext); return ID;}
 [-]?{DIGIT}+                {yylval.value = atoi(yytext); return NUM; }
