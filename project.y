@@ -19,13 +19,13 @@ int yylex();
 int count=0;
 int q;
 char type[10];
-char parameters[10];
+char* column_attributes[15];
 int countn=1;
 void add(char, char*);
 
-int search(char *);
+char* get_type(char *);
 void insert_type(char *);
-void insert_parameter(char *);
+
 void display_symbol_table();
 char * attribute_name;
 extern char* yytext;
@@ -52,6 +52,7 @@ scope: line {display_symbol_table(); exit(1);}
 	  ;
 line  : expr '\n'     
 	  | expr  select_stmt 
+	  | expr  insert_stmt 
 	  | select_stmt
 	  | insert_stmt
 	  | drop_stmt
@@ -76,7 +77,7 @@ datatype : INTEGER {insert_type($1); add('A', attribute_name);}
          | INTEGER {insert_type($1); add('A', attribute_name);}'(' NUM ')'
          | FLOAT {insert_type($1); add('A', attribute_name);}'(' NUM ')'
          | BOOLEAN {insert_type($1); add('A', attribute_name);}
-         | VARCHAR {insert_type($1); add('A', attribute_name);}'(' NUM {insert_parameter($4);} ')' 
+         | VARCHAR {insert_type($1); add('A', attribute_name);}'(' NUM ')' 
 		 | DATE{insert_type($1); add('A', attribute_name);}
          ;
  
@@ -133,11 +134,6 @@ condition_step2 : values comparison_op values
 				| values boolean_comparison_op boolean_values
 				| boolean_values boolean_comparison_op values
 				;
-
-values : STRINGVALUE
-		   | NUM
-		   | ID 
-		   ;
 boolean_values: TRUE {add('C', $1);}
 			  | FALSE {add('C', $1);}
 			  ;
@@ -160,13 +156,37 @@ insertion	: '(' value_list ')'
 			| '(' value_list ')' ',' insertion
 			;
 			
-column_list : ID 
+column_list : ID {
+				column_attributes[0] = $1;
+				/*for(int i =0; i<=15; i++){
+					if(column_attributes[i] == 0)
+						column_attributes[i] = $1;
+						break;
+				}*/
+			}
 			| ID ',' column_list
 			;
 
 value_list : values 
 		   | values ',' value_list
+		   | /* empty rule */ {
+			   for(int i =0; i<=15; i++){
+						column_attributes[i] = 0;
+				}
+		   }
 		   ;
+
+values : INTEGER {
+				char* type_id = get_type(column_attributes[0]);
+				printf("--------> %s", type_id);
+			    if(type_id != $1)
+					printf("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"); exit(0);;
+		   }
+		   | INTEGER
+		   | FLOAT 
+		   ;
+
+
 alter_table_stmt: ALTERTABLE {add('K', $1);} ID alter_table_spec
 				;
 alter_table_spec: DROP {add('K', $1);} COLUMN {add('K', $3);} ID {printf("correct"); exit(0);}
@@ -213,7 +233,7 @@ void display_symbol_table(){
 	printf("\n\n");
 }
 void add(char c, char * token) {
-  q=search(token);
+  //q=search(token);
   if(search(token)){
     if(c == 'K') {
 			symbol_table[count].id_name= strdup(token);
@@ -251,7 +271,14 @@ void insert_type(char * value_type) {
 	strcpy(type, value_type);
 }
 
-//To be implemented, not working
-void insert_parameter(char * param) {
-	strcpy(parameters, param);
+char* get_type(char *id) { 
+    char* type_id = "none";
+	int i; 
+    for(i=count-1; i>=0; i--) {
+        if(strcmp(symbol_table[i].id_name, id)) {   
+            type_id = symbol_table[i].data_type;
+            break;  
+        }
+    } 
+    return type_id;
 }
