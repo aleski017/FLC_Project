@@ -14,18 +14,20 @@ struct dataType {
         char * data_type;
 		char * type;
 } symbol_table[40];
-//int yywrap();
+//GLOBAL VARIABLES
 int yylex();
+//Keeps track of how many entries in symbol table
 int count=0;
-int q;
 char type[10];
-char* column_attributes[15];
+//Keeps track of the name of the columns one wants to insert in INSERT INTO statement
+char* column_attributes[15] = {NULL};
+//Keeps track of how many values one wants to insert in INSERT INTO statement
 int countn=0;
-void add(char, char*);
 
+//FUNCTIONS
+void add(char, char*);
 char* get_type(char *);
 void insert_type(char *);
-
 void display_symbol_table();
 char * attribute_name;
 extern char* yytext;
@@ -39,30 +41,30 @@ extern char* yytext;
 
 %token <lexeme> SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE AND OR FALSE ALTER TRUE RENAME TO VALUES BOOLEAN VARCHAR STRINGVALUE INTEGER CONSTRAINT ALTERTABLE COLUMN FLOAT CHECK DATE NUM NOTNULL UNIQUE PRIMARYKEY FOREIGNKEY REFERENCES DROP DATABASE DELETE_FROM UPDATE SET
 %token <lexeme> CREATETABLE ID
-//Conflicts fixed
-%left OR 
-%left AND
 
-//%type expr line table_def datatype column_def select_list select_stmt where_clause condition expression comparison_op insert_stmt value_list id_or_num drop_stmt insert_column_list delete_stmt update_stmt
+%left OR
+%left AND
 
 %start scope
 
 %%
-scope: line {display_symbol_table(); exit(1);}
+scope: {printf("TO END YOUR STATEMENT, WRITE 'end'\n");}line {printf("Correct Statement\n");display_symbol_table(); exit(0);}
 	  ;
-line  : expr     
-	  | expr  select_stmt 
-	  | expr  insert_stmt 
-	  | select_stmt
-	  | insert_stmt
-	  | drop_stmt
-	  | delete_stmt
-	  | alter_table_stmt
-	  | update_stmt
+line  : expr 
+	  | expr expr
       ;
 
 // Matches CREATE TABLE statement, it represents the scope of the grammar 
-expr: CREATETABLE {add('K', $1);} ID {add('R', $3);}  '(' table_def ')'	{printf("correct");};
+expr: create_stmt
+	| insert_stmt
+	| drop_stmt
+	| delete_stmt
+	| alter_table_stmt
+	| update_stmt
+	| select_stmt
+	;
+
+create_stmt: CREATETABLE {add('K', $1);} ID {add('R', $3);}  '(' table_def ')';
 
 // Used to define the creation of attributes in a table. E.g. { attribute1, attribute2 } etc
 table_def : column_def 
@@ -134,6 +136,11 @@ condition_step2 : values comparison_op values
 				| values boolean_comparison_op boolean_values
 				| boolean_values boolean_comparison_op values
 				;
+values: NUM{add('C', $1);}
+		|STRINGVALUE{add('C', $1);}
+		|ID
+		;
+		
 boolean_values: TRUE {add('C', $1);}
 			  | FALSE {add('C', $1);}
 			  ;
@@ -142,8 +149,6 @@ comparison_op : LS {add('K', $1);}
 			  |GR {add('K', $1);}
 			  |GE {add('K', $1);}
 			  |LE {add('K', $1);}
-			  |EQ {add('K', $1);}
-			  |NE {add('K', $1);}
 			  ;
 			  
 boolean_comparison_op : EQ
@@ -157,8 +162,8 @@ insertion	: '(' value_list ')'
 			;
 			
 column_list : ID {
-				
 				column_attributes[countn] = $1;
+				countn=0;
 				/*for(int i =0; i<=15; i++){
 					if(column_attributes[i] == 0)
 						column_attributes[i] = $1;
@@ -166,72 +171,68 @@ column_list : ID {
 				}*/
 			}
 			| ID {
-				printf("COUNTN -----> %d<------", countn);
-				countn++;
+
+				
 				column_attributes[countn] = $1;
+				countn++;
 			}',' column_list
 			;
 
-value_list : values {
+value_list : insert_values {
 			   countn=0;
-			   for(int i =0; i<=15; i++){
-						column_attributes[i] = 0;
-				}
 		   }
-		   | values ',' value_list
-		   | /* empty rule */ {
-			   countn=0;
-			   for(int i =0; i<=15; i++){
-						column_attributes[i] = 0;
-				}
-		   }
+		   | insert_values ',' value_list
+		   | /* empty rule */
 		   ;
 
-values : NUM {
-				char* type_id = get_type(column_attributes[countn]);
-			    if((strcmp(type_id, "INT") != 0) && (strcmp(type_id, "FLOAT") != 0)
-					&& (strcmp(type_id, "int") != 0) && (strcmp(type_id, "float") != 0)){
-					printf("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
+insert_values : NUM {
+				if(column_attributes[countn]!= NULL){
+					char* type_id = get_type(column_attributes[countn]);
+					if((strcmp(type_id, "INT") != 0) && (strcmp(type_id, "FLOAT") != 0)
+						&& (strcmp(type_id, "int") != 0) && (strcmp(type_id, "float") != 0)){
+						printf("Type Error. Trying to assign %s to Int\n", type_id);
+					}
 				}
-				else{
-					printf("CORREEEEEEECT");
-				}
+				else{printf("You are trying to insert too many values\n");exit(0);}
+				countn++;
 		   }
 		   | STRINGVALUE {
-				char* type_id = get_type(column_attributes[countn]);
-				printf("TYPE_ID %s, $1 %s", type_id, "VARCHAR");
-			    if((strcmp(type_id, "VARCHAR") != 0)  && (strcmp(type_id, "varchar") != 0))
-					printf("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
-				else{
-					printf("CORREEEEEEECT");
+			    if(column_attributes[countn]!= NULL){
+					char* type_id = get_type(column_attributes[countn]);
+					if((strcmp(type_id, "VARCHAR") != 0)  && (strcmp(type_id, "varchar") != 0))
+						printf("Type Error. Trying to assign %s to String", type_id);
+					
 				}
+				else{printf("You are trying to insert too many values\n");exit(0);}
+				countn++;
 		   }
 		   | boolean_values {
-				char* type_id = get_type(column_attributes[countn]);
-				printf("TYPE_ID %s, $1 %s", type_id, "BOOLEAN");
-			    if((strcmp(type_id, "BOOLEAN") != 0)  && (strcmp(type_id, "boolean") != 0))
-					printf("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
-				else{
-					printf("CORREEEEEEECT");
-				} 
+			    if(column_attributes[countn]!= NULL){
+					char* type_id = get_type(column_attributes[countn]);
+					if((strcmp(type_id, "BOOLEAN") != 0)  && (strcmp(type_id, "boolean") != 0))
+						printf("Type Error. Trying to assign %s to Boolean\n", type_id);
+					
+				}
+				else{printf("You are trying to insert too many values\n");exit(0);}
+				countn++;
 		   }
 		   ;
 
 
 alter_table_stmt: ALTERTABLE {add('K', $1);} ID alter_table_spec
 				;
-alter_table_spec: DROP {add('K', $1);} COLUMN {add('K', $3);} ID {printf("correct"); exit(0);}
-				| RENAME {add('K', $1);} COLUMN {add('K', $3);} ID TO {add('K', $6);}ID {printf("correct"); exit(0);}
-				| ALTER {add('K', $1);} COLUMN {add('K', $3);} ID datatype {printf("correct"); exit(0);}
+alter_table_spec: DROP {add('K', $1);} COLUMN {add('K', $3);} ID  {exit(0);}
+				| RENAME {add('K', $1);} COLUMN {add('K', $3);} ID TO {add('K', $6);}ID  {exit(0);}
+				| ALTER {add('K', $1);} COLUMN {add('K', $3);} ID datatype {exit(0);}
 				;
 
-drop_stmt : DROP {add('K', $1);} DATABASE {add('K', $3);}ID {printf("correct"); exit(0);}
+drop_stmt : DROP {add('K', $1);} DATABASE {add('K', $3);}ID {exit(0);}
 		  ;
 
-delete_stmt : DELETE_FROM {add('K', $1);} ID WHERE {add('K', $4);} condition {printf("correct"); exit(0);}
+delete_stmt : DELETE_FROM {add('K', $1);} ID WHERE {add('K', $4);} condition {exit(0);}
 			;
 
-update_stmt : UPDATE {add('K', $1);} ID SET {add('K', $4);} condition WHERE {add('K', $7);}condition {printf("correct"); exit(0);}
+update_stmt : UPDATE {add('K', $1);} ID SET {add('K', $4);} condition WHERE {add('K', $7);}condition {exit(0);}
             ;
 
 %%
@@ -245,13 +246,14 @@ int main(void){
 int search(char *token) {
 	int i;
 	for(i=count-1; i>=0; i--) {
-		if(strcmp(symbol_table[i].id_name, token)) {
+		if(strcmp(symbol_table[i].id_name, token)==0) {
 			return -1;
 			break;
 		}
 	}
 	return 1;
 }
+
 void display_symbol_table(){
 	printf("\n\n");
 	printf("\nSYMBOL        DATATYPE          TYPE \n");
@@ -260,23 +262,37 @@ void display_symbol_table(){
 	for(i = 0; i < count; i++) {
 		printf("%-15s %-15s %-15s\n", symbol_table[i].id_name, symbol_table[i].data_type, symbol_table[i].type);
 	}
-
+	for(i = 0; i < count; i++) {
+		symbol_table[i].id_name= NULL; symbol_table[i].data_type=NULL ;symbol_table[i].type=NULL;
+	}
 	printf("\n\n");
 }
+
 void add(char c, char * token) {
-  //q=search(token);
-  if(search(token)){
-    if(c == 'K') {
+  if((c == 'K' || c == 'C' )){
+	  if(search(token)!=-1){
+			if(c == 'K') {
+				symbol_table[count].id_name= strdup(token);
+				symbol_table[count].data_type=strdup("N/A");
+		
+				symbol_table[count].type=("Keyword\t");
+				count++;
+			}
+			else if(c == 'C') {
+				symbol_table[count].id_name= strdup(token);
+				symbol_table[count].data_type=strdup("CONST");
+			
+				symbol_table[count].type=strdup("Constant");
+				count++;
+			}
+			return;
+		}
+  }
+  else{
+	if(search(token)!=-1){
+		if(c == 'R') {
 			symbol_table[count].id_name= strdup(token);
 			symbol_table[count].data_type=strdup("N/A");
-	
-			symbol_table[count].type=("Keyword\t");
-			count++;
-		}
-		else if(c == 'R') {
-			symbol_table[count].id_name= strdup(token);
-			symbol_table[count].data_type=strdup(type);
-	
 			symbol_table[count].type=strdup("Relation");
 			count++;
 		}
@@ -287,15 +303,8 @@ void add(char c, char * token) {
 			symbol_table[count].type=strdup("Attribute");
 			count++;
 		}
-		else if(c == 'C') {
-			symbol_table[count].id_name= strdup(token);
-			symbol_table[count].data_type=strdup("CONST");
-		
-			symbol_table[count].type=strdup("Constant");
-			count++;
-		}
+    }else{printf("This token alread exists--------> %s", token);exit(0);}
   }
-  printf("%d", count);
 }
 
 void insert_type(char * value_type) {
