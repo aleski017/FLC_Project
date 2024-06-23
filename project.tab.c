@@ -1703,116 +1703,104 @@ yyreduce:
 #line 1704 "project.tab.c"
     break;
 
-  case 105: /* alter_table_spec: DROP $@28 COLUMN $@29 ID  */
-#line 231 "project.y"
-                                                                  {exit(0);}
-#line 1710 "project.tab.c"
-    break;
-
   case 106: /* $@30: %empty  */
 #line 232 "project.y"
                                          {add('K', (yyvsp[0].lexeme));}
-#line 1716 "project.tab.c"
+#line 1710 "project.tab.c"
     break;
 
   case 107: /* $@31: %empty  */
 #line 232 "project.y"
                                                                 {add('K', (yyvsp[0].lexeme));}
-#line 1722 "project.tab.c"
+#line 1716 "project.tab.c"
     break;
 
   case 108: /* $@32: %empty  */
 #line 232 "project.y"
                                                                                       {add('K', (yyvsp[0].lexeme));}
-#line 1728 "project.tab.c"
+#line 1722 "project.tab.c"
     break;
 
   case 109: /* alter_table_spec: RENAME $@30 COLUMN $@31 ID TO $@32 ID  */
 #line 232 "project.y"
-                                                                                                         {exit(0);}
-#line 1734 "project.tab.c"
+                                                                                                         {add('A', (yyvsp[0].lexeme));}
+#line 1728 "project.tab.c"
     break;
 
   case 110: /* $@33: %empty  */
 #line 233 "project.y"
                                         {add('K', (yyvsp[0].lexeme));}
-#line 1740 "project.tab.c"
+#line 1734 "project.tab.c"
     break;
 
   case 111: /* $@34: %empty  */
 #line 233 "project.y"
                                                                {add('K', (yyvsp[0].lexeme));}
-#line 1746 "project.tab.c"
-    break;
-
-  case 112: /* alter_table_spec: ALTER $@33 COLUMN $@34 ID datatype  */
-#line 233 "project.y"
-                                                                                           {exit(0);}
-#line 1752 "project.tab.c"
+#line 1740 "project.tab.c"
     break;
 
   case 113: /* $@35: %empty  */
 #line 236 "project.y"
                  {add('K', (yyvsp[0].lexeme));}
-#line 1758 "project.tab.c"
+#line 1746 "project.tab.c"
     break;
 
   case 114: /* $@36: %empty  */
 #line 236 "project.y"
                                           {add('K', (yyvsp[0].lexeme));}
-#line 1764 "project.tab.c"
+#line 1752 "project.tab.c"
     break;
 
   case 115: /* drop_stmt: DROP $@35 DATABASE $@36 ID  */
 #line 236 "project.y"
                                                             {exit(0);}
-#line 1770 "project.tab.c"
+#line 1758 "project.tab.c"
     break;
 
   case 116: /* $@37: %empty  */
 #line 239 "project.y"
                           {add('K', (yyvsp[0].lexeme));}
-#line 1776 "project.tab.c"
+#line 1764 "project.tab.c"
     break;
 
   case 117: /* $@38: %empty  */
 #line 239 "project.y"
                                                    {add('K', (yyvsp[0].lexeme));}
-#line 1782 "project.tab.c"
+#line 1770 "project.tab.c"
     break;
 
   case 118: /* delete_stmt: DELETE_FROM $@37 ID WHERE $@38 condition  */
 #line 239 "project.y"
                                                                              {exit(0);}
-#line 1788 "project.tab.c"
+#line 1776 "project.tab.c"
     break;
 
   case 119: /* $@39: %empty  */
 #line 242 "project.y"
                      {add('K', (yyvsp[0].lexeme));}
-#line 1794 "project.tab.c"
+#line 1782 "project.tab.c"
     break;
 
   case 120: /* $@40: %empty  */
 #line 242 "project.y"
                                             {add('K', (yyvsp[0].lexeme));}
-#line 1800 "project.tab.c"
+#line 1788 "project.tab.c"
     break;
 
   case 121: /* $@41: %empty  */
 #line 242 "project.y"
                                                                             {add('K', (yyvsp[0].lexeme));}
-#line 1806 "project.tab.c"
+#line 1794 "project.tab.c"
     break;
 
   case 122: /* update_stmt: UPDATE $@39 ID SET $@40 condition WHERE $@41 condition  */
 #line 242 "project.y"
                                                                                                      {exit(0);}
-#line 1812 "project.tab.c"
+#line 1800 "project.tab.c"
     break;
 
 
-#line 1816 "project.tab.c"
+#line 1804 "project.tab.c"
 
       default: break;
     }

@@ -228,18 +228,18 @@ insert_values : NUM {
 
 alter_table_stmt: ALTERTABLE {add('K', $1);} ID alter_table_spec
 				;
-alter_table_spec: DROP {add('K', $1);} COLUMN {add('K', $3);} ID  {exit(0);}
-				| RENAME {add('K', $1);} COLUMN {add('K', $3);} ID TO {add('K', $6);}ID  {exit(0);}
-				| ALTER {add('K', $1);} COLUMN {add('K', $3);} ID datatype {exit(0);}
+alter_table_spec: DROP {add('K', $1);} COLUMN {add('K', $3);} ID 
+				| RENAME {add('K', $1);} COLUMN {add('K', $3);} ID TO {add('K', $6);} ID {add('A', $8);}
+				| ALTER {add('K', $1);} COLUMN {add('K', $3);} ID datatype 
 				;
 
-drop_stmt : DROP {add('K', $1);} DATABASE {add('K', $3);}ID {exit(0);}
+drop_stmt : DROP {add('K', $1);} DATABASE {add('K', $3);}ID
 		  ;
 
-delete_stmt : DELETE_FROM {add('K', $1);} ID WHERE {add('K', $4);} condition {exit(0);}
+delete_stmt : DELETE_FROM {add('K', $1);} ID WHERE {add('K', $4);} condition
 			;
 
-update_stmt : UPDATE {add('K', $1);} ID SET {add('K', $4);} condition WHERE {add('K', $7);}condition {exit(0);}
+update_stmt : UPDATE {add('K', $1);} ID SET {add('K', $4);} condition WHERE {add('K', $7);}condition
             ;
 
 %%
