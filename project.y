@@ -14,6 +14,7 @@ struct dataType {
         char * data_type;
 		char * type;
 } symbol_table[40];
+
 //GLOBAL VARIABLES
 int yylex();
 //Keeps track of how many entries in symbol table
@@ -26,6 +27,7 @@ int countn=0;
 
 //FUNCTIONS
 void add(char, char*);
+int search(char* token);
 char* get_type(char *);
 void insert_type(char *);
 void display_symbol_table();
@@ -39,7 +41,7 @@ extern char* yytext;
        double value;			//value of an identifier of type NUM
        }
 
-%token <lexeme> SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE AND OR FALSE ALTER TRUE RENAME TO VALUES BOOLEAN VARCHAR STRINGVALUE INTEGER CONSTRAINT ALTERTABLE COLUMN FLOAT CHECK DATE NUM NOTNULL UNIQUE PRIMARYKEY FOREIGNKEY REFERENCES DROP DATABASE DELETE_FROM UPDATE SET
+%token <lexeme> SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE STAR AND OR FALSE ALTER TRUE RENAME TO VALUES BOOLEAN VARCHAR STRINGVALUE INTEGER CONSTRAINT ALTERTABLE COLUMN FLOAT CHECK DATE NUM NOTNULL UNIQUE PRIMARYKEY FOREIGNKEY REFERENCES DROP DATABASE DELETE_FROM UPDATE SET
 %token <lexeme> CREATETABLE ID
 
 %left OR
@@ -50,9 +52,11 @@ extern char* yytext;
 %%
 scope: {printf("TO END YOUR STATEMENT, WRITE 'end'\n");}line {printf("Correct Statement\n");display_symbol_table(); exit(0);}
 	  ;
-line  : expr 
-	  | expr expr
-      ;
+line  : pile_expr 
+	  ;
+pile_expr: expr
+		 | expr pile_expr
+		 ;
 
 // Matches CREATE TABLE statement, it represents the scope of the grammar 
 expr: create_stmt
@@ -115,11 +119,11 @@ select_stmt : SELECT {add('K', $1);} select_all_or_list FROM {add('K', $4);} ID 
 			;
 				
 
-select_all_or_list : '*'
+select_all_or_list : STAR
 				   | select_list
 				   ;
 
-select_list : ID
+select_list : ID 
 			| ID ',' select_list
 			;
 
@@ -155,7 +159,10 @@ boolean_comparison_op : EQ
 			  |NE 
 			  ;
 			  
-insert_stmt : INSERT {add('K', $1);} ID '(' column_list ')' VALUES {add('K', $7);} insertion
+insert_stmt : INSERT {add('K', $1);} ID {if(search($3)!=-1){
+											printf("This table does not exist");
+											exit(0);}
+			} '(' column_list ')' VALUES {add('K', $8);} insertion
 			;
 insertion	: '(' value_list ')' 
 			| '(' value_list ')' ',' insertion

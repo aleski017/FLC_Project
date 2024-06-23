@@ -65,37 +65,38 @@ extern int yydebug;
     LE = 266,                      /* LE  */
     EQ = 267,                      /* EQ  */
     NE = 268,                      /* NE  */
-    AND = 269,                     /* AND  */
-    OR = 270,                      /* OR  */
-    FALSE = 271,                   /* FALSE  */
-    ALTER = 272,                   /* ALTER  */
-    TRUE = 273,                    /* TRUE  */
-    RENAME = 274,                  /* RENAME  */
-    TO = 275,                      /* TO  */
-    VALUES = 276,                  /* VALUES  */
-    BOOLEAN = 277,                 /* BOOLEAN  */
-    VARCHAR = 278,                 /* VARCHAR  */
-    STRINGVALUE = 279,             /* STRINGVALUE  */
-    INTEGER = 280,                 /* INTEGER  */
-    CONSTRAINT = 281,              /* CONSTRAINT  */
-    ALTERTABLE = 282,              /* ALTERTABLE  */
-    COLUMN = 283,                  /* COLUMN  */
-    FLOAT = 284,                   /* FLOAT  */
-    CHECK = 285,                   /* CHECK  */
-    DATE = 286,                    /* DATE  */
-    NUM = 287,                     /* NUM  */
-    NOTNULL = 288,                 /* NOTNULL  */
-    UNIQUE = 289,                  /* UNIQUE  */
-    PRIMARYKEY = 290,              /* PRIMARYKEY  */
-    FOREIGNKEY = 291,              /* FOREIGNKEY  */
-    REFERENCES = 292,              /* REFERENCES  */
-    DROP = 293,                    /* DROP  */
-    DATABASE = 294,                /* DATABASE  */
-    DELETE_FROM = 295,             /* DELETE_FROM  */
-    UPDATE = 296,                  /* UPDATE  */
-    SET = 297,                     /* SET  */
-    CREATETABLE = 298,             /* CREATETABLE  */
-    ID = 299                       /* ID  */
+    STAR = 269,                    /* STAR  */
+    AND = 270,                     /* AND  */
+    OR = 271,                      /* OR  */
+    FALSE = 272,                   /* FALSE  */
+    ALTER = 273,                   /* ALTER  */
+    TRUE = 274,                    /* TRUE  */
+    RENAME = 275,                  /* RENAME  */
+    TO = 276,                      /* TO  */
+    VALUES = 277,                  /* VALUES  */
+    BOOLEAN = 278,                 /* BOOLEAN  */
+    VARCHAR = 279,                 /* VARCHAR  */
+    STRINGVALUE = 280,             /* STRINGVALUE  */
+    INTEGER = 281,                 /* INTEGER  */
+    CONSTRAINT = 282,              /* CONSTRAINT  */
+    ALTERTABLE = 283,              /* ALTERTABLE  */
+    COLUMN = 284,                  /* COLUMN  */
+    FLOAT = 285,                   /* FLOAT  */
+    CHECK = 286,                   /* CHECK  */
+    DATE = 287,                    /* DATE  */
+    NUM = 288,                     /* NUM  */
+    NOTNULL = 289,                 /* NOTNULL  */
+    UNIQUE = 290,                  /* UNIQUE  */
+    PRIMARYKEY = 291,              /* PRIMARYKEY  */
+    FOREIGNKEY = 292,              /* FOREIGNKEY  */
+    REFERENCES = 293,              /* REFERENCES  */
+    DROP = 294,                    /* DROP  */
+    DATABASE = 295,                /* DATABASE  */
+    DELETE_FROM = 296,             /* DELETE_FROM  */
+    UPDATE = 297,                  /* UPDATE  */
+    SET = 298,                     /* SET  */
+    CREATETABLE = 299,             /* CREATETABLE  */
+    ID = 300                       /* ID  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -104,13 +105,13 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 37 "project.y"
+#line 39 "project.y"
 
        char* lexeme;			//identifier
        double value;			//value of an identifier of type NUM
        
 
-#line 114 "project.tab.h"
+#line 115 "project.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -36,6 +36,7 @@ BSTRING   \'({LETTER}|{DIGIT}|[_])*\'
 [\n ]+      {} ;
 (int|INT)                       {yylval.lexeme = strdup(yytext); return INTEGER; }
 (float|FLOAT)                   { yylval.lexeme = strdup(yytext);return FLOAT; }
+("*")		                    { yylval.lexeme = strdup(yytext);return STAR; }
 (boolean|BOOLEAN)               { yylval.lexeme = strdup(yytext);return BOOLEAN; }
 (varchar|VARCHAR)               { yylval.lexeme = strdup(yytext);return VARCHAR; }
 (DATE|date)                     { yylval.lexeme = strdup(yytext);return DATE; }
