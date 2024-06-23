@@ -48,6 +48,7 @@ char * attribute_name;
 %start scope
 
 %%
+//START OF SCOPE ->
 scope: {printf("TO END YOUR STATEMENT, WRITE 'end'\n");}line {printf("\nCorrect Statement\n");display_symbol_table(); exit(0);}
 	  ;
 	  
@@ -91,7 +92,7 @@ column_costraint_def: column_costraint
 					|/* empty */
 					;
 
-
+//CONTRAINTS PRODUCTIONS
 column_costraint: NOTNULL {add('K', $1);}
 				| PRIMARYKEY {add('K', $1);}
 				| UNIQUE {add('K', $1);}
@@ -102,7 +103,6 @@ column_costraint: NOTNULL {add('K', $1);}
 table_constraint_def: table_constraint
 					| table_constraint ',' table_constraint_def
 					;
-
 
 table_constraint: NOTNULL {add('K', $1);} '(' parameters ')'
 				| UNIQUE {add('K', $1);}'(' parameters ')'
@@ -115,11 +115,10 @@ parameters: ID
 			| ID ',' parameters
 			;
 			
+//SELECT STATEMENT PRODUCTIONS
 select_stmt : SELECT {add('K', $1);} select_all_or_list FROM {add('K', $4);} ID where_clause
 			;
 				
-
-//SELECT STATEMENT PRODUCTIONS
 select_all_or_list : STAR
 				   | select_list
 				   ;
@@ -132,6 +131,17 @@ where_clause : WHERE {add('K', $1);} condition
 			 | /* empty */
 			 ;
 
+//CONSTANT VALUES
+values: NUM{add('C', $1);}
+		|STRINGVALUE{add('C', $1);}
+		|ID
+		;
+		
+boolean_values: TRUE {add('C', $1);}
+			  | FALSE {add('C', $1);}
+			  ;
+
+//PRODUCTIONS FOR CONDITIONAL STATEMENTS
 condition: condition_step2 AND {add('K', $2);} condition
 		  | condition_step2 OR {add('K', $2);} condition
 		  | condition_step2
@@ -142,15 +152,6 @@ condition_step2 : values comparison_op values
 				| values boolean_comparison_op boolean_values
 				| boolean_values boolean_comparison_op values
 				;
-values: NUM{add('C', $1);}
-		|STRINGVALUE{add('C', $1);}
-		|ID
-		;
-		
-boolean_values: TRUE {add('C', $1);}
-			  | FALSE {add('C', $1);}
-			  ;
-
 comparison_op : LS {add('K', $1);}
 			  |GR {add('K', $1);}
 			  |GE {add('K', $1);}
@@ -321,7 +322,7 @@ void insert_type(char * value_type) {
 	strcpy(type, value_type);
 }
 
-//RETRIVES TYPE OF A GIVEN TOKEN
+//RETRIEVES TYPE OF A GIVEN TOKEN
 char* get_type(char *id) { 
     char* type_id = "none";
 	int i; 

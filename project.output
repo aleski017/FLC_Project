@@ -118,26 +118,26 @@ Grammar
    64 where_clause: WHERE $@20 condition
    65             | ε
 
-   66 $@21: ε
+   66 values: NUM
+   67       | STRINGVALUE
+   68       | ID
 
-   67 condition: condition_step2 AND $@21 condition
+   69 boolean_values: TRUE
+   70               | FALSE
 
-   68 $@22: ε
+   71 $@21: ε
 
-   69 condition: condition_step2 OR $@22 condition
-   70          | condition_step2
+   72 condition: condition_step2 AND $@21 condition
 
-   71 condition_step2: values comparison_op values
-   72                | values boolean_comparison_op values
-   73                | values boolean_comparison_op boolean_values
-   74                | boolean_values boolean_comparison_op values
+   73 $@22: ε
 
-   75 values: NUM
-   76       | STRINGVALUE
-   77       | ID
+   74 condition: condition_step2 OR $@22 condition
+   75          | condition_step2
 
-   78 boolean_values: TRUE
-   79               | FALSE
+   76 condition_step2: values comparison_op values
+   77                | values boolean_comparison_op values
+   78                | values boolean_comparison_op boolean_values
+   79                | boolean_values boolean_comparison_op values
 
    80 comparison_op: LS
    81              | GR
@@ -236,17 +236,17 @@ Terminals, with rules where they appear
     EQ <lexeme> (267) 84
     NE <lexeme> (268) 85
     STAR <lexeme> (269) 59
-    AND <lexeme> (270) 67
-    OR <lexeme> (271) 69
-    FALSE <lexeme> (272) 79
+    AND <lexeme> (270) 72
+    OR <lexeme> (271) 74
+    FALSE <lexeme> (272) 70
     ALTER <lexeme> (273) 112
-    TRUE <lexeme> (274) 78
+    TRUE <lexeme> (274) 69
     RENAME <lexeme> (275) 109
     TO <lexeme> (276) 109
     VALUES <lexeme> (277) 89
     BOOLEAN <lexeme> (278) 26
     VARCHAR <lexeme> (279) 28
-    STRINGVALUE <lexeme> (280) 76 99
+    STRINGVALUE <lexeme> (280) 67 99
     INTEGER <lexeme> (281) 21 23
     CONSTRAINT <lexeme> (282) 51
     ALTERTABLE <lexeme> (283) 102
@@ -254,7 +254,7 @@ Terminals, with rules where they appear
     FLOAT <lexeme> (285) 25
     CHECK <lexeme> (286) 39 53
     DATE <lexeme> (287) 29
-    NUM <lexeme> (288) 23 25 28 75 98
+    NUM <lexeme> (288) 23 25 28 66 98
     NOTNULL <lexeme> (289) 32 43
     UNIQUE <lexeme> (290) 34 45
     PRIMARYKEY <lexeme> (291) 33 47
@@ -266,7 +266,7 @@ Terminals, with rules where they appear
     UPDATE <lexeme> (297) 122
     SET <lexeme> (298) 122
     CREATETABLE <lexeme> (299) 15
-    ID <lexeme> (300) 15 20 37 51 54 55 58 61 62 77 89 92 94 102 105 109 112 115 118 122
+    ID <lexeme> (300) 15 20 37 51 54 55 58 61 62 68 89 92 94 102 105 109 112 115 118 122
 
 
 Nonterminals, with rules where they appear
@@ -384,30 +384,30 @@ Nonterminals, with rules where they appear
     $@20 (86)
         on left: 63
         on right: 64
-    condition (87)
-        on left: 67 69 70
-        on right: 39 53 64 67 69 118 122
-    $@21 (88)
-        on left: 66
-        on right: 67
-    $@22 (89)
-        on left: 68
-        on right: 69
-    condition_step2 (90)
-        on left: 71 72 73 74
-        on right: 67 69 70
-    values (91)
-        on left: 75 76 77
-        on right: 71 72 73 74
-    boolean_values (92)
-        on left: 78 79
-        on right: 73 74 100
+    values (87)
+        on left: 66 67 68
+        on right: 76 77 78 79
+    boolean_values (88)
+        on left: 69 70
+        on right: 78 79 100
+    condition (89)
+        on left: 72 74 75
+        on right: 39 53 64 72 74 118 122
+    $@21 (90)
+        on left: 71
+        on right: 72
+    $@22 (91)
+        on left: 73
+        on right: 74
+    condition_step2 (92)
+        on left: 76 77 78 79
+        on right: 72 74 75
     comparison_op (93)
         on left: 80 81 82 83
-        on right: 71
+        on right: 76
     boolean_comparison_op (94)
         on left: 84 85
-        on right: 72 73 74
+        on right: 77 78 79
     insert_stmt (95)
         on left: 89
         on right: 7
@@ -992,10 +992,10 @@ State 57
     NUM          shift, and go to state 69
     ID           shift, and go to state 70
 
-    condition        go to state 71
-    condition_step2  go to state 72
-    values           go to state 73
-    boolean_values   go to state 74
+    values           go to state 71
+    boolean_values   go to state 72
+    condition        go to state 73
+    condition_step2  go to state 74
 
 
 State 58
@@ -1008,10 +1008,10 @@ State 58
     NUM          shift, and go to state 69
     ID           shift, and go to state 70
 
+    values           go to state 71
+    boolean_values   go to state 72
     condition        go to state 75
-    condition_step2  go to state 72
-    values           go to state 73
-    boolean_values   go to state 74
+    condition_step2  go to state 74
 
 
 State 59
@@ -1082,83 +1082,83 @@ State 65
 
 State 66
 
-   79 boolean_values: FALSE •
+   70 boolean_values: FALSE •
 
-    $default  reduce using rule 79 (boolean_values)
+    $default  reduce using rule 70 (boolean_values)
 
 
 State 67
 
-   78 boolean_values: TRUE •
+   69 boolean_values: TRUE •
 
-    $default  reduce using rule 78 (boolean_values)
+    $default  reduce using rule 69 (boolean_values)
 
 
 State 68
 
-   76 values: STRINGVALUE •
+   67 values: STRINGVALUE •
 
-    $default  reduce using rule 76 (values)
+    $default  reduce using rule 67 (values)
 
 
 State 69
 
-   75 values: NUM •
+   66 values: NUM •
 
-    $default  reduce using rule 75 (values)
+    $default  reduce using rule 66 (values)
 
 
 State 70
 
-   77 values: ID •
+   68 values: ID •
 
-    $default  reduce using rule 77 (values)
+    $default  reduce using rule 68 (values)
 
 
 State 71
+
+   76 condition_step2: values • comparison_op values
+   77                | values • boolean_comparison_op values
+   78                | values • boolean_comparison_op boolean_values
+
+    LS  shift, and go to state 86
+    GR  shift, and go to state 87
+    GE  shift, and go to state 88
+    LE  shift, and go to state 89
+    EQ  shift, and go to state 90
+    NE  shift, and go to state 91
+
+    comparison_op          go to state 92
+    boolean_comparison_op  go to state 93
+
+
+State 72
+
+   79 condition_step2: boolean_values • boolean_comparison_op values
+
+    EQ  shift, and go to state 90
+    NE  shift, and go to state 91
+
+    boolean_comparison_op  go to state 94
+
+
+State 73
 
   118 delete_stmt: DELETE_FROM $@37 ID WHERE $@38 condition •
 
     $default  reduce using rule 118 (delete_stmt)
 
 
-State 72
-
-   67 condition: condition_step2 • AND $@21 condition
-   69          | condition_step2 • OR $@22 condition
-   70          | condition_step2 •
-
-    AND  shift, and go to state 86
-    OR   shift, and go to state 87
-
-    $default  reduce using rule 70 (condition)
-
-
-State 73
-
-   71 condition_step2: values • comparison_op values
-   72                | values • boolean_comparison_op values
-   73                | values • boolean_comparison_op boolean_values
-
-    LS  shift, and go to state 88
-    GR  shift, and go to state 89
-    GE  shift, and go to state 90
-    LE  shift, and go to state 91
-    EQ  shift, and go to state 92
-    NE  shift, and go to state 93
-
-    comparison_op          go to state 94
-    boolean_comparison_op  go to state 95
-
-
 State 74
 
-   74 condition_step2: boolean_values • boolean_comparison_op values
+   72 condition: condition_step2 • AND $@21 condition
+   74          | condition_step2 • OR $@22 condition
+   75          | condition_step2 •
 
-    EQ  shift, and go to state 92
-    NE  shift, and go to state 93
+    AND  shift, and go to state 95
+    OR   shift, and go to state 96
 
-    boolean_comparison_op  go to state 96
+    $default  reduce using rule 75 (condition)
 
 
 State 75
@@ -1248,79 +1248,61 @@ State 85
 
 State 86
 
-   67 condition: condition_step2 AND • $@21 condition
-
-    $default  reduce using rule 66 ($@21)
-
-    $@21  go to state 107
-
-
-State 87
-
-   69 condition: condition_step2 OR • $@22 condition
-
-    $default  reduce using rule 68 ($@22)
-
-    $@22  go to state 108
-
-
-State 88
-
    80 comparison_op: LS •
 
     $default  reduce using rule 80 (comparison_op)
 
 
-State 89
+State 87
 
    81 comparison_op: GR •
 
     $default  reduce using rule 81 (comparison_op)
 
 
-State 90
+State 88
 
    82 comparison_op: GE •
 
     $default  reduce using rule 82 (comparison_op)
 
 
-State 91
+State 89
 
    83 comparison_op: LE •
 
     $default  reduce using rule 83 (comparison_op)
 
 
-State 92
+State 90
 
    84 boolean_comparison_op: EQ •
 
     $default  reduce using rule 84 (boolean_comparison_op)
 
 
-State 93
+State 91
 
    85 boolean_comparison_op: NE •
 
     $default  reduce using rule 85 (boolean_comparison_op)
 
 
-State 94
+State 92
 
-   71 condition_step2: values comparison_op • values
+   76 condition_step2: values comparison_op • values
 
     STRINGVALUE  shift, and go to state 68
     NUM          shift, and go to state 69
     ID           shift, and go to state 70
 
-    values  go to state 109
+    values  go to state 107
 
 
-State 95
+State 93
 
-   72 condition_step2: values boolean_comparison_op • values
-   73                | values boolean_comparison_op • boolean_values
+   77 condition_step2: values boolean_comparison_op • values
+   78                | values boolean_comparison_op • boolean_values
 
     FALSE        shift, and go to state 66
     TRUE         shift, and go to state 67
@@ -1328,19 +1310,37 @@ State 95
     NUM          shift, and go to state 69
     ID           shift, and go to state 70
 
-    values          go to state 110
-    boolean_values  go to state 111
+    values          go to state 108
+    boolean_values  go to state 109
 
 
-State 96
+State 94
 
-   74 condition_step2: boolean_values boolean_comparison_op • values
+   79 condition_step2: boolean_values boolean_comparison_op • values
 
     STRINGVALUE  shift, and go to state 68
     NUM          shift, and go to state 69
     ID           shift, and go to state 70
 
-    values  go to state 112
+    values  go to state 110
+
+
+State 95
+
+   72 condition: condition_step2 AND • $@21 condition
+
+    $default  reduce using rule 71 ($@21)
+
+    $@21  go to state 111
+
+
+State 96
+
+   74 condition: condition_step2 OR • $@22 condition
+
+    $default  reduce using rule 73 ($@22)
+
+    $@22  go to state 112
 
 
 State 97
@@ -1400,10 +1400,10 @@ State 101
     NUM          shift, and go to state 69
     ID           shift, and go to state 70
 
+    values           go to state 71
+    boolean_values   go to state 72
     condition        go to state 128
-    condition_step2  go to state 72
-    values           go to state 73
-    boolean_values   go to state 74
+    condition_step2  go to state 74
 
 
 State 102
@@ -1453,23 +1453,35 @@ State 106
 
 State 107
 
-   67 condition: condition_step2 AND $@21 • condition
+   76 condition_step2: values comparison_op values •
 
-    FALSE        shift, and go to state 66
-    TRUE         shift, and go to state 67
-    STRINGVALUE  shift, and go to state 68
-    NUM          shift, and go to state 69
-    ID           shift, and go to state 70
-
-    condition        go to state 133
-    condition_step2  go to state 72
-    values           go to state 73
-    boolean_values   go to state 74
+    $default  reduce using rule 76 (condition_step2)
 
 
 State 108
 
-   69 condition: condition_step2 OR $@22 • condition
+   77 condition_step2: values boolean_comparison_op values •
+
+    $default  reduce using rule 77 (condition_step2)
+
+
+State 109
+
+   78 condition_step2: values boolean_comparison_op boolean_values •
+
+    $default  reduce using rule 78 (condition_step2)
+
+
+State 110
+
+   79 condition_step2: boolean_values boolean_comparison_op values •
+
+    $default  reduce using rule 79 (condition_step2)
+
+
+State 111
+
+   72 condition: condition_step2 AND $@21 • condition
 
     FALSE        shift, and go to state 66
     TRUE         shift, and go to state 67
@@ -1477,38 +1489,26 @@ State 108
     NUM          shift, and go to state 69
     ID           shift, and go to state 70
 
-    condition        go to state 134
-    condition_step2  go to state 72
-    values           go to state 73
-    boolean_values   go to state 74
-
-
-State 109
-
-   71 condition_step2: values comparison_op values •
-
-    $default  reduce using rule 71 (condition_step2)
-
-
-State 110
-
-   72 condition_step2: values boolean_comparison_op values •
-
-    $default  reduce using rule 72 (condition_step2)
-
-
-State 111
-
-   73 condition_step2: values boolean_comparison_op boolean_values •
-
-    $default  reduce using rule 73 (condition_step2)
+    values           go to state 71
+    boolean_values   go to state 72
+    condition        go to state 133
+    condition_step2  go to state 74
 
 
 State 112
 
-   74 condition_step2: boolean_values boolean_comparison_op values •
+   74 condition: condition_step2 OR $@22 • condition
 
-    $default  reduce using rule 74 (condition_step2)
+    FALSE        shift, and go to state 66
+    TRUE         shift, and go to state 67
+    STRINGVALUE  shift, and go to state 68
+    NUM          shift, and go to state 69
+    ID           shift, and go to state 70
+
+    values           go to state 71
+    boolean_values   go to state 72
+    condition        go to state 134
+    condition_step2  go to state 74
 
 
 State 113
@@ -1521,10 +1521,10 @@ State 113
     NUM          shift, and go to state 69
     ID           shift, and go to state 70
 
+    values           go to state 71
+    boolean_values   go to state 72
     condition        go to state 135
-    condition_step2  go to state 72
-    values           go to state 73
-    boolean_values   go to state 74
+    condition_step2  go to state 74
 
 
 State 114
@@ -1696,16 +1696,16 @@ State 132
 
 State 133
 
-   67 condition: condition_step2 AND $@21 condition •
+   72 condition: condition_step2 AND $@21 condition •
 
-    $default  reduce using rule 67 (condition)
+    $default  reduce using rule 72 (condition)
 
 
 State 134
 
-   69 condition: condition_step2 OR $@22 condition •
+   74 condition: condition_step2 OR $@22 condition •
 
-    $default  reduce using rule 69 (condition)
+    $default  reduce using rule 74 (condition)
 
 
 State 135
@@ -1921,10 +1921,10 @@ State 161
     NUM          shift, and go to state 69
     ID           shift, and go to state 70
 
+    values           go to state 71
+    boolean_values   go to state 72
     condition        go to state 178
-    condition_step2  go to state 72
-    values           go to state 73
-    boolean_values   go to state 74
+    condition_step2  go to state 74
 
 
 State 162
@@ -2038,10 +2038,10 @@ State 175
     NUM          shift, and go to state 69
     ID           shift, and go to state 70
 
+    values           go to state 71
+    boolean_values   go to state 72
     condition        go to state 188
-    condition_step2  go to state 72
-    values           go to state 73
-    boolean_values   go to state 74
+    condition_step2  go to state 74
 
 
 State 176

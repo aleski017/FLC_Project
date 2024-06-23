@@ -108,10 +108,9 @@ union YYSTYPE
 #line 38 "project.y"
 
        char* lexeme;			//identifier
-       double value;			//value of an identifier of type NUM
        
 
-#line 115 "project.tab.h"
+#line 114 "project.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
