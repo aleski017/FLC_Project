@@ -138,6 +138,7 @@ condition: condition_step2 AND {add('K', $2);} condition
 		  ;
 		  
 condition_step2 : values comparison_op values
+				| values boolean_comparison_op values
 				| values boolean_comparison_op boolean_values
 				| boolean_values boolean_comparison_op values
 				;
@@ -163,8 +164,8 @@ boolean_comparison_op : EQ
 //INSERT STATEMENT PRODUCTIONS
 insert_stmt : INSERT {add('K', $1);} ID {if(search($3)!=-1){
 											printf("This table does not exist");
-											exit(0);}
-			} '(' column_list ')' VALUES {add('K', $8);} insertion
+											exit(0);}}
+			'(' column_list ')' VALUES {add('K', $8);} insertion
 			;
 insertion	: '(' value_list ')' 
 			| '(' value_list ')' ',' insertion
@@ -194,27 +195,29 @@ insert_values : NUM {
 				if(column_attributes[countn]!= NULL){
 					char* type_id = get_type(column_attributes[countn]);
 					if((strcmp(type_id, "INT") != 0) && (strcmp(type_id, "FLOAT") != 0)
-						&& (strcmp(type_id, "int") != 0) && (strcmp(type_id, "float") != 0)){
-						printf("Type Error. Trying to assign %s to Int\n", type_id); exit(0);
-					}
+						&& (strcmp(type_id, "int") != 0) && (strcmp(type_id, "float") != 0))
+						{
+						printf("Type Error. Trying to assign %s to Int\n", type_id); exit(0);}
 				}
 				else{printf("You are trying to insert too many values\n");exit(0);}
 				countn++;
+				add('C', $1);
 		   }
 		   | STRINGVALUE {
 			    if(column_attributes[countn]!= NULL){
 					char* type_id = get_type(column_attributes[countn]);
-					if((strcmp(type_id, "VARCHAR") != 0)  && (strcmp(type_id, "varchar") != 0))
-						printf("Type Error. Trying to assign %s to String", type_id); exit(0);
+					if((strcmp(type_id, "VARCHAR") != 0)  && (strcmp(type_id, "varchar") != 0)){
+					printf("Type Error. Trying to assign %s to String", type_id); exit(0);}
 				}
 				else{printf("You are trying to insert too many values\n");exit(0);}
 				countn++;
+				add('C', $1);
 		   }
 		   | boolean_values {
 			    if(column_attributes[countn]!= NULL){
 					char* type_id = get_type(column_attributes[countn]);
-					if((strcmp(type_id, "BOOLEAN") != 0)  && (strcmp(type_id, "boolean") != 0))
-						printf("Type Error. Trying to assign %s to Boolean\n", type_id); exit(0);
+					if((strcmp(type_id, "BOOLEAN") != 0)  && (strcmp(type_id, "boolean") != 0)){
+					printf("Type Error. Trying to assign %s to Boolean\n", type_id); exit(0);}
 				}
 				else{printf("You are trying to insert too many values\n");exit(0);}
 				countn++;

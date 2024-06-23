@@ -1165,17 +1165,17 @@ case 14:
 YY_RULE_SETUP
 #line 50 "project-lex.l"
 {/*yylval.value = atof(yytext);*/
-         return NUM;}
+         yylval.lexeme = strdup(yytext); return NUM;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 52 "project-lex.l"
-{ return STRINGVALUE; }
+{ yylval.lexeme = strdup(yytext);return STRINGVALUE; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 53 "project-lex.l"
-{ return STRINGVALUE; }
+{ yylval.lexeme = strdup(yytext);return STRINGVALUE; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP

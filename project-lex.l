@@ -48,9 +48,9 @@ BSTRING   \'({LETTER}|{DIGIT}|[_])*\'
 (CONSTRAINT|constraint)         { yylval.lexeme = strdup(yytext);return CONSTRAINT; }
 
 {NUM}   {/*yylval.value = atof(yytext);*/
-         return NUM;}
-{STRING}                     		{ return STRINGVALUE; }
-{BSTRING}                     		{ return STRINGVALUE; }
+         yylval.lexeme = strdup(yytext); return NUM;}
+{STRING}                     		{ yylval.lexeme = strdup(yytext);return STRINGVALUE; }
+{BSTRING}                     		{ yylval.lexeme = strdup(yytext);return STRINGVALUE; }
 
 
 ("CREATE TABLE"|"create table")    { yylval.lexeme = strdup(yytext); return CREATETABLE; }
