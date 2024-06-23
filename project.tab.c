@@ -102,9 +102,8 @@ char* get_type(char *);
 void insert_type(char *);
 void display_symbol_table();
 char * attribute_name;
-extern char* yytext;
 
-#line 108 "project.tab.c"
+#line 107 "project.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -646,19 +645,19 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    53,    53,    53,    55,    57,    58,    62,    63,    64,
-      65,    66,    67,    68,    71,    71,    71,    74,    75,    76,
-      79,    79,    82,    83,    83,    84,    84,    85,    86,    86,
+       0,    51,    51,    51,    54,    56,    57,    61,    62,    63,
+      64,    65,    66,    67,    70,    70,    70,    73,    74,    75,
+      78,    78,    82,    83,    83,    84,    84,    85,    86,    86,
       87,    90,    91,    95,    96,    97,    98,    98,    98,    99,
       99,   102,   103,   107,   107,   108,   108,   109,   109,   110,
      110,   110,   110,   111,   111,   114,   115,   118,   118,   118,
-     122,   123,   126,   127,   130,   130,   131,   134,   134,   135,
-     135,   136,   139,   140,   141,   143,   144,   145,   148,   149,
-     152,   153,   154,   155,   158,   159,   162,   162,   165,   162,
-     167,   168,   171,   180,   180,   188,   191,   192,   195,   206,
-     216,   229,   229,   231,   231,   231,   232,   232,   232,   232,
-     233,   233,   233,   236,   236,   236,   239,   239,   239,   242,
-     242,   242,   242
+     123,   124,   127,   128,   131,   131,   132,   135,   135,   136,
+     136,   137,   140,   141,   142,   144,   145,   146,   149,   150,
+     153,   154,   155,   156,   159,   160,   164,   164,   167,   164,
+     169,   170,   173,   177,   177,   185,   188,   189,   193,   204,
+     213,   225,   225,   227,   227,   227,   228,   228,   228,   228,
+     229,   229,   229,   233,   233,   233,   236,   236,   236,   239,
+     239,   239,   239
 };
 #endif
 
@@ -1364,443 +1363,418 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* $@1: %empty  */
-#line 53 "project.y"
+#line 51 "project.y"
        {printf("TO END YOUR STATEMENT, WRITE 'end'\n");}
-#line 1370 "project.tab.c"
+#line 1369 "project.tab.c"
     break;
 
   case 3: /* scope: $@1 line  */
-#line 53 "project.y"
-                                                             {printf("Correct Statement\n");display_symbol_table(); exit(0);}
-#line 1376 "project.tab.c"
+#line 51 "project.y"
+                                                             {printf("\nCorrect Statement\n");display_symbol_table(); exit(0);}
+#line 1375 "project.tab.c"
     break;
 
   case 14: /* $@2: %empty  */
-#line 71 "project.y"
+#line 70 "project.y"
                          {add('K', (yyvsp[0].lexeme));}
-#line 1382 "project.tab.c"
+#line 1381 "project.tab.c"
     break;
 
   case 15: /* $@3: %empty  */
-#line 71 "project.y"
+#line 70 "project.y"
                                             {add('R', (yyvsp[0].lexeme));}
-#line 1388 "project.tab.c"
+#line 1387 "project.tab.c"
     break;
 
   case 20: /* $@4: %empty  */
-#line 79 "project.y"
+#line 78 "project.y"
                 {attribute_name = (yyvsp[0].lexeme);}
-#line 1394 "project.tab.c"
+#line 1393 "project.tab.c"
     break;
 
   case 22: /* datatype: INTEGER  */
 #line 82 "project.y"
                    {insert_type((yyvsp[0].lexeme)); add('A', attribute_name);}
-#line 1400 "project.tab.c"
+#line 1399 "project.tab.c"
     break;
 
   case 23: /* $@5: %empty  */
 #line 83 "project.y"
                    {insert_type((yyvsp[0].lexeme)); add('A', attribute_name);}
-#line 1406 "project.tab.c"
+#line 1405 "project.tab.c"
     break;
 
   case 25: /* $@6: %empty  */
 #line 84 "project.y"
                  {insert_type((yyvsp[0].lexeme)); add('A', attribute_name);}
-#line 1412 "project.tab.c"
+#line 1411 "project.tab.c"
     break;
 
   case 27: /* datatype: BOOLEAN  */
 #line 85 "project.y"
                    {insert_type((yyvsp[0].lexeme)); add('A', attribute_name);}
-#line 1418 "project.tab.c"
+#line 1417 "project.tab.c"
     break;
 
   case 28: /* $@7: %empty  */
 #line 86 "project.y"
                    {insert_type((yyvsp[0].lexeme)); add('A', attribute_name);}
-#line 1424 "project.tab.c"
+#line 1423 "project.tab.c"
     break;
 
   case 30: /* datatype: DATE  */
 #line 87 "project.y"
                        {insert_type((yyvsp[0].lexeme)); add('A', attribute_name);}
-#line 1430 "project.tab.c"
+#line 1429 "project.tab.c"
     break;
 
   case 33: /* column_costraint: NOTNULL  */
 #line 95 "project.y"
                           {add('K', (yyvsp[0].lexeme));}
-#line 1436 "project.tab.c"
+#line 1435 "project.tab.c"
     break;
 
   case 34: /* column_costraint: PRIMARYKEY  */
 #line 96 "project.y"
                                              {add('K', (yyvsp[0].lexeme));}
-#line 1442 "project.tab.c"
+#line 1441 "project.tab.c"
     break;
 
   case 35: /* column_costraint: UNIQUE  */
 #line 97 "project.y"
                                          {add('K', (yyvsp[0].lexeme));}
-#line 1448 "project.tab.c"
+#line 1447 "project.tab.c"
     break;
 
   case 36: /* $@8: %empty  */
 #line 98 "project.y"
                                              {add('K', (yyvsp[0].lexeme));}
-#line 1454 "project.tab.c"
+#line 1453 "project.tab.c"
     break;
 
   case 37: /* $@9: %empty  */
 #line 98 "project.y"
                                                                         {add('K', (yyvsp[0].lexeme));}
-#line 1460 "project.tab.c"
+#line 1459 "project.tab.c"
     break;
 
   case 39: /* $@10: %empty  */
 #line 99 "project.y"
                                         {add('K', (yyvsp[0].lexeme));}
-#line 1466 "project.tab.c"
+#line 1465 "project.tab.c"
     break;
 
   case 43: /* $@11: %empty  */
 #line 107 "project.y"
                           {add('K', (yyvsp[0].lexeme));}
-#line 1472 "project.tab.c"
+#line 1471 "project.tab.c"
     break;
 
   case 45: /* $@12: %empty  */
 #line 108 "project.y"
                                          {add('K', (yyvsp[0].lexeme));}
-#line 1478 "project.tab.c"
+#line 1477 "project.tab.c"
     break;
 
   case 47: /* $@13: %empty  */
 #line 109 "project.y"
                                              {add('K', (yyvsp[0].lexeme));}
-#line 1484 "project.tab.c"
+#line 1483 "project.tab.c"
     break;
 
   case 49: /* $@14: %empty  */
 #line 110 "project.y"
                                              {add('K', (yyvsp[0].lexeme));}
-#line 1490 "project.tab.c"
+#line 1489 "project.tab.c"
     break;
 
   case 50: /* $@15: %empty  */
 #line 110 "project.y"
                                                                            {add('K', (yyvsp[0].lexeme));}
-#line 1496 "project.tab.c"
+#line 1495 "project.tab.c"
     break;
 
   case 51: /* $@16: %empty  */
 #line 110 "project.y"
                                                                                                                 {add('K', (yyvsp[0].lexeme));}
-#line 1502 "project.tab.c"
+#line 1501 "project.tab.c"
     break;
 
   case 53: /* $@17: %empty  */
 #line 111 "project.y"
                                         {add('K', (yyvsp[0].lexeme));}
-#line 1508 "project.tab.c"
+#line 1507 "project.tab.c"
     break;
 
   case 57: /* $@18: %empty  */
 #line 118 "project.y"
                      {add('K', (yyvsp[0].lexeme));}
-#line 1514 "project.tab.c"
+#line 1513 "project.tab.c"
     break;
 
   case 58: /* $@19: %empty  */
 #line 118 "project.y"
                                                              {add('K', (yyvsp[0].lexeme));}
-#line 1520 "project.tab.c"
+#line 1519 "project.tab.c"
     break;
 
   case 64: /* $@20: %empty  */
-#line 130 "project.y"
+#line 131 "project.y"
                      {add('K', (yyvsp[0].lexeme));}
-#line 1526 "project.tab.c"
+#line 1525 "project.tab.c"
     break;
 
   case 67: /* $@21: %empty  */
-#line 134 "project.y"
+#line 135 "project.y"
                                {add('K', (yyvsp[0].lexeme));}
-#line 1532 "project.tab.c"
+#line 1531 "project.tab.c"
     break;
 
   case 69: /* $@22: %empty  */
-#line 135 "project.y"
+#line 136 "project.y"
                                        {add('K', (yyvsp[0].lexeme));}
-#line 1538 "project.tab.c"
+#line 1537 "project.tab.c"
     break;
 
   case 75: /* values: NUM  */
-#line 143 "project.y"
+#line 144 "project.y"
            {add('C', (yyvsp[0].lexeme));}
-#line 1544 "project.tab.c"
+#line 1543 "project.tab.c"
     break;
 
   case 76: /* values: STRINGVALUE  */
-#line 144 "project.y"
+#line 145 "project.y"
                             {add('C', (yyvsp[0].lexeme));}
-#line 1550 "project.tab.c"
+#line 1549 "project.tab.c"
     break;
 
   case 78: /* boolean_values: TRUE  */
-#line 148 "project.y"
+#line 149 "project.y"
                      {add('C', (yyvsp[0].lexeme));}
-#line 1556 "project.tab.c"
+#line 1555 "project.tab.c"
     break;
 
   case 79: /* boolean_values: FALSE  */
-#line 149 "project.y"
+#line 150 "project.y"
                                   {add('C', (yyvsp[0].lexeme));}
-#line 1562 "project.tab.c"
+#line 1561 "project.tab.c"
     break;
 
   case 80: /* comparison_op: LS  */
-#line 152 "project.y"
+#line 153 "project.y"
                    {add('K', (yyvsp[0].lexeme));}
-#line 1568 "project.tab.c"
+#line 1567 "project.tab.c"
     break;
 
   case 81: /* comparison_op: GR  */
-#line 153 "project.y"
+#line 154 "project.y"
                               {add('K', (yyvsp[0].lexeme));}
-#line 1574 "project.tab.c"
+#line 1573 "project.tab.c"
     break;
 
   case 82: /* comparison_op: GE  */
-#line 154 "project.y"
+#line 155 "project.y"
                               {add('K', (yyvsp[0].lexeme));}
-#line 1580 "project.tab.c"
+#line 1579 "project.tab.c"
     break;
 
   case 83: /* comparison_op: LE  */
-#line 155 "project.y"
+#line 156 "project.y"
                               {add('K', (yyvsp[0].lexeme));}
-#line 1586 "project.tab.c"
+#line 1585 "project.tab.c"
     break;
 
   case 86: /* $@23: %empty  */
-#line 162 "project.y"
+#line 164 "project.y"
                      {add('K', (yyvsp[0].lexeme));}
-#line 1592 "project.tab.c"
+#line 1591 "project.tab.c"
     break;
 
   case 87: /* $@24: %empty  */
-#line 162 "project.y"
+#line 164 "project.y"
                                         {if(search((yyvsp[0].lexeme))!=-1){
 											printf("This table does not exist");
 											exit(0);}
 			}
-#line 1601 "project.tab.c"
+#line 1600 "project.tab.c"
     break;
 
   case 88: /* $@25: %empty  */
-#line 165 "project.y"
+#line 167 "project.y"
                                                      {add('K', (yyvsp[0].lexeme));}
-#line 1607 "project.tab.c"
+#line 1606 "project.tab.c"
     break;
 
   case 92: /* column_list: ID  */
-#line 171 "project.y"
+#line 173 "project.y"
                  {
 				column_attributes[countn] = (yyvsp[0].lexeme);
 				countn=0;
-				/*for(int i =0; i<=15; i++){
-					if(column_attributes[i] == 0)
-						column_attributes[i] = $1;
-						break;
-				}*/
 			}
-#line 1621 "project.tab.c"
+#line 1615 "project.tab.c"
     break;
 
   case 93: /* $@26: %empty  */
-#line 180 "project.y"
+#line 177 "project.y"
                              {
 
 				
 				column_attributes[countn] = (yyvsp[0].lexeme);
 				countn++;
 			}
-#line 1632 "project.tab.c"
+#line 1626 "project.tab.c"
     break;
 
   case 95: /* value_list: insert_values  */
-#line 188 "project.y"
+#line 185 "project.y"
                            {
 			   countn=0;
 		   }
-#line 1640 "project.tab.c"
+#line 1634 "project.tab.c"
     break;
 
   case 98: /* insert_values: NUM  */
-#line 195 "project.y"
+#line 193 "project.y"
                     {
 				if(column_attributes[countn]!= NULL){
 					char* type_id = get_type(column_attributes[countn]);
 					if((strcmp(type_id, "INT") != 0) && (strcmp(type_id, "FLOAT") != 0)
 						&& (strcmp(type_id, "int") != 0) && (strcmp(type_id, "float") != 0)){
-						printf("Type Error. Trying to assign %s to Int\n", type_id);
+						printf("Type Error. Trying to assign %s to Int\n", type_id); exit(0);
 					}
 				}
 				else{printf("You are trying to insert too many values\n");exit(0);}
 				countn++;
 		   }
-#line 1656 "project.tab.c"
+#line 1650 "project.tab.c"
     break;
 
   case 99: /* insert_values: STRINGVALUE  */
-#line 206 "project.y"
+#line 204 "project.y"
                                  {
 			    if(column_attributes[countn]!= NULL){
 					char* type_id = get_type(column_attributes[countn]);
 					if((strcmp(type_id, "VARCHAR") != 0)  && (strcmp(type_id, "varchar") != 0))
-						printf("Type Error. Trying to assign %s to String", type_id);
-					
+						printf("Type Error. Trying to assign %s to String", type_id); exit(0);
 				}
 				else{printf("You are trying to insert too many values\n");exit(0);}
 				countn++;
 		   }
-#line 1671 "project.tab.c"
+#line 1664 "project.tab.c"
     break;
 
   case 100: /* insert_values: boolean_values  */
-#line 216 "project.y"
+#line 213 "project.y"
                                     {
 			    if(column_attributes[countn]!= NULL){
 					char* type_id = get_type(column_attributes[countn]);
 					if((strcmp(type_id, "BOOLEAN") != 0)  && (strcmp(type_id, "boolean") != 0))
-						printf("Type Error. Trying to assign %s to Boolean\n", type_id);
-					
+						printf("Type Error. Trying to assign %s to Boolean\n", type_id); exit(0);
 				}
 				else{printf("You are trying to insert too many values\n");exit(0);}
 				countn++;
 		   }
-#line 1686 "project.tab.c"
+#line 1678 "project.tab.c"
     break;
 
   case 101: /* $@27: %empty  */
-#line 229 "project.y"
+#line 225 "project.y"
                              {add('K', (yyvsp[0].lexeme));}
-#line 1692 "project.tab.c"
+#line 1684 "project.tab.c"
     break;
 
   case 103: /* $@28: %empty  */
-#line 231 "project.y"
+#line 227 "project.y"
                        {add('K', (yyvsp[0].lexeme));}
-#line 1698 "project.tab.c"
+#line 1690 "project.tab.c"
     break;
 
   case 104: /* $@29: %empty  */
-#line 231 "project.y"
+#line 227 "project.y"
                                               {add('K', (yyvsp[0].lexeme));}
-#line 1704 "project.tab.c"
+#line 1696 "project.tab.c"
     break;
 
   case 106: /* $@30: %empty  */
-#line 232 "project.y"
+#line 228 "project.y"
                                          {add('K', (yyvsp[0].lexeme));}
-#line 1710 "project.tab.c"
+#line 1702 "project.tab.c"
     break;
 
   case 107: /* $@31: %empty  */
-#line 232 "project.y"
+#line 228 "project.y"
                                                                 {add('K', (yyvsp[0].lexeme));}
-#line 1716 "project.tab.c"
+#line 1708 "project.tab.c"
     break;
 
   case 108: /* $@32: %empty  */
-#line 232 "project.y"
+#line 228 "project.y"
                                                                                       {add('K', (yyvsp[0].lexeme));}
-#line 1722 "project.tab.c"
+#line 1714 "project.tab.c"
     break;
 
   case 109: /* alter_table_spec: RENAME $@30 COLUMN $@31 ID TO $@32 ID  */
-#line 232 "project.y"
+#line 228 "project.y"
                                                                                                          {add('A', (yyvsp[0].lexeme));}
-#line 1728 "project.tab.c"
+#line 1720 "project.tab.c"
     break;
 
   case 110: /* $@33: %empty  */
-#line 233 "project.y"
+#line 229 "project.y"
                                         {add('K', (yyvsp[0].lexeme));}
-#line 1734 "project.tab.c"
+#line 1726 "project.tab.c"
     break;
 
   case 111: /* $@34: %empty  */
-#line 233 "project.y"
+#line 229 "project.y"
                                                                {add('K', (yyvsp[0].lexeme));}
-#line 1740 "project.tab.c"
+#line 1732 "project.tab.c"
     break;
 
   case 113: /* $@35: %empty  */
-#line 236 "project.y"
+#line 233 "project.y"
                  {add('K', (yyvsp[0].lexeme));}
-#line 1746 "project.tab.c"
+#line 1738 "project.tab.c"
     break;
 
   case 114: /* $@36: %empty  */
-#line 236 "project.y"
+#line 233 "project.y"
                                           {add('K', (yyvsp[0].lexeme));}
-#line 1752 "project.tab.c"
-    break;
-
-  case 115: /* drop_stmt: DROP $@35 DATABASE $@36 ID  */
-#line 236 "project.y"
-                                                            {exit(0);}
-#line 1758 "project.tab.c"
+#line 1744 "project.tab.c"
     break;
 
   case 116: /* $@37: %empty  */
-#line 239 "project.y"
+#line 236 "project.y"
                           {add('K', (yyvsp[0].lexeme));}
-#line 1764 "project.tab.c"
+#line 1750 "project.tab.c"
     break;
 
   case 117: /* $@38: %empty  */
-#line 239 "project.y"
+#line 236 "project.y"
                                                    {add('K', (yyvsp[0].lexeme));}
-#line 1770 "project.tab.c"
-    break;
-
-  case 118: /* delete_stmt: DELETE_FROM $@37 ID WHERE $@38 condition  */
-#line 239 "project.y"
-                                                                             {exit(0);}
-#line 1776 "project.tab.c"
+#line 1756 "project.tab.c"
     break;
 
   case 119: /* $@39: %empty  */
-#line 242 "project.y"
+#line 239 "project.y"
                      {add('K', (yyvsp[0].lexeme));}
-#line 1782 "project.tab.c"
+#line 1762 "project.tab.c"
     break;
 
   case 120: /* $@40: %empty  */
-#line 242 "project.y"
+#line 239 "project.y"
                                             {add('K', (yyvsp[0].lexeme));}
-#line 1788 "project.tab.c"
+#line 1768 "project.tab.c"
     break;
 
   case 121: /* $@41: %empty  */
-#line 242 "project.y"
+#line 239 "project.y"
                                                                             {add('K', (yyvsp[0].lexeme));}
-#line 1794 "project.tab.c"
-    break;
-
-  case 122: /* update_stmt: UPDATE $@39 ID SET $@40 condition WHERE $@41 condition  */
-#line 242 "project.y"
-                                                                                                     {exit(0);}
-#line 1800 "project.tab.c"
+#line 1774 "project.tab.c"
     break;
 
 
-#line 1804 "project.tab.c"
+#line 1778 "project.tab.c"
 
       default: break;
     }
@@ -1993,15 +1967,14 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 245 "project.y"
+#line 242 "project.y"
 
 
 int main(void){
 	yyparse();
-	
-	
 }
 
+//THIS FUNCTION CHECKS WHETHER IF TOKEN IS ALREADY IN SYMBOL TABLE
 int search(char *token) {
 	int i;
 	for(i=count-1; i>=0; i--) {
@@ -2013,6 +1986,7 @@ int search(char *token) {
 	return 1;
 }
 
+//DISPLAYS IN OUTPUT THE SYMBOL TABLE AND CLEARS IT FOR FURTHER RUNS
 void display_symbol_table(){
 	printf("\n\n");
 	printf("\nSYMBOL        DATATYPE          TYPE \n");
@@ -2027,13 +2001,14 @@ void display_symbol_table(){
 	printf("\n\n");
 }
 
+//ADDS TOKEN INTO SYMBOL TABLE
 void add(char c, char * token) {
   if((c == 'K' || c == 'C' )){
+	  //IF STMT CHECK WHETHER IF TOKEN ALREADY EXISTS
 	  if(search(token)!=-1){
 			if(c == 'K') {
 				symbol_table[count].id_name= strdup(token);
 				symbol_table[count].data_type=strdup("N/A");
-		
 				symbol_table[count].type=("Keyword\t");
 				count++;
 			}
@@ -2048,6 +2023,7 @@ void add(char c, char * token) {
 		}
   }
   else{
+	//IF STMT CHECKS WHETHER IF TOKEN IS ALREADY IN SYMBOL TABLE AND GIVES AN ERROR MESSAGE IF IT DOES
 	if(search(token)!=-1){
 		if(c == 'R') {
 			symbol_table[count].id_name= strdup(token);
@@ -2066,10 +2042,12 @@ void add(char c, char * token) {
   }
 }
 
+//INSERT TYPE INTO CURRENT INSTANCE IN SYMBOL TABLE
 void insert_type(char * value_type) {
 	strcpy(type, value_type);
 }
 
+//RETRIVES TYPE OF A GIVEN TOKEN
 char* get_type(char *id) { 
     char* type_id = "none";
 	int i; 

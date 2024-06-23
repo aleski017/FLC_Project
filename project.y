@@ -32,7 +32,6 @@ char* get_type(char *);
 void insert_type(char *);
 void display_symbol_table();
 char * attribute_name;
-extern char* yytext;
 %}
 
 
@@ -41,8 +40,7 @@ extern char* yytext;
        double value;			//value of an identifier of type NUM
        }
 
-%token <lexeme> SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE STAR AND OR FALSE ALTER TRUE RENAME TO VALUES BOOLEAN VARCHAR STRINGVALUE INTEGER CONSTRAINT ALTERTABLE COLUMN FLOAT CHECK DATE NUM NOTNULL UNIQUE PRIMARYKEY FOREIGNKEY REFERENCES DROP DATABASE DELETE_FROM UPDATE SET
-%token <lexeme> CREATETABLE ID
+%token <lexeme> SELECT FROM WHERE GROUPBY INSERT LS GR GE LE EQ NE STAR AND OR FALSE ALTER TRUE RENAME TO VALUES BOOLEAN VARCHAR STRINGVALUE INTEGER CONSTRAINT ALTERTABLE COLUMN FLOAT CHECK DATE NUM NOTNULL UNIQUE PRIMARYKEY FOREIGNKEY REFERENCES DROP DATABASE DELETE_FROM UPDATE SET CREATETABLE ID
 
 %left OR
 %left AND
@@ -50,15 +48,16 @@ extern char* yytext;
 %start scope
 
 %%
-scope: {printf("TO END YOUR STATEMENT, WRITE 'end'\n");}line {printf("Correct Statement\n");display_symbol_table(); exit(0);}
+scope: {printf("TO END YOUR STATEMENT, WRITE 'end'\n");}line {printf("\nCorrect Statement\n");display_symbol_table(); exit(0);}
 	  ;
+	  
 line  : pile_expr 
 	  ;
 pile_expr: expr
 		 | expr pile_expr
 		 ;
 
-// Matches CREATE TABLE statement, it represents the scope of the grammar 
+// TYPES STATEMENTS POSSIBLE IN SQL
 expr: create_stmt
 	| insert_stmt
 	| drop_stmt
@@ -70,7 +69,7 @@ expr: create_stmt
 
 create_stmt: CREATETABLE {add('K', $1);} ID {add('R', $3);}  '(' table_def ')';
 
-// Used to define the creation of attributes in a table. E.g. { attribute1, attribute2 } etc
+//CREATE STATEMENT PRODUCTIONS E.g. { attribute1, attribute2 } etc
 table_def : column_def 
 		  | column_def ',' table_constraint_def
 		  | column_def ',' table_def
@@ -79,6 +78,7 @@ table_def : column_def
 column_def : ID {attribute_name = $1;} datatype column_costraint_def
 			; 
 
+//DATA TYPES FOR COLUMNS IN A RELATION
 datatype : INTEGER {insert_type($1); add('A', attribute_name);}
          | INTEGER {insert_type($1); add('A', attribute_name);}'(' NUM ')'
          | FLOAT {insert_type($1); add('A', attribute_name);}'(' NUM ')'
@@ -119,6 +119,7 @@ select_stmt : SELECT {add('K', $1);} select_all_or_list FROM {add('K', $4);} ID 
 			;
 				
 
+//SELECT STATEMENT PRODUCTIONS
 select_all_or_list : STAR
 				   | select_list
 				   ;
@@ -159,6 +160,7 @@ boolean_comparison_op : EQ
 			  |NE 
 			  ;
 			  
+//INSERT STATEMENT PRODUCTIONS
 insert_stmt : INSERT {add('K', $1);} ID {if(search($3)!=-1){
 											printf("This table does not exist");
 											exit(0);}
@@ -171,11 +173,6 @@ insertion	: '(' value_list ')'
 column_list : ID {
 				column_attributes[countn] = $1;
 				countn=0;
-				/*for(int i =0; i<=15; i++){
-					if(column_attributes[i] == 0)
-						column_attributes[i] = $1;
-						break;
-				}*/
 			}
 			| ID {
 
@@ -192,12 +189,13 @@ value_list : insert_values {
 		   | /* empty rule */
 		   ;
 
+//WE CHECK IF THE TYPE IN INPUT MATCHES WITH TYPE OF COLUMN
 insert_values : NUM {
 				if(column_attributes[countn]!= NULL){
 					char* type_id = get_type(column_attributes[countn]);
 					if((strcmp(type_id, "INT") != 0) && (strcmp(type_id, "FLOAT") != 0)
 						&& (strcmp(type_id, "int") != 0) && (strcmp(type_id, "float") != 0)){
-						printf("Type Error. Trying to assign %s to Int\n", type_id);
+						printf("Type Error. Trying to assign %s to Int\n", type_id); exit(0);
 					}
 				}
 				else{printf("You are trying to insert too many values\n");exit(0);}
@@ -207,8 +205,7 @@ insert_values : NUM {
 			    if(column_attributes[countn]!= NULL){
 					char* type_id = get_type(column_attributes[countn]);
 					if((strcmp(type_id, "VARCHAR") != 0)  && (strcmp(type_id, "varchar") != 0))
-						printf("Type Error. Trying to assign %s to String", type_id);
-					
+						printf("Type Error. Trying to assign %s to String", type_id); exit(0);
 				}
 				else{printf("You are trying to insert too many values\n");exit(0);}
 				countn++;
@@ -217,15 +214,14 @@ insert_values : NUM {
 			    if(column_attributes[countn]!= NULL){
 					char* type_id = get_type(column_attributes[countn]);
 					if((strcmp(type_id, "BOOLEAN") != 0)  && (strcmp(type_id, "boolean") != 0))
-						printf("Type Error. Trying to assign %s to Boolean\n", type_id);
-					
+						printf("Type Error. Trying to assign %s to Boolean\n", type_id); exit(0);
 				}
 				else{printf("You are trying to insert too many values\n");exit(0);}
 				countn++;
 		   }
 		   ;
 
-
+//ALTER TABLE STATEMENT PRODUCTIONS
 alter_table_stmt: ALTERTABLE {add('K', $1);} ID alter_table_spec
 				;
 alter_table_spec: DROP {add('K', $1);} COLUMN {add('K', $3);} ID 
@@ -233,6 +229,7 @@ alter_table_spec: DROP {add('K', $1);} COLUMN {add('K', $3);} ID
 				| ALTER {add('K', $1);} COLUMN {add('K', $3);} ID datatype 
 				;
 
+//PRODUCTIONS FOR OTHER STATEMENTS
 drop_stmt : DROP {add('K', $1);} DATABASE {add('K', $3);}ID
 		  ;
 
@@ -246,10 +243,9 @@ update_stmt : UPDATE {add('K', $1);} ID SET {add('K', $4);} condition WHERE {add
 
 int main(void){
 	yyparse();
-	
-	
 }
 
+//THIS FUNCTION CHECKS WHETHER IF TOKEN IS ALREADY IN SYMBOL TABLE
 int search(char *token) {
 	int i;
 	for(i=count-1; i>=0; i--) {
@@ -261,6 +257,7 @@ int search(char *token) {
 	return 1;
 }
 
+//DISPLAYS IN OUTPUT THE SYMBOL TABLE AND CLEARS IT FOR FURTHER RUNS
 void display_symbol_table(){
 	printf("\n\n");
 	printf("\nSYMBOL        DATATYPE          TYPE \n");
@@ -275,13 +272,14 @@ void display_symbol_table(){
 	printf("\n\n");
 }
 
+//ADDS TOKEN INTO SYMBOL TABLE
 void add(char c, char * token) {
   if((c == 'K' || c == 'C' )){
+	  //IF STMT CHECK WHETHER IF TOKEN ALREADY EXISTS
 	  if(search(token)!=-1){
 			if(c == 'K') {
 				symbol_table[count].id_name= strdup(token);
 				symbol_table[count].data_type=strdup("N/A");
-		
 				symbol_table[count].type=("Keyword\t");
 				count++;
 			}
@@ -296,6 +294,7 @@ void add(char c, char * token) {
 		}
   }
   else{
+	//IF STMT CHECKS WHETHER IF TOKEN IS ALREADY IN SYMBOL TABLE AND GIVES AN ERROR MESSAGE IF IT DOES
 	if(search(token)!=-1){
 		if(c == 'R') {
 			symbol_table[count].id_name= strdup(token);
@@ -314,10 +313,12 @@ void add(char c, char * token) {
   }
 }
 
+//INSERT TYPE INTO CURRENT INSTANCE IN SYMBOL TABLE
 void insert_type(char * value_type) {
 	strcpy(type, value_type);
 }
 
+//RETRIVES TYPE OF A GIVEN TOKEN
 char* get_type(char *id) { 
     char* type_id = "none";
 	int i; 
